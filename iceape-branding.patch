@@ -1,0 +1,376 @@
+diff -urN mozilla.orig/configure mozilla/configure
+--- mozilla.orig/configure	2008-06-24 12:57:29.000000000 +0200
++++ mozilla/configure	2008-06-24 21:16:45.000000000 +0200
+@@ -13071,8 +13071,8 @@
+ 
+ case "$MOZ_BUILD_APP" in
+ suite)
+-  MOZ_APP_NAME=seamonkey
+-  MOZ_APP_DISPLAYNAME=SeaMonkey
++  MOZ_APP_NAME=iceape
++  MOZ_APP_DISPLAYNAME=Iceape
+   MOZ_MAIL_NEWS=1
+   MOZ_LDAP_XPCOM=1
+   MOZ_COMPOSER=1
+diff -urN mozilla.orig/configure.in mozilla/configure.in
+--- mozilla.orig/configure.in	2008-06-24 12:57:20.000000000 +0200
++++ mozilla/configure.in	2008-06-24 21:16:25.000000000 +0200
+@@ -4303,8 +4303,8 @@
+ 
+ case "$MOZ_BUILD_APP" in
+ suite)
+-  MOZ_APP_NAME=seamonkey
+-  MOZ_APP_DISPLAYNAME=SeaMonkey
++  MOZ_APP_NAME=iceape
++  MOZ_APP_DISPLAYNAME=Iceape
+   MOZ_MAIL_NEWS=1
+   MOZ_LDAP_XPCOM=1
+   MOZ_COMPOSER=1
+diff -urN mozilla.orig/extensions/help/resources/locale/en-US/cs_nav_prefs_advanced.xhtml mozilla/extensions/help/resources/locale/en-US/cs_nav_prefs_advanced.xhtml
+--- mozilla.orig/extensions/help/resources/locale/en-US/cs_nav_prefs_advanced.xhtml	2008-06-24 12:57:29.000000000 +0200
++++ mozilla/extensions/help/resources/locale/en-US/cs_nav_prefs_advanced.xhtml	2008-06-24 21:15:20.000000000 +0200
+@@ -387,19 +387,6 @@
+         web sites in the current list.</li>
+     </ul>
+   </li>
+-  <li><strong>Check for updates</strong>: Select this to be notified when new
+-    versions of &brandShortName; are available. Your personal information is
+-    not shared with &brandShortName; when verifying your version of
+-    &brandShortName;.
+-    <ul>
+-      <li><strong>weekly</strong>: Choose this if you want &brandShortName; to
+-        check once a week to see if a new version of &brandShortName; is
+-        available.</li>
+-      <li><strong>monthly</strong>: Choose this if you want &brandShortName; to
+-        check once a month to see if a new version of &brandShortName; is
+-        available.</li>
+-    </ul>
+-  </li>
+ </ul>
+ 
+ <p>[<a href="#advanced_preferences">Return to beginning of section</a>]</p>
+diff -urN mozilla.orig/mailnews/base/resources/content/start.xhtml mozilla/mailnews/base/resources/content/start.xhtml
+--- mozilla.orig/mailnews/base/resources/content/start.xhtml	2008-06-24 12:57:24.000000000 +0200
++++ mozilla/mailnews/base/resources/content/start.xhtml	2008-06-24 21:45:30.000000000 +0200
+@@ -72,8 +72,6 @@
+ <h2>&dict.title;</h2>
+ <p>&dict_intro.label;</p>
+ <p>&dict_info.label;</p>
+-<h2>&info.title;</h2>
+-<p>&info_bugs.label;</p>
+ </div>
+ 
+ </body>
+diff -urN mozilla.orig/mailnews/base/resources/locale/en-US/start.dtd mozilla/mailnews/base/resources/locale/en-US/start.dtd
+--- mozilla.orig/mailnews/base/resources/locale/en-US/start.dtd	2008-06-24 12:57:24.000000000 +0200
++++ mozilla/mailnews/base/resources/locale/en-US/start.dtd	2008-06-24 21:44:27.000000000 +0200
+@@ -37,7 +37,7 @@
+ 
+ <!ENTITY startpage.title "Welcome to &brandShortName; Mail &amp; Newsgroups">
+ <!ENTITY headline.label
+-'Welcome to <a href="&vendorURL;">&brandShortName;</a> Mail &amp; Newsgroups!'>
++'Welcome to &brandShortName; Mail &amp; Newsgroups!'>
+ <!ENTITY description.label
+ "&brandShortName; Mail &amp; Newsgroups is a powerful open-source mail and news
+ client, supporting advanced junk mail detection and other useful features.">
+diff -urN mozilla.orig/netwerk/protocol/about/src/nsAboutRedirector.cpp mozilla/netwerk/protocol/about/src/nsAboutRedirector.cpp
+--- mozilla.orig/netwerk/protocol/about/src/nsAboutRedirector.cpp	2008-06-24 12:57:23.000000000 +0200
++++ mozilla/netwerk/protocol/about/src/nsAboutRedirector.cpp	2008-06-24 20:58:51.000000000 +0200
+@@ -64,7 +64,7 @@
+     { "mozilla", "chrome://global/content/mozilla.xhtml", PR_TRUE },
+     { "plugins", "chrome://global/content/plugins.html", PR_FALSE },
+     { "config", "chrome://global/content/config.xul", PR_FALSE },
+-    { "logo", "chrome://global/content/logo.gif", PR_TRUE },
++    { "logo", "chrome://global/content/logo.png", PR_TRUE },
+     { "buildconfig", "chrome://global/content/buildconfig.html", PR_TRUE },
+     { "license", "chrome://global/content/license.html", PR_TRUE },
+     { "licence", "chrome://global/content/license.html", PR_TRUE },
+diff -urN mozilla.orig/suite/branding/Makefile.in mozilla/suite/branding/Makefile.in
+--- mozilla.orig/suite/branding/Makefile.in	2008-06-24 12:57:28.000000000 +0200
++++ mozilla/suite/branding/Makefile.in	2008-06-24 20:58:43.000000000 +0200
+@@ -49,4 +49,11 @@
+ 	$(INSTALL) $(srcdir)/icons/gtk/seamonkey.png $(DIST)/bin/chrome/icons/default
+ endif
+ 
++install::
++ifneq (,$(filter gtk gtk2,$(MOZ_WIDGET_TOOLKIT)))
++	$(SYSINSTALL) $(IFLAGS1) $(srcdir)/icons/gtk/default.xpm $(DESTDIR)$(mozappdir)/chrome/icons/default
++	$(SYSINSTALL) $(IFLAGS1) $(srcdir)/icons/gtk/default16.xpm $(DESTDIR)$(mozappdir)/chrome/icons/default
++	$(SYSINSTALL) $(IFLAGS1) $(srcdir)/icons/gtk/seamonkey.png $(DESTDIR)$(mozappdir)/chrome/icons/default
++endif
++
+ include $(topsrcdir)/config/rules.mk
+diff -urN mozilla.orig/themes/classic/jar.mn mozilla/themes/classic/jar.mn
+--- mozilla.orig/themes/classic/jar.mn	2008-06-24 12:57:19.000000000 +0200
++++ mozilla/themes/classic/jar.mn	2008-06-24 20:58:47.000000000 +0200
+@@ -65,7 +65,6 @@
+   skin/classic/communicator/icons/lock-broken.gif                       (communicator/icons/lock-broken.gif)
+   skin/classic/communicator/icons/lock-insecure.gif                     (communicator/icons/lock-insecure.gif)
+   skin/classic/communicator/icons/loading.gif                           (communicator/icons/loading.gif)
+-  skin/classic/communicator/icons/turbo-systray.gif                     (communicator/icons/turbo-systray.gif)
+   skin/classic/communicator/icons/btn1.gif                              (communicator/icons/btn1.gif)
+   skin/classic/communicator/icons/smileys/smile_n.gif                   (communicator/icons/smileys/smile_n.gif)
+   skin/classic/communicator/icons/smileys/frown_n.gif                   (communicator/icons/smileys/frown_n.gif)
+diff -urN mozilla.orig/themes/modern/jar.mn mozilla/themes/modern/jar.mn
+--- mozilla.orig/themes/modern/jar.mn	2008-06-24 12:57:19.000000000 +0200
++++ mozilla/themes/modern/jar.mn	2008-06-24 20:58:47.000000000 +0200
+@@ -36,7 +36,6 @@
+   skin/modern/communicator/icons/lock-secure.gif                   (communicator/icons/lock-secure.gif)
+   skin/modern/communicator/icons/offline.gif                       (communicator/icons/offline.gif)
+   skin/modern/communicator/icons/online.gif                        (communicator/icons/online.gif)
+-  skin/modern/communicator/icons/turbo-systray.gif                 (communicator/icons/turbo-systray.gif)
+   skin/modern/communicator/icons/btn1.gif                          (communicator/icons/btn1.gif)
+   skin/modern/communicator/icons/search.gif                        (communicator/icons/search.gif)
+   skin/modern/communicator/icons/smileys/smile_n.gif               (communicator/icons/smileys/smile_n.gif)
+diff -urN mozilla.orig/xpfe/browser/resources/locale/en-US/region.properties mozilla/xpfe/browser/resources/locale/en-US/region.properties
+--- mozilla.orig/xpfe/browser/resources/locale/en-US/region.properties	2008-06-24 12:57:44.000000000 +0200
++++ mozilla/xpfe/browser/resources/locale/en-US/region.properties	2008-06-24 21:42:09.000000000 +0200
+@@ -1,5 +1,5 @@
+ # navigator.properties
+-homePageDefault=http://www.mozilla.org/
++homePageDefault=about:
+ keywordList=http://home.netscape.com/escapes/keywords
+ webmailKeyword=http://webmail.netscape.com
+ fallbackDefaultSearchURL=http://www.google.com/search?q=
+@@ -17,4 +17,4 @@
+ 
+ #config.js
+ #
+-startup.homepage_override_url=http://www.seamonkey-project.org/start/
++startup.homepage_override_url=about:
+diff -urN mozilla.orig/xpfe/communicator/resources/content/utilityOverlay.xul mozilla/xpfe/communicator/resources/content/utilityOverlay.xul
+--- mozilla.orig/xpfe/communicator/resources/content/utilityOverlay.xul	2008-06-24 12:57:42.000000000 +0200
++++ mozilla/xpfe/communicator/resources/content/utilityOverlay.xul	2008-06-24 21:09:15.000000000 +0200
+@@ -286,11 +286,6 @@
+         label="&helpMenu.label;"
+         accesskey="&helpMenu.accesskey;">
+     <menupopup id="helpPopup">
+-      <menuitem accesskey="&releaseCmd.accesskey;"
+-                label="&releaseCmd.label;"
+-                id="releaseUrl"
+-                oncommand="openTopWin('&releaseURL;');"/>
+-
+       <menuseparator id="menu_HelpAboutSeparator"/>
+ 
+       <menuitem class="about"
+diff -urN mozilla.orig/xpfe/communicator/resources/locale/en-US/brand.dtd mozilla/xpfe/communicator/resources/locale/en-US/brand.dtd
+--- mozilla.orig/xpfe/communicator/resources/locale/en-US/brand.dtd	2008-06-24 12:57:42.000000000 +0200
++++ mozilla/xpfe/communicator/resources/locale/en-US/brand.dtd	2008-06-24 21:19:53.000000000 +0200
+@@ -1,5 +1,5 @@
+ #expand <!ENTITY  lang.version          "__MOZILLA_LOCALE_VERSION__">
+-<!ENTITY  brandFullName         "SeaMonkey">
+-<!ENTITY  brandShortName        "SeaMonkey">
+-<!ENTITY  vendorShortName       "SeaMonkey">
++<!ENTITY  brandFullName         "Iceape">
++<!ENTITY  brandShortName        "Iceape">
++<!ENTITY  vendorShortName       "Iceape">
+ <!ENTITY  sidebarName           "Sidebar">
+diff -urN mozilla.orig/xpfe/communicator/resources/locale/en-US/brand.properties mozilla/xpfe/communicator/resources/locale/en-US/brand.properties
+--- mozilla.orig/xpfe/communicator/resources/locale/en-US/brand.properties	2008-06-24 12:57:42.000000000 +0200
++++ mozilla/xpfe/communicator/resources/locale/en-US/brand.properties	2008-06-24 21:19:32.000000000 +0200
+@@ -1,4 +1,4 @@
+-brandFullName=SeaMonkey
+-brandShortName=SeaMonkey
+-vendorShortName=SeaMonkey
++brandFullName=Iceape
++brandShortName=Iceape
++vendorShortName=Iceape
+ sidebarName=Sidebar
+diff -urN mozilla.orig/xpfe/components/prefwindow/resources/content/pref-smartupdate.xul mozilla/xpfe/components/prefwindow/resources/content/pref-smartupdate.xul
+--- mozilla.orig/xpfe/components/prefwindow/resources/content/pref-smartupdate.xul	2008-06-24 12:57:42.000000000 +0200
++++ mozilla/xpfe/components/prefwindow/resources/content/pref-smartupdate.xul	2008-06-24 21:14:33.000000000 +0200
+@@ -38,22 +38,6 @@
+     </hbox>
+   </groupbox>
+ 
+-  <groupbox align="start">
+-    <caption label="&updateNotifications.label;"/>
+-    <description>&updateNotifications.desc;</description>
+-    <checkbox id="updateNotificationsEnabled" label="&enableUN.label;"
+-              accesskey="&enableUN.accesskey;" oncommand="toggleFrequency();"
+-              prefstring="update_notifications.enabled"/>
+-    <radiogroup id="updateFrequency" orient="horizontal" 
+-                prefstring="update_notifications.provider.0.frequency"
+-                prefdefval="7">
+-      <radio id="freqWeekly" label="&weekly.label;" 
+-             accesskey="&weekly.accesskey;" value="7"/>
+-      <radio id="freqMonthly" label="&monthly.label;" 
+-             accesskey="&monthly.accesskey;" value="30"/>
+-    </radiogroup>
+-  </groupbox>
+-
+ <!--
+   <groupbox align="start">
+     <caption label="Installed Packages"/>
+diff -urN mozilla.orig/xpfe/components/search/resources/locale/en-US/default.htm mozilla/xpfe/components/search/resources/locale/en-US/default.htm
+--- mozilla.orig/xpfe/components/search/resources/locale/en-US/default.htm	2008-06-24 12:57:43.000000000 +0200
++++ mozilla/xpfe/components/search/resources/locale/en-US/default.htm	2008-06-24 21:18:20.000000000 +0200
+@@ -6,7 +6,7 @@
+ </HEAD>
+ 
+ <BODY>
+-	<CENTER>SeaMonkey Search</CENTER>
++	<CENTER>Iceape Search</CENTER>
+ </BODY>
+ 
+ </HTML>
+diff -urN mozilla.orig/xpfe/global/jar.mn mozilla/xpfe/global/jar.mn
+--- mozilla.orig/xpfe/global/jar.mn	2008-06-24 12:57:42.000000000 +0200
++++ mozilla/xpfe/global/jar.mn	2008-06-24 20:58:51.000000000 +0200
+@@ -13,9 +13,9 @@
+         content/global/commonDialog.js              (resources/content/commonDialog.js) 
+         content/global/strres.js                    (resources/content/strres.js) 
+ #ifdef MOZ_SUITE
+-        content/global/logo.gif                     (/suite/branding/content/logo.gif) 
++        content/global/logo.png                     (/suite/branding/content/logo.png) 
+ #else
+-        content/global/logo.gif                     (resources/content/logo.gif) 
++        content/global/logo.png                     (resources/content/logo.png) 
+ #endif
+         content/global/aboutAbout.html              (resources/content/aboutAbout.html) 
+         content/global/about.xul                    (resources/content/about.xul) 
+diff -urN mozilla.orig/xpfe/global/resources/content/about.xhtml mozilla/xpfe/global/resources/content/about.xhtml
+--- mozilla.orig/xpfe/global/resources/content/about.xhtml	2008-06-24 12:57:42.000000000 +0200
++++ mozilla/xpfe/global/resources/content/about.xhtml	2008-06-24 21:03:48.000000000 +0200
+@@ -50,79 +50,79 @@
+ <head>
+ <title>About:</title>
+ <style type="text/css">
+-table {
+-  margin: auto;
+-  text-align: center;
++html {
++  background: -moz-Dialog;
+ }
++
++body {
++  margin: 0;
++  padding: 0 1em;
++  color: -moz-FieldText;
++  font: message-box;
++}
++
++ #aboutPageContainer {
++  position: relative;
++  min-width: 330px;
++  max-width: 50em;
++  margin: 4em auto;
++  border: 1px solid ThreeDShadow;
++  -moz-border-radius: 10px;
++  padding: 3em;
++  -moz-padding-start: 30px;
++  background: -moz-Field;
++}
++
++ #aboutLogoContainer {
++  border: 1px solid ThreeDLightShadow;
++  width: 300px;
++  margin-bottom: 2em;
++}
++
+ img {
+   border: 0;
+ }
+-p {
+-  font-size: smaller;
++
++ #version {
++  font-weight: bold;
++  color: #909090;
++  margin: -24px 0 9px 17px;
+ }
+-h1 {
++
++ul {
+   margin: 0;
++  -moz-margin-start: 1.5em;
++  padding: 0;
++  list-style: square;
+ }
+-:link {
+-  color: #00e;
+-}
+-:visited {
+-  color: #551a8b;
+-}
+-:link:active, :visited:active {
+-  color: #f00;
++
++ul > li {
++  margin-top: .5em;
+ }
+ </style>
+ </head>
+ <body>
++<div id="aboutPageContainer">
++  <div id="aboutLogoContainer">
++    <img src="about:logo" alt="&brandShortName;" />
++#expand <p id="version">&brandShortName; __MOZ_APP_VERSION__</p>
++  </div>
++
++  <ul id="aboutPageList">
++    <li>Copyright &copy; 1998-2008 by <a href="about:credits">contributors</a> to the Mozilla Project.</li>
++    <li>Read the <a href="about:license">licensing information</a> for this product.</li>
++    <li>See the <a href="about:buildconfig">build configuration</a> used for this version.</li>
++    <script type="application/x-javascript">
++      // add build identifier
++      var ua = navigator.userAgent;
++      if (ua) {
++        var list = document.getElementById("aboutPageList");
++        var listItem = list.appendChild(document.createElement("li"));
++        listItem.appendChild(document.createTextNode("Build identifier: " + ua));
++      }
++    </script>
++  </ul>
+ 
+-<table>
+-<tbody>
+-<tr>
+-
+-<td>
+-<a href="&vendorURL;">
+-<img src="about:logo" alt="&brandShortName;" width="200" height="200" /></a>
+-</td>
+-
+-<td id="mozver">
+-<h1>
+-#expand <a id="mozlink" href="&releaseURL;">&brandShortName; __MOZ_APP_VERSION__</a>
+-</h1>
+-<script type="application/x-javascript">
+-  document.getElementById("mozver").appendChild(document.createTextNode(navigator.userAgent));
+-</script>
+-</td>
+-
+-</tr>
+-</tbody>
+-</table>
+-
+-<hr />
+-
+-<ul>
+-<li>Copyright &copy; 1998&ndash;2008 by <a href="about:credits">Contributors</a> to 
+-the Mozilla codebase under the <a href="about:license">Mozilla Public License
+-and other licenses</a>.  All Rights Reserved.</li>
+-
+-<li>Portions of this software are copyright &copy; 1994 The Regents of the 
+-University of California.  All Rights Reserved.</li>
+-<li>Portions of this software are copyright &copy; 2000&ndash;2002 Japan Network Information
+-Center. All Rights Reserved.</li>
+-<li>This software may contain portions that are copyright &copy; 1998&ndash;2002 
+-<a href="http://www.supportsoft.com/">SupportSoft, Inc.</a>  All Rights Reserved.
+-</li>
+-</ul>
+-
+-<p>
+-U.S. GOVERNMENT END USERS. The Software is a &quot;commercial
+-item,&quot; as that term is defined in 48 C.F.R. 2.101 (Oct. 1995), consisting
+-of &quot;commercial computer software&quot; and &quot;commercial computer software 
+-documentation,&quot; as such terms are used in 48 C.F.R. 12.212 (Sept. 1995). 
+-Consistent with 48 C.F.R. 12.212 and 48 C.F.R. 227.7202-1 through 227.7202-4
+-(June 1995), all U.S. Government End Users acquire the Software with only 
+-those rights set forth herein.
+-</p>
+-
++</div>
+ </body>
+ </html>
