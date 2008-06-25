@@ -1,0 +1,11 @@
+--- seamonkey-1.0.1/gfx/cairo/libpixman/src/icint.h~	2006-04-15 23:10:51.000000000 +0000
++++ seamonkey-1.0.1/gfx/cairo/libpixman/src/icint.h	2006-04-15 23:12:12.000000000 +0000
+@@ -34,6 +34,8 @@
+ #include <limits.h>
+ 
+ #include "slim_internal.h"
++#undef slim_hidden_def
++#define slim_hidden_def(x)	/**/
+ 
+ /* Include NSPR's prcpucfg.h for endianness information */
+ #include "prcpucfg.h"
