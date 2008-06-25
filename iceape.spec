@@ -98,21 +98,17 @@ Iceape es un navegador de Internet que se basa en una versión inicial
 de Netscape Communicator.
 
 %description -l pl.UTF-8
-Iceape jest potężną graficzną przeglądarką WWW, która jest
-następcą Mozilli, która następnie była następczynią Netscape
-Communikatora.
+Iceape jest potężną graficzną przeglądarką WWW, która jest następcą
+Mozilli, która następnie była następczynią Netscape Communikatora.
 
 %description -l pt_BR.UTF-8
 O Iceape é um web browser baseado numa versão inicial do Netscape
 Communicator.
 
 %description -l ru.UTF-8
-Iceape - полнофункциональный web-browser с
-открытыми исходными текстами,
-разработанный для максимального
-соотвествия стандартам,
-максмимальной переносимости и
-скорости работы
+Iceape - полнофункциональный web-browser с открытыми исходными
+текстами, разработанный для максимального соотвествия стандартам,
+максмимальной переносимости и скорости работы
 
 %package mailnews
 Summary:	Iceape - programs for mail and news
@@ -131,9 +127,8 @@ Programs for mail and news integrated with browser.
 Programy pocztowe i obsługa newsów zintegrowane z przeglądarką.
 
 %description mailnews -l ru.UTF-8
-Клиент почты и новостей, на основе Iceape
-Поддерживает IMAP, POP и NNTP и имеет
-простой интерфейс пользователя.
+Клиент почты и новостей, на основе Iceape Поддерживает IMAP, POP и
+NNTP и имеет простой интерфейс пользователя.
 
 %package addon-enigmail
 Summary:	Enigmail %{enigmail_ver} - PGP/GPG support for Iceape
@@ -150,8 +145,8 @@ access the authentication and encryption features provided by GnuPG.
 
 %description addon-enigmail -l pl.UTF-8
 Enigmail jest rozszerzeniem dla klienta pocztowego Iceape, SeaMonkey,
-Mozilla i Mozilla Thunderdbird pozwalającym użytkownikowi korzystać
-z funkcjonalności GnuPG.
+Mozilla i Mozilla Thunderdbird pozwalającym użytkownikowi korzystać z
+funkcjonalności GnuPG.
 
 %package chat
 Summary:	Iceape Chat - integrated IRC client
