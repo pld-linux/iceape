@@ -1,0 +1,22 @@
+--- mozilla/configure.in.orig	2008-06-24 22:04:14.000000000 +0200
++++ mozilla/configure.in	2008-06-25 10:53:44.000000000 +0200
+@@ -3746,7 +3746,7 @@
+ fi
+ 
+ if test -n "$MOZ_NATIVE_NSS"; then
+-   NSS_LIBS="$NSS_LIBS -lcrmf"
++   NSS_LIBS="-lcrmf $NSS_LIBS"
+ else
+    NSS_CFLAGS='-I$(DIST)/public/nss'
+    NSS_DEP_LIBS='\\\
+--- mozilla/configure.orig	2008-06-24 22:04:14.000000000 +0200
++++ mozilla/configure	2008-06-25 10:54:05.000000000 +0200
+@@ -11842,7 +11842,7 @@
+ fi
+ 
+ if test -n "$MOZ_NATIVE_NSS"; then
+-   NSS_LIBS="$NSS_LIBS -lcrmf"
++   NSS_LIBS="-lcrmf $NSS_LIBS"
+ else
+    NSS_CFLAGS='-I$(DIST)/public/nss'
+    NSS_DEP_LIBS='\\\
