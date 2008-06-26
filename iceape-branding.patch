@@ -122,9 +122,33 @@ diff -urN mozilla.orig/themes/modern/jar.mn mozilla/themes/modern/jar.mn
    skin/modern/communicator/icons/btn1.gif                          (communicator/icons/btn1.gif)
    skin/modern/communicator/icons/search.gif                        (communicator/icons/search.gif)
    skin/modern/communicator/icons/smileys/smile_n.gif               (communicator/icons/smileys/smile_n.gif)
+diff -urN mozilla.orig/toolkit/xre/nsAppRunner.cpp mozilla/toolkit/xre/nsAppRunner.cpp
+--- mozilla.orig/toolkit/xre/nsAppRunner.cpp	2008-06-24 12:57:31.000000000 +0200
++++ mozilla/toolkit/xre/nsAppRunner.cpp	2008-06-26 10:04:07.000000000 +0200
+@@ -1121,7 +1121,7 @@
+ static void
+ DumpVersion()
+ {
+-  printf("%s %s %s, %s\n", gAppData->vendor ? gAppData->vendor : "", gAppData->name, gAppData->version, gAppData->copyright);
++  printf("%s %s, %s\n", gAppData->name, gAppData->version, gAppData->copyright);
+ }
+ 
+ #ifdef MOZ_ENABLE_XREMOTE
+diff -urN mozilla.orig/xpfe/bootstrap/nsAppRunner.cpp mozilla/xpfe/bootstrap/nsAppRunner.cpp
+--- mozilla.orig/xpfe/bootstrap/nsAppRunner.cpp	2008-06-24 12:57:41.000000000 +0200
++++ mozilla/xpfe/bootstrap/nsAppRunner.cpp	2008-06-26 09:33:05.000000000 +0200
+@@ -1510,7 +1510,7 @@
+         || (PL_strcasecmp(argv[i], "/?") == 0)
+ #endif /* XP_WIN || XP_OS2 */
+       ) {
+-      DumpHelp(argv[0]);
++      DumpHelp(NS_STRINGIFY(MOZ_APP_DISPLAYNAME));
+       return PR_TRUE;
+     }
+     if ((PL_strcasecmp(argv[i], "-v") == 0)
 diff -urN mozilla.orig/xpfe/browser/resources/locale/en-US/region.properties mozilla/xpfe/browser/resources/locale/en-US/region.properties
 --- mozilla.orig/xpfe/browser/resources/locale/en-US/region.properties	2008-06-24 12:57:44.000000000 +0200
-+++ mozilla/xpfe/browser/resources/locale/en-US/region.properties	2008-06-24 21:42:09.000000000 +0200
++++ mozilla/xpfe/browser/resources/locale/en-US/region.properties	2008-06-25 15:51:49.000000000 +0200
 @@ -1,5 +1,5 @@
  # navigator.properties
 -homePageDefault=http://www.mozilla.org/
@@ -132,6 +156,15 @@ diff -urN mozilla.orig/xpfe/browser/resources/locale/en-US/region.properties moz
  keywordList=http://home.netscape.com/escapes/keywords
  webmailKeyword=http://webmail.netscape.com
  fallbackDefaultSearchURL=http://www.google.com/search?q=
+@@ -7,7 +7,7 @@
+ #
+ # all.js
+ #
+-browser.startup.homepage=http://www.seamonkey-project.org/start/
++browser.startup.homepage=about:
+ browser.throbber.url=http://www.seamonkey-project.org/
+ browser.search.defaulturl=http://www.google.com/search?q=
+ general.useragent.contentlocale=US
 @@ -17,4 +17,4 @@
  
  #config.js
