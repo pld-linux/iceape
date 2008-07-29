@@ -1,0 +1,16 @@
+--- mozilla/profile/defaults/bookmarks.html.orig	2008-01-29 20:30:47.000000000 +0100
++++ mozilla/profile/defaults/bookmarks.html	2008-06-25 16:04:19.000000000 +0200
+@@ -37,5 +37,13 @@
+         <DT><A HREF="http://groups.google.com/">Google Groups</A>
+         <DT><A HREF="http://news.google.com/">Google News</A>
+     </DL><p>
++    <DT><H3>PLD Linux Distribution</H3>
++    <DL><p>
++        <DT><A HREF="http://www.pld-linux.org/">PLD Home Page</A>
++        <DT><A HREF="http://www.pld-users.org/">PLD Users Wiki</A>
++        <DT><A HREF="http://docs.pld-linux.org/">PLD Documentation in english</A>
++        <DT><A HREF="http://pl.docs.pld-linux.org">PLD Documentation in polish</A>
++        <DT><A HREF="http://planet.pld-linux.org/">Planet PLD</A>
++    </DL><p>
+     <HR>
+ </DL><p>
