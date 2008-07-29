@@ -15,7 +15,7 @@ Summary(pl.UTF-8):	Iceape - przeglądarka WWW
 Summary(pt_BR.UTF-8):	Navegador Iceape
 Name:		iceape
 Version:	1.1.11
-Release:	1
+Release:	2
 License:	MPL 1.1 or GPL v2+ or LGPL v2.1+
 Group:		X11/Applications/Networking
 Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/seamonkey-%{version}.source.tar.bz2
@@ -39,6 +39,7 @@ Patch5:		%{name}-ti-agent.patch
 Patch6:		%{name}-agent.patch
 Patch7:		%{name}-prefs.patch
 Patch8:		%{name}-lcrmf.patch
+Patch9:		%{name}-pld-branding.patch
 URL:		http://www.seamonkey-project.org/
 BuildRequires:	automake
 %{?with_svg:BuildRequires:	cairo-devel >= 1.0.0}
@@ -232,6 +233,7 @@ tar -C mailnews/extensions -zxf %{SOURCE1}
 %endif
 %patch7 -p1
 %patch8 -p1
+%patch9 -p1
 
 %build
 cd mozilla
