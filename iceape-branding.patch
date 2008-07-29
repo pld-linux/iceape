@@ -1,6 +1,6 @@
 diff -urN mozilla.orig/configure mozilla/configure
---- mozilla.orig/configure	2008-06-24 12:57:29.000000000 +0200
-+++ mozilla/configure	2008-06-24 21:16:45.000000000 +0200
+--- mozilla.orig/configure	2008-07-29 13:31:43.000000000 +0200
++++ mozilla/configure	2008-07-29 13:34:10.000000000 +0200
 @@ -13071,8 +13071,8 @@
  
  case "$MOZ_BUILD_APP" in
@@ -13,8 +13,8 @@ diff -urN mozilla.orig/configure mozilla/configure
    MOZ_LDAP_XPCOM=1
    MOZ_COMPOSER=1
 diff -urN mozilla.orig/configure.in mozilla/configure.in
---- mozilla.orig/configure.in	2008-06-24 12:57:20.000000000 +0200
-+++ mozilla/configure.in	2008-06-24 21:16:25.000000000 +0200
+--- mozilla.orig/configure.in	2008-07-29 13:31:06.000000000 +0200
++++ mozilla/configure.in	2008-07-29 13:34:10.000000000 +0200
 @@ -4303,8 +4303,8 @@
  
  case "$MOZ_BUILD_APP" in
@@ -27,8 +27,8 @@ diff -urN mozilla.orig/configure.in mozilla/configure.in
    MOZ_LDAP_XPCOM=1
    MOZ_COMPOSER=1
 diff -urN mozilla.orig/extensions/help/resources/locale/en-US/cs_nav_prefs_advanced.xhtml mozilla/extensions/help/resources/locale/en-US/cs_nav_prefs_advanced.xhtml
---- mozilla.orig/extensions/help/resources/locale/en-US/cs_nav_prefs_advanced.xhtml	2008-06-24 12:57:29.000000000 +0200
-+++ mozilla/extensions/help/resources/locale/en-US/cs_nav_prefs_advanced.xhtml	2008-06-24 21:15:20.000000000 +0200
+--- mozilla.orig/extensions/help/resources/locale/en-US/cs_nav_prefs_advanced.xhtml	2008-07-29 13:31:51.000000000 +0200
++++ mozilla/extensions/help/resources/locale/en-US/cs_nav_prefs_advanced.xhtml	2008-07-29 13:34:10.000000000 +0200
 @@ -387,19 +387,6 @@
          web sites in the current list.</li>
      </ul>
@@ -50,8 +50,8 @@ diff -urN mozilla.orig/extensions/help/resources/locale/en-US/cs_nav_prefs_advan
  
  <p>[<a href="#advanced_preferences">Return to beginning of section</a>]</p>
 diff -urN mozilla.orig/mailnews/base/resources/content/start.xhtml mozilla/mailnews/base/resources/content/start.xhtml
---- mozilla.orig/mailnews/base/resources/content/start.xhtml	2008-06-24 12:57:24.000000000 +0200
-+++ mozilla/mailnews/base/resources/content/start.xhtml	2008-06-24 21:45:30.000000000 +0200
+--- mozilla.orig/mailnews/base/resources/content/start.xhtml	2008-07-29 13:31:33.000000000 +0200
++++ mozilla/mailnews/base/resources/content/start.xhtml	2008-07-29 13:34:10.000000000 +0200
 @@ -72,8 +72,6 @@
  <h2>&dict.title;</h2>
  <p>&dict_intro.label;</p>
@@ -62,8 +62,8 @@ diff -urN mozilla.orig/mailnews/base/resources/content/start.xhtml mozilla/mailn
  
  </body>
 diff -urN mozilla.orig/mailnews/base/resources/locale/en-US/start.dtd mozilla/mailnews/base/resources/locale/en-US/start.dtd
---- mozilla.orig/mailnews/base/resources/locale/en-US/start.dtd	2008-06-24 12:57:24.000000000 +0200
-+++ mozilla/mailnews/base/resources/locale/en-US/start.dtd	2008-06-24 21:44:27.000000000 +0200
+--- mozilla.orig/mailnews/base/resources/locale/en-US/start.dtd	2008-07-29 13:31:33.000000000 +0200
++++ mozilla/mailnews/base/resources/locale/en-US/start.dtd	2008-07-29 13:34:10.000000000 +0200
 @@ -37,7 +37,7 @@
  
  <!ENTITY startpage.title "Welcome to &brandShortName; Mail &amp; Newsgroups">
@@ -74,8 +74,8 @@ diff -urN mozilla.orig/mailnews/base/resources/locale/en-US/start.dtd mozilla/ma
  "&brandShortName; Mail &amp; Newsgroups is a powerful open-source mail and news
  client, supporting advanced junk mail detection and other useful features.">
 diff -urN mozilla.orig/netwerk/protocol/about/src/nsAboutRedirector.cpp mozilla/netwerk/protocol/about/src/nsAboutRedirector.cpp
---- mozilla.orig/netwerk/protocol/about/src/nsAboutRedirector.cpp	2008-06-24 12:57:23.000000000 +0200
-+++ mozilla/netwerk/protocol/about/src/nsAboutRedirector.cpp	2008-06-24 20:58:51.000000000 +0200
+--- mozilla.orig/netwerk/protocol/about/src/nsAboutRedirector.cpp	2008-07-29 13:31:32.000000000 +0200
++++ mozilla/netwerk/protocol/about/src/nsAboutRedirector.cpp	2008-07-29 13:34:10.000000000 +0200
 @@ -64,7 +64,7 @@
      { "mozilla", "chrome://global/content/mozilla.xhtml", PR_TRUE },
      { "plugins", "chrome://global/content/plugins.html", PR_FALSE },
@@ -86,8 +86,8 @@ diff -urN mozilla.orig/netwerk/protocol/about/src/nsAboutRedirector.cpp mozilla/
      { "license", "chrome://global/content/license.html", PR_TRUE },
      { "licence", "chrome://global/content/license.html", PR_TRUE },
 diff -urN mozilla.orig/suite/branding/Makefile.in mozilla/suite/branding/Makefile.in
---- mozilla.orig/suite/branding/Makefile.in	2008-06-24 12:57:28.000000000 +0200
-+++ mozilla/suite/branding/Makefile.in	2008-06-24 20:58:43.000000000 +0200
+--- mozilla.orig/suite/branding/Makefile.in	2008-07-29 13:31:43.000000000 +0200
++++ mozilla/suite/branding/Makefile.in	2008-07-29 13:34:10.000000000 +0200
 @@ -49,4 +49,11 @@
  	$(INSTALL) $(srcdir)/icons/gtk/seamonkey.png $(DIST)/bin/chrome/icons/default
  endif
@@ -101,8 +101,8 @@ diff -urN mozilla.orig/suite/branding/Makefile.in mozilla/suite/branding/Makefil
 +
  include $(topsrcdir)/config/rules.mk
 diff -urN mozilla.orig/themes/classic/jar.mn mozilla/themes/classic/jar.mn
---- mozilla.orig/themes/classic/jar.mn	2008-06-24 12:57:19.000000000 +0200
-+++ mozilla/themes/classic/jar.mn	2008-06-24 20:58:47.000000000 +0200
+--- mozilla.orig/themes/classic/jar.mn	2008-07-29 13:31:02.000000000 +0200
++++ mozilla/themes/classic/jar.mn	2008-07-29 13:34:10.000000000 +0200
 @@ -65,7 +65,6 @@
    skin/classic/communicator/icons/lock-broken.gif                       (communicator/icons/lock-broken.gif)
    skin/classic/communicator/icons/lock-insecure.gif                     (communicator/icons/lock-insecure.gif)
@@ -112,8 +112,8 @@ diff -urN mozilla.orig/themes/classic/jar.mn mozilla/themes/classic/jar.mn
    skin/classic/communicator/icons/smileys/smile_n.gif                   (communicator/icons/smileys/smile_n.gif)
    skin/classic/communicator/icons/smileys/frown_n.gif                   (communicator/icons/smileys/frown_n.gif)
 diff -urN mozilla.orig/themes/modern/jar.mn mozilla/themes/modern/jar.mn
---- mozilla.orig/themes/modern/jar.mn	2008-06-24 12:57:19.000000000 +0200
-+++ mozilla/themes/modern/jar.mn	2008-06-24 20:58:47.000000000 +0200
+--- mozilla.orig/themes/modern/jar.mn	2008-07-29 13:31:03.000000000 +0200
++++ mozilla/themes/modern/jar.mn	2008-07-29 13:34:10.000000000 +0200
 @@ -36,7 +36,6 @@
    skin/modern/communicator/icons/lock-secure.gif                   (communicator/icons/lock-secure.gif)
    skin/modern/communicator/icons/offline.gif                       (communicator/icons/offline.gif)
@@ -122,9 +122,23 @@ diff -urN mozilla.orig/themes/modern/jar.mn mozilla/themes/modern/jar.mn
    skin/modern/communicator/icons/btn1.gif                          (communicator/icons/btn1.gif)
    skin/modern/communicator/icons/search.gif                        (communicator/icons/search.gif)
    skin/modern/communicator/icons/smileys/smile_n.gif               (communicator/icons/smileys/smile_n.gif)
+diff -urN mozilla.orig/toolkit/locales/en-US/chrome/mozapps/extensions/extensions.properties mozilla/toolkit/locales/en-US/chrome/mozapps/extensions/extensions.properties
+--- mozilla.orig/toolkit/locales/en-US/chrome/mozapps/extensions/extensions.properties	2008-07-29 13:32:00.000000000 +0200
++++ mozilla/toolkit/locales/en-US/chrome/mozapps/extensions/extensions.properties	2008-07-29 14:10:57.000000000 +0200
+@@ -32,8 +32,8 @@
+ disableQueryMessage=Do you want to disable %S?
+ 
+ extensions.update.url=https://addons.mozilla.org/update/VersionCheck.php?reqVersion=%REQ_VERSION%&id=%ITEM_ID%&version=%ITEM_VERSION%&maxAppVersion=%ITEM_MAXAPPVERSION%&status=%ITEM_STATUS%&appID=%APP_ID%&appVersion=%APP_VERSION%&appOS=%APP_OS%&appABI=%APP_ABI%
+-extensions.getMoreExtensionsURL=http://%LOCALE%.add-ons.mozilla.com/%LOCALE%/%APP%/%VERSION%/extensions/
+-extensions.getMoreThemesURL=http://%LOCALE%.add-ons.mozilla.com/%LOCALE%/%APP%/%VERSION%/themes/
++extensions.getMoreExtensionsURL=http://%LOCALE%.add-ons.mozilla.com/%LOCALE%/seamonkey/%VERSION%/extensions/
++extensions.getMoreThemesURL=http://%LOCALE%.add-ons.mozilla.com/%LOCALE%/seamonkey/%VERSION%/themes/
+ 
+ themesTitle=Themes
+ extensionsTitle=Extensions
 diff -urN mozilla.orig/toolkit/xre/nsAppRunner.cpp mozilla/toolkit/xre/nsAppRunner.cpp
---- mozilla.orig/toolkit/xre/nsAppRunner.cpp	2008-06-24 12:57:31.000000000 +0200
-+++ mozilla/toolkit/xre/nsAppRunner.cpp	2008-06-26 10:04:07.000000000 +0200
+--- mozilla.orig/toolkit/xre/nsAppRunner.cpp	2008-07-29 13:32:01.000000000 +0200
++++ mozilla/toolkit/xre/nsAppRunner.cpp	2008-07-29 13:34:10.000000000 +0200
 @@ -1121,7 +1121,7 @@
  static void
  DumpVersion()
@@ -135,8 +149,8 @@ diff -urN mozilla.orig/toolkit/xre/nsAppRunner.cpp mozilla/toolkit/xre/nsAppRunn
  
  #ifdef MOZ_ENABLE_XREMOTE
 diff -urN mozilla.orig/xpfe/bootstrap/nsAppRunner.cpp mozilla/xpfe/bootstrap/nsAppRunner.cpp
---- mozilla.orig/xpfe/bootstrap/nsAppRunner.cpp	2008-06-24 12:57:41.000000000 +0200
-+++ mozilla/xpfe/bootstrap/nsAppRunner.cpp	2008-06-26 09:33:05.000000000 +0200
+--- mozilla.orig/xpfe/bootstrap/nsAppRunner.cpp	2008-07-29 13:32:15.000000000 +0200
++++ mozilla/xpfe/bootstrap/nsAppRunner.cpp	2008-07-29 13:34:10.000000000 +0200
 @@ -1510,7 +1510,7 @@
          || (PL_strcasecmp(argv[i], "/?") == 0)
  #endif /* XP_WIN || XP_OS2 */
@@ -147,8 +161,8 @@ diff -urN mozilla.orig/xpfe/bootstrap/nsAppRunner.cpp mozilla/xpfe/bootstrap/nsA
      }
      if ((PL_strcasecmp(argv[i], "-v") == 0)
 diff -urN mozilla.orig/xpfe/browser/resources/locale/en-US/region.properties mozilla/xpfe/browser/resources/locale/en-US/region.properties
---- mozilla.orig/xpfe/browser/resources/locale/en-US/region.properties	2008-06-24 12:57:44.000000000 +0200
-+++ mozilla/xpfe/browser/resources/locale/en-US/region.properties	2008-06-25 15:51:49.000000000 +0200
+--- mozilla.orig/xpfe/browser/resources/locale/en-US/region.properties	2008-07-29 13:32:16.000000000 +0200
++++ mozilla/xpfe/browser/resources/locale/en-US/region.properties	2008-07-29 13:34:10.000000000 +0200
 @@ -1,5 +1,5 @@
  # navigator.properties
 -homePageDefault=http://www.mozilla.org/
@@ -172,8 +186,8 @@ diff -urN mozilla.orig/xpfe/browser/resources/locale/en-US/region.properties moz
 -startup.homepage_override_url=http://www.seamonkey-project.org/start/
 +startup.homepage_override_url=about:
 diff -urN mozilla.orig/xpfe/communicator/resources/content/utilityOverlay.xul mozilla/xpfe/communicator/resources/content/utilityOverlay.xul
---- mozilla.orig/xpfe/communicator/resources/content/utilityOverlay.xul	2008-06-24 12:57:42.000000000 +0200
-+++ mozilla/xpfe/communicator/resources/content/utilityOverlay.xul	2008-06-24 21:09:15.000000000 +0200
+--- mozilla.orig/xpfe/communicator/resources/content/utilityOverlay.xul	2008-07-29 13:32:16.000000000 +0200
++++ mozilla/xpfe/communicator/resources/content/utilityOverlay.xul	2008-07-29 13:34:10.000000000 +0200
 @@ -286,11 +286,6 @@
          label="&helpMenu.label;"
          accesskey="&helpMenu.accesskey;">
@@ -187,8 +201,8 @@ diff -urN mozilla.orig/xpfe/communicator/resources/content/utilityOverlay.xul mo
  
        <menuitem class="about"
 diff -urN mozilla.orig/xpfe/communicator/resources/locale/en-US/brand.dtd mozilla/xpfe/communicator/resources/locale/en-US/brand.dtd
---- mozilla.orig/xpfe/communicator/resources/locale/en-US/brand.dtd	2008-06-24 12:57:42.000000000 +0200
-+++ mozilla/xpfe/communicator/resources/locale/en-US/brand.dtd	2008-06-24 21:19:53.000000000 +0200
+--- mozilla.orig/xpfe/communicator/resources/locale/en-US/brand.dtd	2008-07-29 13:32:16.000000000 +0200
++++ mozilla/xpfe/communicator/resources/locale/en-US/brand.dtd	2008-07-29 13:34:10.000000000 +0200
 @@ -1,5 +1,5 @@
  #expand <!ENTITY  lang.version          "__MOZILLA_LOCALE_VERSION__">
 -<!ENTITY  brandFullName         "SeaMonkey">
@@ -199,8 +213,8 @@ diff -urN mozilla.orig/xpfe/communicator/resources/locale/en-US/brand.dtd mozill
 +<!ENTITY  vendorShortName       "Iceape">
  <!ENTITY  sidebarName           "Sidebar">
 diff -urN mozilla.orig/xpfe/communicator/resources/locale/en-US/brand.properties mozilla/xpfe/communicator/resources/locale/en-US/brand.properties
---- mozilla.orig/xpfe/communicator/resources/locale/en-US/brand.properties	2008-06-24 12:57:42.000000000 +0200
-+++ mozilla/xpfe/communicator/resources/locale/en-US/brand.properties	2008-06-24 21:19:32.000000000 +0200
+--- mozilla.orig/xpfe/communicator/resources/locale/en-US/brand.properties	2008-07-29 13:32:16.000000000 +0200
++++ mozilla/xpfe/communicator/resources/locale/en-US/brand.properties	2008-07-29 13:34:10.000000000 +0200
 @@ -1,4 +1,4 @@
 -brandFullName=SeaMonkey
 -brandShortName=SeaMonkey
@@ -210,8 +224,8 @@ diff -urN mozilla.orig/xpfe/communicator/resources/locale/en-US/brand.properties
 +vendorShortName=Iceape
  sidebarName=Sidebar
 diff -urN mozilla.orig/xpfe/components/prefwindow/resources/content/pref-smartupdate.xul mozilla/xpfe/components/prefwindow/resources/content/pref-smartupdate.xul
---- mozilla.orig/xpfe/components/prefwindow/resources/content/pref-smartupdate.xul	2008-06-24 12:57:42.000000000 +0200
-+++ mozilla/xpfe/components/prefwindow/resources/content/pref-smartupdate.xul	2008-06-24 21:14:33.000000000 +0200
+--- mozilla.orig/xpfe/components/prefwindow/resources/content/pref-smartupdate.xul	2008-07-29 13:32:16.000000000 +0200
++++ mozilla/xpfe/components/prefwindow/resources/content/pref-smartupdate.xul	2008-07-29 13:34:10.000000000 +0200
 @@ -38,22 +38,6 @@
      </hbox>
    </groupbox>
@@ -236,8 +250,8 @@ diff -urN mozilla.orig/xpfe/components/prefwindow/resources/content/pref-smartup
    <groupbox align="start">
      <caption label="Installed Packages"/>
 diff -urN mozilla.orig/xpfe/components/search/resources/locale/en-US/default.htm mozilla/xpfe/components/search/resources/locale/en-US/default.htm
---- mozilla.orig/xpfe/components/search/resources/locale/en-US/default.htm	2008-06-24 12:57:43.000000000 +0200
-+++ mozilla/xpfe/components/search/resources/locale/en-US/default.htm	2008-06-24 21:18:20.000000000 +0200
+--- mozilla.orig/xpfe/components/search/resources/locale/en-US/default.htm	2008-07-29 13:32:16.000000000 +0200
++++ mozilla/xpfe/components/search/resources/locale/en-US/default.htm	2008-07-29 13:34:10.000000000 +0200
 @@ -6,7 +6,7 @@
  </HEAD>
  
@@ -248,8 +262,8 @@ diff -urN mozilla.orig/xpfe/components/search/resources/locale/en-US/default.htm
  
  </HTML>
 diff -urN mozilla.orig/xpfe/global/jar.mn mozilla/xpfe/global/jar.mn
---- mozilla.orig/xpfe/global/jar.mn	2008-06-24 12:57:42.000000000 +0200
-+++ mozilla/xpfe/global/jar.mn	2008-06-24 20:58:51.000000000 +0200
+--- mozilla.orig/xpfe/global/jar.mn	2008-07-29 13:32:16.000000000 +0200
++++ mozilla/xpfe/global/jar.mn	2008-07-29 13:34:10.000000000 +0200
 @@ -13,9 +13,9 @@
          content/global/commonDialog.js              (resources/content/commonDialog.js) 
          content/global/strres.js                    (resources/content/strres.js) 
@@ -263,8 +277,8 @@ diff -urN mozilla.orig/xpfe/global/jar.mn mozilla/xpfe/global/jar.mn
          content/global/aboutAbout.html              (resources/content/aboutAbout.html) 
          content/global/about.xul                    (resources/content/about.xul) 
 diff -urN mozilla.orig/xpfe/global/resources/content/about.xhtml mozilla/xpfe/global/resources/content/about.xhtml
---- mozilla.orig/xpfe/global/resources/content/about.xhtml	2008-06-24 12:57:42.000000000 +0200
-+++ mozilla/xpfe/global/resources/content/about.xhtml	2008-06-24 21:03:48.000000000 +0200
+--- mozilla.orig/xpfe/global/resources/content/about.xhtml	2008-07-29 13:32:16.000000000 +0200
++++ mozilla/xpfe/global/resources/content/about.xhtml	2008-07-29 13:34:10.000000000 +0200
 @@ -50,79 +50,79 @@
  <head>
  <title>About:</title>
