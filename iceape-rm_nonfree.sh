@@ -138,7 +138,5 @@ rm -fv directory/c-sdk/ldap/docs/draft-ietf-ldapext-ldap-c-api-05.txt
 rm -fv calendar/sunbird/app/sunbird.ico
 rm -fv calendar/sunbird/app/default.xpm
 rm -fv calendar/resources/content/sunbird_small.png
-cat calendar/sunbird/app/brand.dtd.in | sed -e "s/Sunbird/Calendar/g" |  sed -e "s/Mozilla/PLD/g" | sed -e "s/www.mozilla.org.*\"/www.pld-linux.org\"/g" > calendar/sunbird/app/brand.dtd.in.new; mv calendar/sunbird/app/brand.dtd.in.new calendar/sunbird/app/brand.dtd.in
-cat calendar/sunbird/app/brand.properties | sed -e "s/Sunbird/Calendar/g" | sed -e "s/Mozilla/PLD/g" > calendar/sunbird/app/brand.properties.new; mv calendar/sunbird/app/brand.properties.new calendar/sunbird/app/brand.properties
 find . -type d -name CVS | xargs rm -rf
 find . -type f -name .cvsignore | xargs rm -f
