@@ -81,6 +81,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_iceapedir	%{_libdir}/%{name}
 %define		_chromedir	%{_libdir}/%{name}/chrome
 
+%define		filterout_cpp	-D_FORTIFY_SOURCE=[0-9]+
+
 # iceweasel/icedove/iceape provide their own versions
 %define		_noautoreqdep	libgfxpsshar.so libgkgfx.so libgtkxtbin.so libjsj.so libxlibrgb.so libxpcom_compat.so libxpcom_core.so libxpistub.so
 # we don't want these to satisfy xulrunner-devel
