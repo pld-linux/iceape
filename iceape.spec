@@ -4,6 +4,7 @@
 %bcond_with	gnomeui		# enable GnomeUI
 %bcond_without	gnome		# disable gnomevfs (alias)
 %bcond_without	svg		# disable svg support
+%bcond_with	strip		# enable stripping (makes debuginfo package useless)
 #
 %if %{without gnome}
 %undefine	with_gnomevfs
@@ -260,7 +261,7 @@ ac_cv_visibility_pragma=no; export ac_cv_visibility_pragma
 	--enable-mathml \
 	--enable-optimize="%{rpmcflags}" \
 	--enable-postscript \
-	%{!?debug:--enable-strip} \
+	%{?with_strip:--enable-strip} \
 	%{?with_svg:--enable-svg --enable-svg-renderer-cairo} \
 	%{?with_svg:--enable-system-cairo} \
 	--enable-xft \
