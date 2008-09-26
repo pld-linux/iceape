@@ -40,7 +40,7 @@ Patch6:		%{name}-agent.patch
 Patch7:		%{name}-prefs.patch
 Patch8:		%{name}-lcrmf.patch
 Patch9:		%{name}-pld-branding.patch
-URL:		http://www.seamonkey-project.org/
+URL:		http://www.pld-linux.org/Packages/Iceape
 BuildRequires:	automake
 %{?with_svg:BuildRequires:	cairo-devel >= 1.0.0}
 BuildRequires:	freetype-devel >= 1:2.1.8
@@ -348,29 +348,29 @@ if [ "$1" == "-remote" ]; then
 fi
 
 PING=`$ICEAPE -remote 'ping()' 2>&1 >/dev/null`
-	if [ -n "$PING" ]; then
-		if [ -f "`pwd`/$1" ]; then
+if [ -n "$PING" ]; then
+	if [ -f "`pwd`/$1" ]; then
 		exec $ICEAPE "file://`pwd`/$1"
-		else
+	else
 		exec $ICEAPE "$@"
-		fi
+	fi
 fi
 
-		if [ -z "$1" ]; then
+if [ -z "$1" ]; then
 	exec $ICEAPE -remote 'xfeDoCommand (openBrowser)'
-		elif [ "$1" == "-mail" ]; then
+elif [ "$1" == "-mail" ]; then
 	exec $ICEAPE -remote 'xfeDoCommand (openInbox)'
-		elif [ "$1" == "-compose" ]; then
+elif [ "$1" == "-compose" ]; then
 	exec $ICEAPE -remote 'xfeDoCommand (composeMessage)'
 fi
 
 [[ $1 == -* ]] && exec $ICEAPE "$@"
 
-				if [ -f "`pwd`/$1" ]; then
-					URL="file://`pwd`/$1"
-				else
-					URL="$1"
-				fi
+if [ -f "`pwd`/$1" ]; then
+	URL="file://`pwd`/$1"
+else
+	URL="$1"
+fi
 if grep -q -E 'browser.tabs.opentabfor.middleclick.*true' \
 		~/.mozilla/default/*/prefs.js; then
 	exec $ICEAPE -remote "OpenUrl($URL,new-tab)"
