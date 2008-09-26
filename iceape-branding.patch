@@ -170,15 +170,17 @@ diff -urN mozilla.orig/xpfe/browser/resources/locale/en-US/region.properties moz
  keywordList=http://home.netscape.com/escapes/keywords
  webmailKeyword=http://webmail.netscape.com
  fallbackDefaultSearchURL=http://www.google.com/search?q=
-@@ -7,7 +7,7 @@
+@@ -7,8 +7,8 @@
  #
  # all.js
  #
 -browser.startup.homepage=http://www.seamonkey-project.org/start/
 +browser.startup.homepage=about:
- browser.throbber.url=http://www.seamonkey-project.org/
+-browser.throbber.url=http://www.seamonkey-project.org/
++browser.throbber.url=http://www.pld-linux.org/Packages/Iceape
  browser.search.defaulturl=http://www.google.com/search?q=
  general.useragent.contentlocale=US
+ 
 @@ -17,4 +17,4 @@
  
  #config.js
