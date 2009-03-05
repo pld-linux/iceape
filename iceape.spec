@@ -371,7 +371,7 @@ if [ -f "`pwd`/$1" ]; then
 else
 	URL="$1"
 fi
-if grep -q -E 'browser.tabs.opentabfor.middleclick.*true' \
+if ! grep -q -E 'browser.tabs.opentabfor.middleclick.*true' \
 		~/.mozilla/default/*/prefs.js; then
 	exec $ICEAPE -remote "OpenUrl($URL,new-tab)"
 				else
