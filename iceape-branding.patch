@@ -278,10 +278,10 @@ diff -urN mozilla.orig/xpfe/global/jar.mn mozilla/xpfe/global/jar.mn
  #endif
          content/global/aboutAbout.html              (resources/content/aboutAbout.html) 
          content/global/about.xul                    (resources/content/about.xul) 
-diff -urN mozilla.orig/xpfe/global/resources/content/about.xhtml mozilla/xpfe/global/resources/content/about.xhtml
---- mozilla.orig/xpfe/global/resources/content/about.xhtml	2008-07-29 13:32:16.000000000 +0200
-+++ mozilla/xpfe/global/resources/content/about.xhtml	2008-07-29 13:34:10.000000000 +0200
-@@ -50,79 +50,79 @@
+diff -burNp mozilla/xpfe/global/resources/content/about.xhtml mozilla-dud/xpfe/global/resources/content/about.xhtml
+--- mozilla/xpfe/global/resources/content/about.xhtml	2009-03-03 19:51:46.000000000 +0100
++++ mozilla-dud/xpfe/global/resources/content/about.xhtml	2009-03-24 22:58:03.990746310 +0100
+@@ -50,79 +50,71 @@
  <head>
  <title>About:</title>
  <style type="text/css">
@@ -290,16 +290,14 @@ diff -urN mozilla.orig/xpfe/global/resources/content/about.xhtml mozilla/xpfe/gl
 -  text-align: center;
 +html {
 +  background: -moz-Dialog;
- }
-+
++}
 +body {
 +  margin: 0;
 +  padding: 0 1em;
 +  color: -moz-FieldText;
 +  font: message-box;
 +}
-+
-+ #aboutPageContainer {
++#aboutPageContainer {
 +  position: relative;
 +  min-width: 330px;
 +  max-width: 50em;
@@ -310,26 +308,22 @@ diff -urN mozilla.orig/xpfe/global/resources/content/about.xhtml mozilla/xpfe/gl
 +  -moz-padding-start: 30px;
 +  background: -moz-Field;
 +}
-+
-+ #aboutLogoContainer {
++#aboutLogoContainer {
 +  border: 1px solid ThreeDLightShadow;
 +  width: 300px;
 +  margin-bottom: 2em;
-+}
-+
+ }
  img {
    border: 0;
  }
 -p {
 -  font-size: smaller;
-+
 + #version {
 +  font-weight: bold;
 +  color: #909090;
 +  margin: -24px 0 9px 17px;
  }
 -h1 {
-+
 +ul {
    margin: 0;
 +  -moz-margin-start: 1.5em;
@@ -344,34 +338,13 @@ diff -urN mozilla.orig/xpfe/global/resources/content/about.xhtml mozilla/xpfe/gl
 -}
 -:link:active, :visited:active {
 -  color: #f00;
-+
 +ul > li {
 +  margin-top: .5em;
  }
  </style>
  </head>
  <body>
-+<div id="aboutPageContainer">
-+  <div id="aboutLogoContainer">
-+    <img src="about:logo" alt="&brandShortName;" />
-+#expand <p id="version">&brandShortName; __MOZ_APP_VERSION__</p>
-+  </div>
-+
-+  <ul id="aboutPageList">
-+    <li>Copyright &copy; 1998-2008 by <a href="about:credits">contributors</a> to the Mozilla Project.</li>
-+    <li>Read the <a href="about:license">licensing information</a> for this product.</li>
-+    <li>See the <a href="about:buildconfig">build configuration</a> used for this version.</li>
-+    <script type="application/x-javascript">
-+      // add build identifier
-+      var ua = navigator.userAgent;
-+      if (ua) {
-+        var list = document.getElementById("aboutPageList");
-+        var listItem = list.appendChild(document.createElement("li"));
-+        listItem.appendChild(document.createTextNode("Build identifier: " + ua));
-+      }
-+    </script>
-+  </ul>
- 
+-
 -<table>
 -<tbody>
 -<tr>
@@ -397,7 +370,7 @@ diff -urN mozilla.orig/xpfe/global/resources/content/about.xhtml mozilla/xpfe/gl
 -<hr />
 -
 -<ul>
--<li>Copyright &copy; 1998&ndash;2008 by <a href="about:credits">Contributors</a> to 
+-<li>Copyright &copy; 1998&ndash;2009 by <a href="about:credits">Contributors</a> to 
 -the Mozilla codebase under the <a href="about:license">Mozilla Public License
 -and other licenses</a>.  All Rights Reserved.</li>
 -
@@ -420,6 +393,26 @@ diff -urN mozilla.orig/xpfe/global/resources/content/about.xhtml mozilla/xpfe/gl
 -those rights set forth herein.
 -</p>
 -
++<div id="aboutPageContainer">
++  <div id="aboutLogoContainer">
++    <img src="about:logo" alt="&brandShortName;" />
++#expand <p id="version">&brandShortName; __MOZ_APP_VERSION__</p>
++  </div>
++
++  <ul id="aboutPageList">
++    <li>Copyright &copy; 1998-2009 by <a href="about:credits">contributors</a>to the Mozilla Project.</li>
++    <li>Read the <a href="about:license">licensing information</a> for this product.</li>
++    <li>See the <a href="about:buildconfig">build configuration</a> used for this version.</li>
++    <script type="application/x-javascript">
++      // add build identifier
++      var ua = navigator.userAgent;
++      if (ua) {
++        var list = document.getElementById("aboutPageList");
++        var listItem = list.appendChild(document.createElement("li"));
++	 listItem.appendChild(document.createTextNode("Build identifier: " + ua));
++      }
++    </script>
++  </ul>
 +</div>
  </body>
  </html>
