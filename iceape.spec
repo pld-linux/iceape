@@ -52,8 +52,8 @@ BuildRequires:	libIDL-devel >= 0.8.0
 BuildRequires:	libjpeg-devel >= 6b
 BuildRequires:	libpng-devel >= 1.2.7
 BuildRequires:	libstdc++-devel
-BuildRequires:	nspr-devel >= 1:4.6.1
-BuildRequires:	nss-devel >= 1:3.11.3
+BuildRequires:	nspr-devel >= 1:4.8
+BuildRequires:	nss-devel >= 1:3.12.3
 BuildRequires:	perl-modules >= 5.6.0
 BuildRequires:	pkgconfig
 BuildRequires:	rpm >= 4.4.9-56
@@ -68,8 +68,8 @@ BuildRequires:	zip >= 2.1
 BuildRequires:	zlib-devel >= 1.2.3
 Requires:	browser-plugins >= 2.0
 %{?with_svg:Requires:	cairo >= 1.0.0}
-Requires:	nspr >= 1:4.6.1
-Requires:	nss >= 1:3.11.3
+Requires:	nspr >= 1:4.8
+Requires:	nss >= 1:3.12.3
 Provides:	iceape-embedded = %{epoch}:%{version}-%{release}
 Provides:	wwwbrowser
 Obsoletes:	light
@@ -220,6 +220,7 @@ Moduł Gnome-VFS dodający wsparcie dla URLi smb://.
 
 %prep
 %setup -qc
+mv -f comm-central mozilla
 cd mozilla
 /bin/sh %{SOURCE3}
 tar -jxf %{SOURCE2}
