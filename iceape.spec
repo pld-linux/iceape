@@ -9,17 +9,18 @@
 %undefine	with_gnomevfs
 %endif
 %define	enigmail_ver	0.96.0
+%define	beta	b2
 Summary:	Iceape - web browser
 Summary(es.UTF-8):	Navegador de Internet Iceape
 Summary(pl.UTF-8):	Iceape - przeglądarka WWW
 Summary(pt_BR.UTF-8):	Navegador Iceape
 Name:		iceape
-Version:	1.1.18
-Release:	1
+Version:	2.0
+Release:	0.%{beta}.1
 License:	MPL 1.1 or GPL v2+ or LGPL v2.1+
 Group:		X11/Applications/Networking
-Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/seamonkey-%{version}.source.tar.bz2
-# Source0-md5:	ef4455becf3a12833dca7dd92854aeaa
+Source0:	ftp://ftp.mozilla.org/pub/seamonkey/releases/%{version}%{beta}/source/seamonkey-%{version}%{beta}.source.tar.bz2
+# Source0-md5:	a058aeadc540a6fd58873ae1e51c23e0
 Source1:	http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_ver}.tar.gz
 # Source1-md5:	cf8c38e8d33965706df383ab33b3923c
 Source2:	%{name}-branding.tar.bz2
