@@ -732,9 +732,10 @@ fi
 %{_iceapedir}/components/ipc.xpt
 %{_iceapedir}/components/enigmail.js
 %{_iceapedir}/components/enigprefs-service.js
+%{_iceapedir}/components/enigMsgCompFields.js
 %{_datadir}/%{name}/chrome/enigmail-en-US.jar
 %{_datadir}/%{name}/chrome/enigmail-locale.jar
-%{_datadir}/%{name}/chrome/enigmail-skin-tbird.jar
+%{_datadir}/%{name}/chrome/enigmail-skin-seamonkey.jar
 %{_datadir}/%{name}/chrome/enigmail-skin.jar
 %{_datadir}/%{name}/chrome/enigmail.jar
 %{_datadir}/%{name}/chrome/enigmime.jar
