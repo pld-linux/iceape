@@ -15,7 +15,7 @@ Summary(pl.UTF-8):	Iceape - przeglądarka WWW
 Summary(pt_BR.UTF-8):	Navegador Iceape
 Name:		iceape
 Version:	1.1.18
-Release:	1
+Release:	2
 License:	MPL 1.1 or GPL v2+ or LGPL v2.1+
 Group:		X11/Applications/Networking
 Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/seamonkey-%{version}.source.tar.bz2
@@ -40,6 +40,7 @@ Patch6:		%{name}-agent.patch
 Patch7:		%{name}-prefs.patch
 Patch8:		%{name}-lcrmf.patch
 Patch9:		%{name}-pld-branding.patch
+Patch10:	%{name}-sqlite.patch
 URL:		http://www.pld-linux.org/Packages/Iceape
 BuildRequires:	automake
 %{?with_svg:BuildRequires:	cairo-devel >= 1.0.0}
@@ -236,6 +237,7 @@ tar -C mailnews/extensions -zxf %{SOURCE1}
 %patch7 -p1
 %patch8 -p1
 %patch9 -p1
+%patch10 -p1
 
 %build
 cd mozilla
@@ -727,6 +729,7 @@ fi
 %files addon-enigmail
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_iceapedir}/components/libenigmime.so
+%attr(755,root,root) %{_iceapedir}/components/libipc.so
 %{_iceapedir}/components/enigmail.xpt
 %{_iceapedir}/components/enigmime.xpt
 %{_iceapedir}/components/ipc.xpt
