@@ -227,9 +227,9 @@ tar -jxf %{SOURCE2}
 tar -C mailnews/extensions -zxf %{SOURCE1}
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
+#%patch2 -p1
+#%patch3 -p1
+#%patch4 -p1
 %if "%{pld_release}" == "ti"
 %patch5 -p1
 %else
@@ -242,8 +242,8 @@ tar -C mailnews/extensions -zxf %{SOURCE1}
 %build
 cd mozilla
 
-cp -f /usr/share/automake/config.* build/autoconf
-cp -f /usr/share/automake/config.* nsprpub/build/autoconf
+cp -f /usr/share/automake/config.* mozilla/build/autoconf
+cp -f /usr/share/automake/config.* mozilla/nsprpub/build/autoconf
 cp -f /usr/share/automake/config.* directory/c-sdk/config/autoconf
 ac_cv_visibility_pragma=no; export ac_cv_visibility_pragma
 %configure2_13 \
