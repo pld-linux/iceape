@@ -1,4 +1,14 @@
 #
+# TODO:
+#   - rebranding to iceape is not complete
+#   - some patches still needs to be reviewed
+#   - check if any and which files should be moved to mailnews
+#   - does chatzilla / dom-inspector / venkman need .desktop files?
+#   - it seems like some gnomeui files are being build no matter
+#     if its enabled or disabled
+#   - svg bcond seems obsolete
+#   - probably lots and lots of other things
+#
 # Conditional build:
 %bcond_without	gnomevfs	# disable GnomeVFS support
 %bcond_with	gnomeui		# enable GnomeUI
@@ -9,7 +19,7 @@
 %undefine	with_gnomevfs
 %endif
 %define	enigmail_ver	0.96.0
-%define	beta	b2
+%define	beta	rc2
 Summary:	Iceape - web browser
 Summary(es.UTF-8):	Navegador de Internet Iceape
 Summary(pl.UTF-8):	Iceape - przeglądarka WWW
@@ -20,11 +30,11 @@ Release:	0.%{beta}.1
 License:	MPL 1.1 or GPL v2+ or LGPL v2.1+
 Group:		X11/Applications/Networking
 Source0:	ftp://ftp.mozilla.org/pub/seamonkey/releases/%{version}%{beta}/source/seamonkey-%{version}%{beta}.source.tar.bz2
-# Source0-md5:	a058aeadc540a6fd58873ae1e51c23e0
+# Source0-md5:	738c0f17bf4148f57cb5811c3ea4f7fc
 Source1:	http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_ver}.tar.gz
 # Source1-md5:	cf8c38e8d33965706df383ab33b3923c
 Source2:	%{name}-branding.tar.bz2
-# Source2-md5:	841caa8235c5350737c09fbbc681e9d3
+# Source2-md5:	9707f1671625ac10cb4e52f0033d8776
 Source3:	%{name}-rm_nonfree.sh
 Source4:	%{name}.desktop
 Source5:	%{name}-composer.desktop
@@ -40,7 +50,6 @@ Patch5:		%{name}-ti-agent.patch
 Patch6:		%{name}-agent.patch
 Patch7:		%{name}-prefs.patch
 Patch8:		%{name}-lcrmf.patch
-Patch9:		%{name}-pld-branding.patch
 URL:		http://www.pld-linux.org/Packages/Iceape
 BuildRequires:	automake
 %{?with_svg:BuildRequires:	cairo-devel >= 1.0.0}
@@ -237,7 +246,6 @@ tar -C mailnews/extensions -zxf %{SOURCE1}
 %endif
 %patch7 -p1
 %patch8 -p1
-%patch9 -p1
 
 %build
 cd mozilla
@@ -252,22 +260,15 @@ ac_cv_visibility_pragma=no; export ac_cv_visibility_pragma
 	%{!?with_gnomeui:--disable-gnomeui} \
 	%{!?with_gnomevfs:--disable-gnomevfs} \
 	--disable-pedantic \
-	--disable-tests \
 	--disable-xterm-updates \
 	--enable-application=suite \
 	--enable-crypto \
-	--enable-default-toolkit=gtk2 \
-	--enable-extensions \
+	--enable-default-toolkit=cairo-gtk2 \
 	--enable-ldap \
-	--enable-mathml \
 	--enable-optimize="%{rpmcflags}" \
 	--enable-postscript \
-	%{?with_svg:--enable-svg --enable-svg-renderer-cairo} \
-	%{?with_svg:--enable-system-cairo} \
-	--enable-xft \
-	--enable-xinerama \
-	--enable-xprint \
 	--enable-old-abi-compat-wrappers \
+	--enable-system-sqlite \
 	--with-default-mozilla-five-home=%{_iceapedir} \
 	--with-pthreads \
 	--with-system-jpeg \
@@ -290,7 +291,7 @@ cd mozilla
 install -d \
 	$RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_datadir}} \
 	$RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir}} \
-	$RPM_BUILD_ROOT%{_datadir}/%{name}/{chrome,defaults,dictionaries,icons,greprefs,res,searchplugins} \
+	$RPM_BUILD_ROOT%{_datadir}/%{name}/{chrome,defaults,dictionaries,extensions,greprefs,icons,modules,plugins,res,searchplugins} \
 	$RPM_BUILD_ROOT%{_iceapedir}/{components,plugins}
 
 # preparing to create register
@@ -300,26 +301,30 @@ rm -fr dist/bin/chrome/{US,chatzilla,classic,comm,content-packs,cview,embed,embe
 rm -f dist/bin/chrome/en-{mac,win}.jar
 
 # creating and installing register
-LD_LIBRARY_PATH="dist/bin" MOZILLA_FIVE_HOME="dist/bin" dist/bin/regxpcom
-LD_LIBRARY_PATH="dist/bin" MOZILLA_FIVE_HOME="dist/bin" dist/bin/regchrome
+LD_LIBRARY_PATH="mozilla/dist/bin" MOZILLA_FIVE_HOME="mozilla/dist/bin" mozilla/dist/bin/regxpcom
 
 ln -sf ../../share/%{name}/chrome $RPM_BUILD_ROOT%{_chromedir}
 ln -sf ../../share/%{name}/defaults $RPM_BUILD_ROOT%{_iceapedir}/defaults
 ln -sf ../../share/%{name}/dictionaries $RPM_BUILD_ROOT%{_iceapedir}/dictionaries
 ln -sf ../../share/%{name}/greprefs $RPM_BUILD_ROOT%{_iceapedir}/greprefs
 ln -sf ../../share/%{name}/icons $RPM_BUILD_ROOT%{_iceapedir}/icons
+ln -sf ../../share/%{name}/modules $RPM_BUILD_ROOT%{_iceapedir}/modules
+ln -sf ../../share/%{name}/plugins $RPM_BUILD_ROOT%{_iceapedir}/plugins
 ln -sf ../../share/%{name}/res $RPM_BUILD_ROOT%{_iceapedir}/res
 ln -sf ../../share/%{name}/searchplugins $RPM_BUILD_ROOT%{_iceapedir}/searchplugins
 
-cp -frL dist/bin/chrome/*	$RPM_BUILD_ROOT%{_datadir}/%{name}/chrome
-cp -frL dist/bin/components/{[!m],m[!y]}*	$RPM_BUILD_ROOT%{_iceapedir}/components
-cp -frL dist/bin/defaults/*	$RPM_BUILD_ROOT%{_datadir}/%{name}/defaults
-cp -frL dist/bin/dictionaries/*	$RPM_BUILD_ROOT%{_datadir}/%{name}/dictionaries
-cp -frL dist/bin/greprefs/*	$RPM_BUILD_ROOT%{_datadir}/%{name}/greprefs
-cp -frL dist/bin/res/*		$RPM_BUILD_ROOT%{_datadir}/%{name}/res
-cp -frL dist/bin/searchplugins/* $RPM_BUILD_ROOT%{_datadir}/%{name}/searchplugins
+cp -frL mozilla/dist/bin/chrome/*	$RPM_BUILD_ROOT%{_datadir}/%{name}/chrome
+cp -frL mozilla/dist/bin/components/{[!m],m[!y]}*	$RPM_BUILD_ROOT%{_iceapedir}/components
+cp -frL mozilla/dist/bin/defaults/*	$RPM_BUILD_ROOT%{_datadir}/%{name}/defaults
+cp -frL mozilla/dist/bin/dictionaries/*	$RPM_BUILD_ROOT%{_datadir}/%{name}/dictionaries
+cp -frL mozilla/dist/bin/extensions/*		$RPM_BUILD_ROOT%{_datadir}/%{name}/extensions
+cp -frL mozilla/dist/bin/greprefs/*	$RPM_BUILD_ROOT%{_datadir}/%{name}/greprefs
+cp -frL mozilla/dist/bin/modules/*		$RPM_BUILD_ROOT%{_datadir}/%{name}/modules
+cp -frL mozilla/dist/bin/plugins/*		$RPM_BUILD_ROOT%{_datadir}/%{name}/plugins
+cp -frL mozilla/dist/bin/res/*		$RPM_BUILD_ROOT%{_datadir}/%{name}/res
+cp -frL mozilla/dist/bin/searchplugins/* $RPM_BUILD_ROOT%{_datadir}/%{name}/searchplugins
 
-install dist/bin/*.so $RPM_BUILD_ROOT%{_iceapedir}
+install mozilla/dist/bin/*.so $RPM_BUILD_ROOT%{_iceapedir}
 
 ln -s %{_libdir}/libnssckbi.so $RPM_BUILD_ROOT%{_iceapedir}/libnssckbi.so
 
@@ -328,10 +333,9 @@ install %{SOURCE4} %{SOURCE5} %{SOURCE6} %{SOURCE7} %{SOURCE8} \
 
 install suite/branding/icons/gtk/iceape.png $RPM_BUILD_ROOT%{_pixmapsdir}
 
-install dist/bin/iceape-bin $RPM_BUILD_ROOT%{_iceapedir}
-install dist/bin/regchrome $RPM_BUILD_ROOT%{_iceapedir}
-install dist/bin/regxpcom $RPM_BUILD_ROOT%{_iceapedir}
-install dist/bin/xpidl $RPM_BUILD_ROOT%{_iceapedir}
+install mozilla/dist/bin/iceape-bin $RPM_BUILD_ROOT%{_iceapedir}
+install mozilla/dist/bin/regxpcom $RPM_BUILD_ROOT%{_iceapedir}
+install mozilla/dist/bin/xpidl $RPM_BUILD_ROOT%{_iceapedir}
 
 cp $RPM_BUILD_ROOT%{_chromedir}/installed-chrome.txt \
         $RPM_BUILD_ROOT%{_chromedir}/%{name}-installed-chrome.txt
@@ -398,7 +402,6 @@ LD_LIBRARY_PATH=%{_iceapedir}${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 export LD_LIBRARY_PATH
 
 MOZILLA_FIVE_HOME=%{_iceapedir} %{_iceapedir}/regxpcom
-MOZILLA_FIVE_HOME=%{_iceapedir} %{_iceapedir}/regchrome
 exit 0
 EOF
 
@@ -452,25 +455,26 @@ fi
 %dir %{_iceapedir}/dictionaries
 %dir %{_iceapedir}/greprefs
 %dir %{_iceapedir}/icons
+%dir %{_iceapedir}/modules
 %dir %{_iceapedir}/plugins
+%dir %{_iceapedir}/plugins/plugins
 %dir %{_iceapedir}/res
 %dir %{_iceapedir}/searchplugins
 %dir %{_datadir}/%{name}
 
 %attr(755,root,root) %{_iceapedir}/libxpcom.so
-%attr(755,root,root) %{_iceapedir}/libxpcom_compat.so
 %attr(755,root,root) %{_iceapedir}/libxpcom_core.so
 %attr(755,root,root) %{_iceapedir}/libgfxpsshar.so
 %attr(755,root,root) %{_iceapedir}/libgkgfx.so
-%attr(755,root,root) %{_iceapedir}/libgtkembedmoz.so
 %attr(755,root,root) %{_iceapedir}/libgtkxtbin.so
 %attr(755,root,root) %{_iceapedir}/libjsj.so
-%attr(755,root,root) %{_iceapedir}/libldap50.so
-%attr(755,root,root) %{_iceapedir}/libprldap50.so
-%attr(755,root,root) %{_iceapedir}/libssldap50.so
+%attr(755,root,root) %{_iceapedir}/libldap60.so
+%attr(755,root,root) %{_iceapedir}/libldif60.so
 %attr(755,root,root) %{_iceapedir}/libmozjs.so
-%attr(755,root,root) %{_iceapedir}/libxpistub.so
-%attr(755,root,root) %{_iceapedir}/libxlibrgb.so
+%attr(755,root,root) %{_iceapedir}/libprldap60.so
+%attr(755,root,root) %{_iceapedir}/libssldap60.so
+%attr(755,root,root) %{_iceapedir}/libthebes.so
+%attr(755,root,root) %{_iceapedir}/libxul.so
 
 %attr(755,root,root) %{_iceapedir}/iceape-bin
 %attr(755,root,root) %{_iceapedir}/reg*
@@ -483,56 +487,54 @@ fi
 %attr(755,root,root) %{_iceapedir}/components/libauth*.so
 %attr(755,root,root) %{_iceapedir}/components/libautoconfig.so
 %attr(755,root,root) %{_iceapedir}/components/libcaps.so
+%attr(755,root,root) %{_iceapedir}/components/libchardet.so
 %attr(755,root,root) %{_iceapedir}/components/libchrome.so
+%attr(755,root,root) %{_iceapedir}/components/libcommandlines.so
 %attr(755,root,root) %{_iceapedir}/components/libcomposer.so
 %attr(755,root,root) %{_iceapedir}/components/libcookie.so
+%attr(755,root,root) %{_iceapedir}/components/libdbusservice.so
 %attr(755,root,root) %{_iceapedir}/components/libdocshell.so
-%attr(755,root,root) %{_iceapedir}/components/libeditor.so
 %attr(755,root,root) %{_iceapedir}/components/libembedcomponents.so
 %attr(755,root,root) %{_iceapedir}/components/libfileview.so
-%attr(755,root,root) %{_iceapedir}/components/libgfx*.so
 %attr(755,root,root) %{_iceapedir}/components/libgk*.so
 %attr(755,root,root) %{_iceapedir}/components/libhtmlpars.so
 %attr(755,root,root) %{_iceapedir}/components/libi18n.so
 %attr(755,root,root) %{_iceapedir}/components/libimg*.so
+%attr(755,root,root) %{_iceapedir}/components/libintlapp.so
 %attr(755,root,root) %{_iceapedir}/components/libjar50.so
 %attr(755,root,root) %{_iceapedir}/components/libjsd.so
 %attr(755,root,root) %{_iceapedir}/components/libmork.so
 %attr(755,root,root) %{_iceapedir}/components/libmoz*.so
-%attr(755,root,root) %{_iceapedir}/components/libmyspell.so
+%attr(755,root,root) %{_iceapedir}/components/libMyService.so
 %attr(755,root,root) %{_iceapedir}/components/libnecko*.so
-%attr(755,root,root) %{_iceapedir}/components/libnkdatetime.so
-%attr(755,root,root) %{_iceapedir}/components/libnkfinger.so
 %attr(755,root,root) %{_iceapedir}/components/libns*.so
 %attr(755,root,root) %{_iceapedir}/components/liboji.so
-%attr(755,root,root) %{_iceapedir}/components/libp3p.so
 %attr(755,root,root) %{_iceapedir}/components/libpermissions.so
 %attr(755,root,root) %{_iceapedir}/components/libpipboot.so
 %attr(755,root,root) %{_iceapedir}/components/libpipnss.so
 %attr(755,root,root) %{_iceapedir}/components/libpippki.so
+%attr(755,root,root) %{_iceapedir}/components/libplaces.so
 %attr(755,root,root) %{_iceapedir}/components/libpref.so
-%attr(755,root,root) %{_iceapedir}/components/libprofile.so
 %attr(755,root,root) %{_iceapedir}/components/librdf.so
 %attr(755,root,root) %{_iceapedir}/components/libremoteservice.so
-%attr(755,root,root) %{_iceapedir}/components/libschemavalidation.so
-%attr(755,root,root) %{_iceapedir}/components/libsearchservice.so
+%attr(755,root,root) %{_iceapedir}/components/libsatchel.so
 %attr(755,root,root) %{_iceapedir}/components/libspellchecker.so
-%attr(755,root,root) %{_iceapedir}/components/libsql.so
-%attr(755,root,root) %{_iceapedir}/components/libsroaming.so
+%attr(755,root,root) %{_iceapedir}/components/libsuite.so
 %attr(755,root,root) %{_iceapedir}/components/libstoragecomps.so
 %attr(755,root,root) %{_iceapedir}/components/libsystem-pref.so
-%attr(755,root,root) %{_iceapedir}/components/libtransformiix.so
+%attr(755,root,root) %{_iceapedir}/components/libtestdynamic.so
+%attr(755,root,root) %{_iceapedir}/components/libtkautocomplete.so
+%attr(755,root,root) %{_iceapedir}/components/libtoolkitcomps.so
 %attr(755,root,root) %{_iceapedir}/components/libtxmgr.so
-%attr(755,root,root) %{_iceapedir}/components/libtypeaheadfind.so
 %attr(755,root,root) %{_iceapedir}/components/libuconv.so
 %attr(755,root,root) %{_iceapedir}/components/libucv*.so
 %attr(755,root,root) %{_iceapedir}/components/libuniversalchardet.so
-%attr(755,root,root) %{_iceapedir}/components/libwallet.so
-%attr(755,root,root) %{_iceapedir}/components/libwalletviewers.so
+%attr(755,root,root) %{_iceapedir}/components/libunixproxy.so
 %attr(755,root,root) %{_iceapedir}/components/libwebbrwsr.so
-%attr(755,root,root) %{_iceapedir}/components/libwebsrvcs.so
 %attr(755,root,root) %{_iceapedir}/components/libwidget_gtk2.so
+%attr(755,root,root) %{_iceapedir}/components/libwindowds.so
 %attr(755,root,root) %{_iceapedir}/components/libx*.so
+%attr(755,root,root) %{_iceapedir}/components/libzipwriter.so
 
 %{_iceapedir}/components/access*.xpt
 %{_iceapedir}/components/alerts.xpt
@@ -540,97 +542,141 @@ fi
 %{_iceapedir}/components/appstartup.xpt
 %{_iceapedir}/components/autocomplete.xpt
 %{_iceapedir}/components/autoconfig.xpt
-%{_iceapedir}/components/bookmarks.xpt
 %{_iceapedir}/components/caps.xpt
 %{_iceapedir}/components/chardet.xpt
 %{_iceapedir}/components/chrome.xpt
 %{_iceapedir}/components/commandhandler.xpt
+%{_iceapedir}/components/commandlines.xpt
 %{_iceapedir}/components/composer.xpt
 %{_iceapedir}/components/content*.xpt
 %{_iceapedir}/components/cookie.xpt
 %{_iceapedir}/components/directory.xpt
 %{_iceapedir}/components/docshell.xpt
 %{_iceapedir}/components/dom*.xpt
-%{_iceapedir}/components/downloadmanager.xpt
+%{_iceapedir}/components/downloads.xpt
 %{_iceapedir}/components/editor.xpt
 %{_iceapedir}/components/embed_base.xpt
 %{_iceapedir}/components/extensions.xpt
 %{_iceapedir}/components/exthandler.xpt
+%{_iceapedir}/components/exthelper.xpt
+%{_iceapedir}/components/fastfind.xpt
+%{_iceapedir}/components/feeds.xpt
 %{_iceapedir}/components/find.xpt
 %{_iceapedir}/components/filepicker.xpt
 %{_iceapedir}/components/gfx*.xpt
-%{?with_svg:%{_iceapedir}/components/gksvgrenderer.xpt}
-%{_iceapedir}/components/history.xpt
 %{_iceapedir}/components/htmlparser.xpt
-%{?with_gnomeui:%{_iceapedir}/components/imgicon.xpt}
+%{_iceapedir}/components/imgicon.xpt
 %{_iceapedir}/components/imglib2.xpt
 %{_iceapedir}/components/intl.xpt
 %{_iceapedir}/components/jar.xpt
 %{_iceapedir}/components/js*.xpt
 %{_iceapedir}/components/layout*.xpt
 %{_iceapedir}/components/locale.xpt
+%{_iceapedir}/components/loginmgr.xpt
 %{_iceapedir}/components/lwbrk.xpt
 %{_iceapedir}/components/mimetype.xpt
 %{_iceapedir}/components/moz*.xpt
 %{_iceapedir}/components/necko*.xpt
 %{_iceapedir}/components/oji.xpt
-%{_iceapedir}/components/p3p.xpt
+%{_iceapedir}/components/parentalcontrols.xpt
 %{_iceapedir}/components/pipboot.xpt
 %{_iceapedir}/components/pipnss.xpt
 %{_iceapedir}/components/pippki.xpt
+%{_iceapedir}/components/places.xpt
 %{_iceapedir}/components/plugin.xpt
 %{_iceapedir}/components/pref.xpt
 %{_iceapedir}/components/prefetch.xpt
-%{_iceapedir}/components/prefmigr.xpt
 %{_iceapedir}/components/profile.xpt
-%{_iceapedir}/components/progressDlg.xpt
 %{_iceapedir}/components/proxyObjInst.xpt
+%{_iceapedir}/components/proxytest.xpt
 %{_iceapedir}/components/rdf.xpt
-%{_iceapedir}/components/related.xpt
+%{_iceapedir}/components/satchel.xpt
 %{_iceapedir}/components/saxparser.xpt
-%{_iceapedir}/components/search.xpt
-%{_iceapedir}/components/schemavalidation.xpt
+%{_iceapedir}/components/shellservice.xpt
 %{_iceapedir}/components/shistory.xpt
-%{_iceapedir}/components/signonviewer.xpt
+%{_iceapedir}/components/smile.xpt
 %{_iceapedir}/components/spellchecker.xpt
-%{_iceapedir}/components/sql.xpt
 %{_iceapedir}/components/storage.xpt
+%{_iceapedir}/components/suitebrowser.xpt
+%{_iceapedir}/components/suitecommon.xpt
+%{_iceapedir}/components/suitefeeds.xpt
+%{_iceapedir}/components/suitemigration.xpt
+%{_iceapedir}/components/test_necko.xpt
+%{_iceapedir}/components/toolkitprofile.xpt
 %{_iceapedir}/components/toolkitremote.xpt
 %{_iceapedir}/components/txmgr.xpt
 %{_iceapedir}/components/txtsvc.xpt
-%{_iceapedir}/components/typeaheadfind.xpt
 %{_iceapedir}/components/uconv.xpt
 %{_iceapedir}/components/unicharutil.xpt
+%{_iceapedir}/components/update.xpt
 %{_iceapedir}/components/uriloader.xpt
 %{_iceapedir}/components/urlformatter.xpt
-%{_iceapedir}/components/wallet*.xpt
 %{_iceapedir}/components/webBrowser_core.xpt
 %{_iceapedir}/components/webbrowserpersist.xpt
 %{_iceapedir}/components/webshell_idls.xpt
-%{_iceapedir}/components/websrvcs.xpt
 %{_iceapedir}/components/widget.xpt
 %{_iceapedir}/components/windowds.xpt
 %{_iceapedir}/components/windowwatcher.xpt
 %{_iceapedir}/components/x*.xpt
+%{_iceapedir}/components/zipwriter.xpt
 
+%{_iceapedir}/components/FeedConverter.js
+%{_iceapedir}/components/FeedProcessor.js
+%{_iceapedir}/components/FeedWriter.js
+%{_iceapedir}/components/glautocomp.js
+%{_iceapedir}/components/httpd.js
 %{_iceapedir}/components/jsconsole-clhandler.js
-%{_iceapedir}/components/nsCloseAllWindows.js
+%{_iceapedir}/components/jsmimeemitter.js
+%{_iceapedir}/components/NetworkGeolocationProvider.js
+%{_iceapedir}/components/newsblog.js
+%{_iceapedir}/components/nsAbAutoCompleteMyDomain.js
+%{_iceapedir}/components/nsAbAutoCompleteSearch.js
+%{_iceapedir}/components/nsAboutAbout.js
+%{_iceapedir}/components/nsAboutCertError.js
+%{_iceapedir}/components/nsAboutFeeds.js
+%{_iceapedir}/components/nsAboutRights.js
+%{_iceapedir}/components/nsAboutSessionRestore.js
+%{_iceapedir}/components/nsAddonRepository.js
+%{_iceapedir}/components/nsBadCertHandler.js
+%{_iceapedir}/components/nsBlocklistService.js
+%{_iceapedir}/components/nsBrowserContentHandler.js
 %{_iceapedir}/components/nsComposerCmdLineHandler.js
-%{_iceapedir}/components/nsDictionary.js
-%{_iceapedir}/components/nsDownloadProgressListener.js
+%{_iceapedir}/components/nsContentDispatchChooser.js
+%{_iceapedir}/components/nsContentPrefService.js
+%{_iceapedir}/components/nsDefaultCLH.js
+%{_iceapedir}/components/nsExtensionManager.js
 %{_iceapedir}/components/nsFilePicker.js
+%{_iceapedir}/components/nsHandlerService.js
 %{_iceapedir}/components/nsHelperAppDlg.js
-%{_iceapedir}/components/nsInterfaceInfoToIDL.js
-%{_iceapedir}/components/nsKillAll.js
+%{_iceapedir}/components/nsLDAPProtocolHandler.js
+%{_iceapedir}/components/nsLivemarkService.js
+%{_iceapedir}/components/nsLoginInfo.js
+%{_iceapedir}/components/nsLoginManager.js
+%{_iceapedir}/components/nsLoginManagerPrompter.js
+%{_iceapedir}/components/nsMsgTraitService.js
+%{_iceapedir}/components/nsPlacesDBFlush.js
 %{_iceapedir}/components/nsProgressDialog.js
 %{_iceapedir}/components/nsProxyAutoConfig.js
-%{_iceapedir}/components/nsResetPref.js
-%{_iceapedir}/components/nsSchemaValidatorRegexp.js
+%{_iceapedir}/components/nsSample.js
+%{_iceapedir}/components/nsSessionStartup.js
+%{_iceapedir}/components/nsSessionStore.js
 %{_iceapedir}/components/nsSidebar.js
-%{_iceapedir}/components/nsUpdateNotifier.js
+%{_iceapedir}/components/nsSuiteDownloadManagerUI.js
+%{_iceapedir}/components/nsSuiteGlue.js
+%{_iceapedir}/components/nsTaggingService.js
+%{_iceapedir}/components/nsTryToClose.js
+%{_iceapedir}/components/nsTypeAheadFind.js
+%{_iceapedir}/components/nsUpdateService.js
 %{_iceapedir}/components/nsURLFormatter.js
-%{_iceapedir}/components/nsXmlRpcClient.js
-%{_iceapedir}/components/xulappinfo.js
+%{_iceapedir}/components/nsWebHandlerApp.js
+%{_iceapedir}/components/pluginGlue.js
+%{_iceapedir}/components/reftest-cmdline.js
+%{_iceapedir}/components/smileApplication.js
+%{_iceapedir}/components/storage-Legacy.js
+%{_iceapedir}/components/storage-mozStorage.js
+%{_iceapedir}/components/tp-cmdline.js
+%{_iceapedir}/components/txEXSLTRegExFunctions.js
+%{_iceapedir}/components/WebContentConverter.js
 
 # not *.dat, so check-files can catch any new files
 # (and they won't be just silently placed empty in rpm)
@@ -638,39 +684,19 @@ fi
 %ghost %{_iceapedir}/components/xpti.dat
 
 %dir %{_datadir}/%{name}/chrome
-%{_datadir}/%{name}/chrome/US.jar
 %{_datadir}/%{name}/chrome/classic.jar
 %{_datadir}/%{name}/chrome/comm.jar
-%{_datadir}/%{name}/chrome/content-packs.jar
-%{_datadir}/%{name}/chrome/cview.jar
-%{_datadir}/%{name}/chrome/embed-sample.jar
 %{_datadir}/%{name}/chrome/en-US.jar
-%{_datadir}/%{name}/chrome/en-unix.jar
-%{_datadir}/%{name}/chrome/help.jar
-%{_datadir}/%{name}/chrome/layoutdebug.jar
-%{_datadir}/%{name}/chrome/modern.jar
-%{_datadir}/%{name}/chrome/pipnss.jar
+%{_datadir}/%{name}/chrome/gloda.jar
+%{_datadir}/%{name}/chrome/newsblog.jar
+%{_datadir}/%{name}/chrome/pageloader.jar
 %{_datadir}/%{name}/chrome/pippki.jar
+%{_datadir}/%{name}/chrome/reftest.jar
 %{_datadir}/%{name}/chrome/reporter.jar
-%{_datadir}/%{name}/chrome/sql.jar
-%{_datadir}/%{name}/chrome/sroaming.jar
-%{_datadir}/%{name}/chrome/tasks.jar
 %{_datadir}/%{name}/chrome/toolkit.jar
-%{_datadir}/%{name}/chrome/xforms.jar
+%{_datadir}/%{name}/chrome/xslt-qa.jar
 
-%ghost %{_datadir}/%{name}/chrome/chrome.rdf
-%ghost %{_datadir}/%{name}/chrome/overlays.rdf
-# not generated automatically ?
-%{_datadir}/%{name}/chrome/stylesheets.rdf
-%{_datadir}/%{name}/chrome/chromelist.txt
 %{_datadir}/%{name}/chrome/icons
-%exclude %{_datadir}/%{name}/chrome/icons/default/abcardWindow*.xpm
-%exclude %{_datadir}/%{name}/chrome/icons/default/addressbookWindow*.xpm
-%exclude %{_datadir}/%{name}/chrome/icons/default/chatzilla-window*.xpm
-%exclude %{_datadir}/%{name}/chrome/icons/default/messengerWindow*.xpm
-%exclude %{_datadir}/%{name}/chrome/icons/default/msgcomposeWindow*.xpm
-%exclude %{_datadir}/%{name}/chrome/icons/default/venkman-window*.xpm
-%exclude %{_datadir}/%{name}/chrome/icons/default/winInspectorMain*.xpm
 
 %{_datadir}/%{name}/chrome/%{name}-installed-chrome.txt
 %ghost %{_datadir}/%{name}/chrome/installed-chrome.txt
@@ -678,10 +704,20 @@ fi
 %{_datadir}/%{name}/defaults
 %{_datadir}/%{name}/dictionaries
 %{_datadir}/%{name}/greprefs
-%exclude %{_datadir}/%{name}/defaults/pref/inspector.js
 %{_datadir}/%{name}/icons
+%{_datadir}/%{name}/modules
+%{_datadir}/%{name}/plugins
 %{_datadir}/%{name}/res
 %{_datadir}/%{name}/searchplugins
+
+%dir %{_datadir}/%{name}/extensions
+%{_datadir}/%{name}/extensions/modern@themes.mozilla.org/chrome/modern.jar
+%{_datadir}/%{name}/extensions/modern@themes.mozilla.org/icon.png
+%{_datadir}/%{name}/extensions/modern@themes.mozilla.org/install.rdf
+%{_datadir}/%{name}/extensions/modern@themes.mozilla.org/preview.png
+%{_datadir}/%{name}/extensions/{972ce4c6-7e08-4474-a285-3208198ce6fd}/icon.png
+%{_datadir}/%{name}/extensions/{972ce4c6-7e08-4474-a285-3208198ce6fd}/install.rdf
+%{_datadir}/%{name}/extensions/{972ce4c6-7e08-4474-a285-3208198ce6fd}/preview.png
 
 %{_pixmapsdir}/iceape.png
 %{_desktopdir}/%{name}.desktop
@@ -689,79 +725,73 @@ fi
 
 %files mailnews
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_iceapedir}/libmsgbaseutil.so
-%attr(755,root,root) %{_iceapedir}/components/libaddrbook.so
-%attr(755,root,root) %{_iceapedir}/components/libbayesflt.so
-%attr(755,root,root) %{_iceapedir}/components/libimpText.so
-%attr(755,root,root) %{_iceapedir}/components/libimpComm4xMail.so
 %attr(755,root,root) %{_iceapedir}/components/libimport.so
-%attr(755,root,root) %{_iceapedir}/components/liblocalmail.so
-%attr(755,root,root) %{_iceapedir}/components/libmailnews.so
-%attr(755,root,root) %{_iceapedir}/components/libmailview.so
-%attr(755,root,root) %{_iceapedir}/components/libmime.so
-%attr(755,root,root) %{_iceapedir}/components/libmimeemitter.so
+%attr(755,root,root) %{_iceapedir}/components/libmail.so
 %attr(755,root,root) %{_iceapedir}/components/libmsg*.so
-%attr(755,root,root) %{_iceapedir}/components/libvcard.so
 
 %{_iceapedir}/components/addrbook.xpt
 %{_iceapedir}/components/impComm4xMail.xpt
 %{_iceapedir}/components/import.xpt
-%{_iceapedir}/components/mailnews.xpt
 %{_iceapedir}/components/mailview.xpt
 %{_iceapedir}/components/mime.xpt
 %{_iceapedir}/components/msg*.xpt
 
 %{_iceapedir}/components/mdn-service.js
 %{_iceapedir}/components/nsAbLDAPAttributeMap.js
-%{_iceapedir}/components/nsLDAPPrefsService.js
+%{_iceapedir}/components/nsMailNewsCommandLineHandler.js
+%{_iceapedir}/components/nsSMTPProtocolHandler.js
 %{_iceapedir}/components/offlineStartup.js
 %{_iceapedir}/components/smime-service.js
 
 %{_datadir}/%{name}/chrome/messenger.jar
-
-%{_datadir}/%{name}/chrome/icons/default/abcardWindow*.xpm
-%{_datadir}/%{name}/chrome/icons/default/addressbookWindow*.xpm
-%{_datadir}/%{name}/chrome/icons/default/messengerWindow*.xpm
-%{_datadir}/%{name}/chrome/icons/default/msgcomposeWindow*.xpm
 
 %{_desktopdir}/%{name}-mail.desktop
 
 %files addon-enigmail
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_iceapedir}/components/libenigmime.so
+%attr(755,root,root) %{_iceapedir}/components/libipc.so
 %{_iceapedir}/components/enigmail.xpt
 %{_iceapedir}/components/enigmime.xpt
 %{_iceapedir}/components/ipc.xpt
 %{_iceapedir}/components/enigmail.js
 %{_iceapedir}/components/enigprefs-service.js
+%{_iceapedir}/components/enigMsgCompFields.js
 %{_datadir}/%{name}/chrome/enigmail-en-US.jar
 %{_datadir}/%{name}/chrome/enigmail-locale.jar
-%{_datadir}/%{name}/chrome/enigmail-skin-tbird.jar
+%{_datadir}/%{name}/chrome/enigmail-skin-seamonkey.jar
 %{_datadir}/%{name}/chrome/enigmail-skin.jar
 %{_datadir}/%{name}/chrome/enigmail.jar
 %{_datadir}/%{name}/chrome/enigmime.jar
 
 %files chat
 %defattr(644,root,root,755)
-%{_iceapedir}/components/chatzilla-service.js
-%{_datadir}/%{name}/chrome/chatzilla.jar
-%{_datadir}/%{name}/chrome/icons/default/chatzilla-window*.xpm
 %{_desktopdir}/%{name}-chat.desktop
+%{_datadir}/%{name}/extensions/{59c81df5-4b7a-477b-912d-4e0fdf64e5f2}/chrome/chatzilla.jar
+%{_datadir}/%{name}/extensions/{59c81df5-4b7a-477b-912d-4e0fdf64e5f2}/chrome/icons/default/chatzilla-window.ico
+%{_datadir}/%{name}/extensions/{59c81df5-4b7a-477b-912d-4e0fdf64e5f2}/chrome/icons/default/chatzilla-window.xpm
+%{_datadir}/%{name}/extensions/{59c81df5-4b7a-477b-912d-4e0fdf64e5f2}/chrome/icons/default/chatzilla-window16.xpm
+%{_datadir}/%{name}/extensions/{59c81df5-4b7a-477b-912d-4e0fdf64e5f2}/components/chatzilla-service.js
+%{_datadir}/%{name}/extensions/{59c81df5-4b7a-477b-912d-4e0fdf64e5f2}/install.rdf
 
 %files js-debugger
 %defattr(644,root,root,755)
-%{_iceapedir}/components/venkman-service.js
-%{_datadir}/%{name}/chrome/venkman.jar
-%{_datadir}/%{name}/chrome/icons/default/venkman-window*.xpm
 %{_desktopdir}/%{name}-venkman.desktop
+%{_datadir}/%{name}/extensions/{f13b157f-b174-47e7-a34d-4815ddfdfeb8}/chrome/venkman.jar
+%{_datadir}/%{name}/extensions/{f13b157f-b174-47e7-a34d-4815ddfdfeb8}/components/venkman-service.js
+%{_datadir}/%{name}/extensions/{f13b157f-b174-47e7-a34d-4815ddfdfeb8}/install.rdf
 
 %files dom-inspector
 %defattr(644,root,root,755)
 %{_iceapedir}/components/inspector.xpt
-%{_iceapedir}/components/inspector-cmdline.js
-%{_datadir}/%{name}/chrome/inspector.jar
-%{_datadir}/%{name}/chrome/icons/default/winInspectorMain*.xpm
-%{_datadir}/%{name}/defaults/pref/inspector.js
+%{_datadir}/%{name}/extensions/inspector@mozilla.org/chrome/inspector.jar
+%{_datadir}/%{name}/extensions/inspector@mozilla.org/components/inspector-cmdline.js
+%{_datadir}/%{name}/extensions/inspector@mozilla.org/defaults/preferences/inspector.js
+%{_datadir}/%{name}/extensions/inspector@mozilla.org/install.rdf
+%{_datadir}/%{name}/extensions/inspector@mozilla.org/platform/Linux/chrome/icons/default/winInspectorMain.xpm
+%{_datadir}/%{name}/extensions/inspector@mozilla.org/platform/Linux/chrome/icons/default/winInspectorMain16.xpm
+%{_datadir}/%{name}/extensions/inspector@mozilla.org/platform/OS2/chrome/icons/default/winInspectorMain.ico
+%{_datadir}/%{name}/extensions/inspector@mozilla.org/platform/WINNT/chrome/icons/default/winInspectorMain.ico
 
 %if %{with gnomevfs}
 %files gnomevfs
