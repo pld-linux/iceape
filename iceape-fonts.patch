@@ -1,5 +1,5 @@
---- mozilla.orig/modules/libpref/src/init/all.js	2006-05-08 22:22:51.000000000 +0200
-+++ mozilla/modules/libpref/src/init/all.js	2006-07-25 07:44:06.744790000 +0200
+--- mozilla.orig/mozilla/modules/libpref/src/init/all.js	2006-05-08 22:22:51.000000000 +0200
++++ mozilla/mozilla/modules/libpref/src/init/all.js	2006-07-25 07:44:06.744790000 +0200
 @@ -1886,33 +1886,33 @@
  
  // th

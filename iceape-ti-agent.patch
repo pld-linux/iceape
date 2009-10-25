@@ -1,5 +1,5 @@
---- mozilla/xpfe/bootstrap/browser-prefs.js.orig	2007-03-21 23:39:25.000000000 +0100
-+++ mozilla/xpfe/bootstrap/browser-prefs.js	2007-03-21 23:39:10.000000000 +0100
+--- mozilla/suite/browser/browser-prefs.js.orig	2007-03-21 23:39:25.000000000 +0100
++++ mozilla/suite/browser/browser-prefs.js	2007-03-21 23:39:10.000000000 +0100
 @@ -61,6 +61,9 @@
  
  #expand pref("general.useragent.extra.__MOZ_APP_NAME__", "__MOZ_APP_DISPLAYNAME__/__MOZ_APP_VERSION__");
