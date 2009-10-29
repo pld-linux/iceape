@@ -1,14 +1,3 @@
-#
-# TODO:
-#   - rebranding to iceape is not complete
-#   - some patches still needs to be reviewed
-#   - check if any and which files should be moved to mailnews
-#   - does chatzilla / dom-inspector / venkman need .desktop files?
-#   - it seems like some gnomeui files are being build no matter
-#     if its enabled or disabled
-#   - svg bcond seems obsolete
-#   - probably lots and lots of other things
-#
 # Conditional build:
 %bcond_without	gnomevfs	# disable GnomeVFS support
 %bcond_with	gnomeui		# enable GnomeUI
@@ -19,18 +8,17 @@
 %undefine	with_gnomevfs
 %endif
 %define	enigmail_ver	0.96.0
-%define	beta	rc2
 Summary:	Iceape - web browser
 Summary(es.UTF-8):	Navegador de Internet Iceape
 Summary(pl.UTF-8):	Iceape - przeglądarka WWW
 Summary(pt_BR.UTF-8):	Navegador Iceape
 Name:		iceape
 Version:	2.0
-Release:	0.%{beta}.1
+Release:	0.1
 License:	MPL 1.1 or GPL v2+ or LGPL v2.1+
 Group:		X11/Applications/Networking
-Source0:	ftp://ftp.mozilla.org/pub/seamonkey/releases/%{version}%{beta}/source/seamonkey-%{version}%{beta}.source.tar.bz2
-# Source0-md5:	738c0f17bf4148f57cb5811c3ea4f7fc
+Source0:	ftp://ftp.mozilla.org/pub/seamonkey/releases/%{version}/source/seamonkey-%{version}.source.tar.bz2
+# Source0-md5:	494608587e3ba4e4cc2e754d95154435
 Source1:	http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_ver}.tar.gz
 # Source1-md5:	cf8c38e8d33965706df383ab33b3923c
 Source2:	%{name}-branding.tar.bz2
@@ -229,7 +217,7 @@ Moduł Gnome-VFS dodający wsparcie dla URLi smb://.
 
 %prep
 %setup -qc
-mv -f comm-central mozilla
+mv -f comm-1.9.1 mozilla
 cd mozilla
 /bin/sh %{SOURCE3}
 tar -jxf %{SOURCE2}
