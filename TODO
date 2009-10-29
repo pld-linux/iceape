@@ -1,0 +1,9 @@
+# TODO:
+- rebranding to iceape is not complete
+- some patches still needs to be reviewed
+- check if any and which files should be moved to mailnews
+- does chatzilla / dom-inspector / venkman need .desktop files?
+- it seems like some gnomeui files are being build no matter
+  if its enabled or disabled
+- svg bcond seems obsolete
+- probably lots and lots of other things
