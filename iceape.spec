@@ -611,14 +611,9 @@ fi
 %{_iceapedir}/components/FeedConverter.js
 %{_iceapedir}/components/FeedProcessor.js
 %{_iceapedir}/components/FeedWriter.js
-%{_iceapedir}/components/glautocomp.js
 %{_iceapedir}/components/httpd.js
 %{_iceapedir}/components/jsconsole-clhandler.js
-%{_iceapedir}/components/jsmimeemitter.js
 %{_iceapedir}/components/NetworkGeolocationProvider.js
-%{_iceapedir}/components/newsblog.js
-%{_iceapedir}/components/nsAbAutoCompleteMyDomain.js
-%{_iceapedir}/components/nsAbAutoCompleteSearch.js
 %{_iceapedir}/components/nsAboutAbout.js
 %{_iceapedir}/components/nsAboutCertError.js
 %{_iceapedir}/components/nsAboutFeeds.js
@@ -641,7 +636,6 @@ fi
 %{_iceapedir}/components/nsLoginInfo.js
 %{_iceapedir}/components/nsLoginManager.js
 %{_iceapedir}/components/nsLoginManagerPrompter.js
-%{_iceapedir}/components/nsMsgTraitService.js
 %{_iceapedir}/components/nsPlacesDBFlush.js
 %{_iceapedir}/components/nsProgressDialog.js
 %{_iceapedir}/components/nsProxyAutoConfig.js
@@ -675,8 +669,6 @@ fi
 %{_datadir}/%{name}/chrome/classic.jar
 %{_datadir}/%{name}/chrome/comm.jar
 %{_datadir}/%{name}/chrome/en-US.jar
-%{_datadir}/%{name}/chrome/gloda.jar
-%{_datadir}/%{name}/chrome/newsblog.jar
 %{_datadir}/%{name}/chrome/pageloader.jar
 %{_datadir}/%{name}/chrome/pippki.jar
 %{_datadir}/%{name}/chrome/reftest.jar
@@ -724,14 +716,22 @@ fi
 %{_iceapedir}/components/mime.xpt
 %{_iceapedir}/components/msg*.xpt
 
+%{_iceapedir}/components/glautocomp.js
+%{_iceapedir}/components/jsmimeemitter.js
 %{_iceapedir}/components/mdn-service.js
+%{_iceapedir}/components/newsblog.js
+%{_iceapedir}/components/nsAbAutoCompleteMyDomain.js
+%{_iceapedir}/components/nsAbAutoCompleteSearch.js
 %{_iceapedir}/components/nsAbLDAPAttributeMap.js
 %{_iceapedir}/components/nsMailNewsCommandLineHandler.js
+%{_iceapedir}/components/nsMsgTraitService.js
 %{_iceapedir}/components/nsSMTPProtocolHandler.js
 %{_iceapedir}/components/offlineStartup.js
 %{_iceapedir}/components/smime-service.js
 
+%{_datadir}/%{name}/chrome/gloda.jar
 %{_datadir}/%{name}/chrome/messenger.jar
+%{_datadir}/%{name}/chrome/newsblog.jar
 
 %{_desktopdir}/%{name}-mail.desktop
 
