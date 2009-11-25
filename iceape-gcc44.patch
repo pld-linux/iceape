@@ -1,0 +1,40 @@
+--- ./mozilla/toolkit/crashreporter/google-breakpad/src/common/linux/dump_symbols.cc.org	2009-10-25 15:34:09.000000000 +0100
++++ ./mozilla/toolkit/crashreporter/google-breakpad/src/common/linux/dump_symbols.cc	2009-11-25 08:59:48.106546323 +0100
+@@ -30,6 +30,7 @@
+ #include <a.out.h>
+ #include <cstdarg>
+ #include <cstdlib>
++#include <cstdio>
+ #include <cxxabi.h>
+ #include <elf.h>
+ #include <errno.h>
+--- ./mozilla/toolkit/crashreporter/google-breakpad/src/common/linux/dump_symbols.h.org	2009-10-25 15:34:09.000000000 +0100
++++ ./mozilla/toolkit/crashreporter/google-breakpad/src/common/linux/dump_symbols.h	2009-11-25 09:00:07.496970299 +0100
+@@ -34,6 +34,7 @@
+ #define COMMON_LINUX_DUMP_SYMBOLS_H__
+ 
+ #include <string>
++#include <cstdio>
+ 
+ namespace google_breakpad {
+ 
+--- ./mozilla/toolkit/crashreporter/google-breakpad/src/client/linux/handler/exception_handler.h.org	2009-10-25 15:34:09.000000000 +0100
++++ ./mozilla/toolkit/crashreporter/google-breakpad/src/client/linux/handler/exception_handler.h	2009-11-25 09:45:04.809191950 +0100
+@@ -37,6 +37,7 @@
+ #include <map>
+ #include <string>
+ #include <vector>
++#include <cstdio>
+ 
+ #include "client/linux/handler/minidump_generator.h"
+ 
+--- ./mozilla/toolkit/crashreporter/google-breakpad/src/client/linux/handler/minidump_generator.cc.org	2009-10-25 15:34:09.000000000 +0100
++++ ./mozilla/toolkit/crashreporter/google-breakpad/src/client/linux/handler/minidump_generator.cc	2009-11-25 10:01:54.432424772 +0100
+@@ -41,6 +41,7 @@
+ #include <cstdlib>
+ #include <ctime>
+ #include <string.h>
++#include <cstdio>
+ 
+ #include "common/linux/file_id.h"
+ #include "client/linux/handler/linux_thread.h"
