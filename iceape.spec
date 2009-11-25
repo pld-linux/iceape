@@ -1,3 +1,14 @@
+# TODO:
+# - rebranding to iceape is not complete
+# - some patches still needs to be reviewed
+# - check if any and which files should be moved to mailnews
+# - does chatzilla / dom-inspector / venkman need .desktop files?
+# - it seems like some gnomeui files are being build no matter
+#  if its enabled or disabled
+# - svg bcond seems obsolete
+# - probably lots and lots of other things
+# - change building-style to be from firefox
+#
 # Conditional build:
 %bcond_without	gnomevfs	# disable GnomeVFS support
 %bcond_with	gnomeui		# enable GnomeUI
@@ -14,7 +25,7 @@ Summary(pl.UTF-8):	Iceape - przeglądarka WWW
 Summary(pt_BR.UTF-8):	Navegador Iceape
 Name:		iceape
 Version:	2.0
-Release:	0.5
+Release:	0.6
 License:	MPL 1.1 or GPL v2+ or LGPL v2.1+
 Group:		X11/Applications/Networking
 Source0:	ftp://ftp.mozilla.org/pub/seamonkey/releases/%{version}/source/seamonkey-%{version}.source.tar.bz2
@@ -326,6 +337,8 @@ install suite/branding/icons/gtk/iceape.png $RPM_BUILD_ROOT%{_pixmapsdir}
 install mozilla/dist/bin/iceape-bin $RPM_BUILD_ROOT%{_iceapedir}
 install mozilla/dist/bin/regxpcom $RPM_BUILD_ROOT%{_iceapedir}
 install mozilla/dist/bin/xpidl $RPM_BUILD_ROOT%{_iceapedir}
+install mozilla/dist/bin/application.ini $RPM_BUILD_ROOT%{_iceapedir}
+install mozilla/dist/bin/platform.ini $RPM_BUILD_ROOT%{_iceapedir}
 
 cp $RPM_BUILD_ROOT%{_chromedir}/installed-chrome.txt \
         $RPM_BUILD_ROOT%{_chromedir}/%{name}-installed-chrome.txt
@@ -452,6 +465,7 @@ fi
 %dir %{_iceapedir}/searchplugins
 %dir %{_datadir}/%{name}
 
+%{_iceapedir}/*.ini
 %attr(755,root,root) %{_iceapedir}/libxpcom.so
 %attr(755,root,root) %{_iceapedir}/libxpcom_core.so
 %attr(755,root,root) %{_iceapedir}/libgfxpsshar.so
