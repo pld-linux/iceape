@@ -7,7 +7,6 @@
 #  if its enabled or disabled
 # - svg bcond seems obsolete
 # - probably lots and lots of other things
-# - change building-style to be from firefox
 #
 # Conditional build:
 %bcond_without	gnomevfs	# disable GnomeVFS support
@@ -255,36 +254,90 @@ cp -f /usr/share/automake/config.* mozilla/build/autoconf
 cp -f /usr/share/automake/config.* mozilla/nsprpub/build/autoconf
 cp -f /usr/share/automake/config.* directory/c-sdk/config/autoconf
 ac_cv_visibility_pragma=no; export ac_cv_visibility_pragma
-%configure2_13 \
-	%{!?debug:--disable-debug} \
-	--disable-elf-dynstr-gc \
-	%{!?with_gnomeui:--disable-gnomeui} \
-	%{!?with_gnomevfs:--disable-gnomevfs} \
-	--disable-pedantic \
-	--disable-xterm-updates \
-	--enable-application=suite \
-	--enable-crypto \
-	--enable-default-toolkit=cairo-gtk2 \
-	--enable-ldap \
-	--enable-optimize="%{rpmcflags}" \
-	--enable-postscript \
-	--enable-old-abi-compat-wrappers \
-	--enable-system-sqlite \
-	--with-default-mozilla-five-home=%{_iceapedir} \
-	--with-pthreads \
-	--with-system-jpeg \
-	--with-system-nspr \
-	--with-system-nss \
-	--with-system-png \
-	--with-system-zlib \
-	--with-x
 
-%{__make}
+cat << 'EOF' > .mozconfig
+mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/obj-%{_target_cpu}
+
+# Options for 'configure' (same as command-line options).
+ac_add_options --prefix=%{_prefix}
+ac_add_options --exec-prefix=%{_exec_prefix}
+ac_add_options --bindir=%{_bindir}
+ac_add_options --sbindir=%{_sbindir}
+ac_add_options --sysconfdir=%{_sysconfdir}
+ac_add_options --datadir=%{_datadir}
+ac_add_options --includedir=%{_includedir}
+ac_add_options --libdir=%{_libdir}
+ac_add_options --libexecdir=%{_libexecdir}
+ac_add_options --localstatedir=%{_localstatedir}
+ac_add_options --sharedstatedir=%{_sharedstatedir}
+ac_add_options --mandir=%{_mandir}
+ac_add_options --infodir=%{_infodir}
+%if %{?debug:1}0
+ac_add_options --disable-optimize
+ac_add_options --enable-debug
+ac_add_options --enable-debug-modules
+ac_add_options --enable-debugger-info-modules
+ac_add_options --enable-crash-on-assert
+%else
+ac_add_options --disable-debug
+ac_add_options --disable-debug-modules
+ac_add_options --disable-logging
+ac_add_options --enable-optimize="%{rpmcflags} -Os"
+%endif
+%if %{with tests}
+ac_add_options --enable-tests
+%else
+ac_add_options --disable-tests
+%endif
+%if %{with gnomeui}
+ac_add_options --enable-gnomeui
+%else
+ac_add_options --disable-gnomeui
+%endif
+%if %{with gnomevfs}
+ac_add_options --enable-gnomevfs
+%else
+ac_add_options --disable-gnomevfs
+%endif
+ac_add_options --disable-elf-dynstr-gc
+ac_add_options --disable-installer
+ac_add_options --disable-pedantic
+ac_add_options --disable-strip
+ac_add_options --disable-updater
+ac_add_options --disable-xterm-updates
+ac_add_options --enable-application=suite
+ac_add_options --enable-crypto
+ac_add_options --enable-default-toolkit=cairo-gtk2
+ac_add_options --enable-ldap
+ac_add_options --enable-optimize="%{rpmcflags}"
+ac_add_options --enable-postscript
+ac_add_options --enable-old-abi-compat-wrappers
+ac_add_options --enable-startup-notification
+ac_add_options --enable-system-cairo
+ac_add_options --enable-system-sqlite
+ac_add_options --with-default-mozilla-five-home=%{_iceapedir}
+ac_add_options --with-pthreads
+ac_add_options --with-system-jpeg
+ac_add_options --with-system-nspr
+ac_add_options --with-system-nss
+ac_add_options --with-system-png
+ac_add_options --with-system-zlib
+ac_add_options --with-x
+EOF
+#ac_add_options --with-branding=iceweasel/branding
+
+%{__make} -j1 -f client.mk build \
+	STRIP="/bin/true" \
+	CC="%{__cc}" \
+	CXX="%{__cxx}"
 
 cd mailnews/extensions/enigmail
 ./makemake -r
-%{__make}
 cd ../../..
+%{__make} -C obj-%{_target_cpu}/mailnews/extensions/enigmail -j1 \
+	STRIP="/bin/true" \
+	CC="%{__cc}" \
+	CXX="%{__cxx}"
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -294,6 +347,11 @@ install -d \
 	$RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir}} \
 	$RPM_BUILD_ROOT%{_datadir}/%{name}/{chrome,defaults,dictionaries,extensions,greprefs,icons,modules,plugins,res,searchplugins} \
 	$RPM_BUILD_ROOT%{_iceapedir}/{components,plugins}
+
+%{__make} -C obj-%{_target_cpu}/suite/installer stage-package \
+	DESTDIR=$RPM_BUILD_ROOT \
+	MOZ_PKG_APPDIR=%{_iceapedir} \
+	PKG_SKIP_STRIP=1
 
 # preparing to create register
 # remove empty directory trees
