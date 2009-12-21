@@ -7,6 +7,7 @@
 #  if its enabled or disabled
 # - svg bcond seems obsolete
 # - probably lots and lots of other things
+# - adopt install.patch from iceweasel
 #
 # Conditional build:
 %bcond_without	gnomevfs	# disable GnomeVFS support
@@ -350,7 +351,7 @@ install -d \
 
 %{__make} -C obj-%{_target_cpu}/suite/installer stage-package \
 	DESTDIR=$RPM_BUILD_ROOT \
-	MOZ_PKG_APPDIR=%{_iceapedir} \
+	MOZ_PKG_DIR=%{_iceapedir} \
 	PKG_SKIP_STRIP=1
 
 # preparing to create register
