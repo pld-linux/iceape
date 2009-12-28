@@ -2,12 +2,13 @@
 # - rebranding to iceape is not complete
 # - some patches still needs to be reviewed
 # - check if any and which files should be moved to mailnews
+# - review %files
 # - does chatzilla / dom-inspector / venkman need .desktop files?
 # - it seems like some gnomeui files are being build no matter
-#  if its enabled or disabled
+#   if its enabled or disabled
 # - svg bcond seems obsolete
 # - probably lots and lots of other things
-# - adopt install.patch from iceweasel
+# - application segfaults on statrup
 #
 # Conditional build:
 %bcond_without	gnomevfs	# disable GnomeVFS support
@@ -18,7 +19,7 @@
 %if %{without gnome}
 %undefine	with_gnomevfs
 %endif
-%define	enigmail_ver	0.96.0
+%define	enigmail_ver	1.0.0
 Summary:	Iceape - web browser
 Summary(es.UTF-8):	Navegador de Internet Iceape
 Summary(pl.UTF-8):	Iceape - przeglądarka WWW
@@ -31,7 +32,7 @@ Group:		X11/Applications/Networking
 Source0:	ftp://ftp.mozilla.org/pub/seamonkey/releases/%{version}/source/seamonkey-%{version}.source.tar.bz2
 # Source0-md5:	100c67f5dc351af5b9efb02bb375db50
 Source1:	http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_ver}.tar.gz
-# Source1-md5:	cf8c38e8d33965706df383ab33b3923c
+# Source1-md5:	e3a6d379f1a72ac023751bdde2de750a
 Source2:	%{name}-branding.tar.bz2
 # Source2-md5:	9707f1671625ac10cb4e52f0033d8776
 Source3:	%{name}-rm_nonfree.sh
@@ -50,6 +51,7 @@ Patch6:		%{name}-agent.patch
 Patch7:		%{name}-prefs.patch
 Patch8:		%{name}-lcrmf.patch
 Patch9:		%{name}-gcc44.patch
+Patch10:	%{name}-install.patch
 URL:		http://www.pld-linux.org/Packages/Iceape
 BuildRequires:	automake
 %{?with_svg:BuildRequires:	cairo-devel >= 1.0.0}
@@ -247,6 +249,7 @@ tar -C mailnews/extensions -zxf %{SOURCE1}
 %patch7 -p1
 %patch8 -p1
 %patch9 -p1
+%patch10 -p1
 
 %build
 cd mozilla
@@ -301,6 +304,7 @@ ac_add_options --enable-gnomevfs
 ac_add_options --disable-gnomevfs
 %endif
 ac_add_options --disable-elf-dynstr-gc
+ac_add_options --disable-crashreporter
 ac_add_options --disable-installer
 ac_add_options --disable-pedantic
 ac_add_options --disable-strip
@@ -344,63 +348,48 @@ cd ../../..
 rm -rf $RPM_BUILD_ROOT
 cd mozilla
 install -d \
-	$RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_datadir}} \
+	$RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_datadir},%{_libdir}} \
 	$RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir}} \
-	$RPM_BUILD_ROOT%{_datadir}/%{name}/{chrome,defaults,dictionaries,extensions,greprefs,icons,modules,plugins,res,searchplugins} \
-	$RPM_BUILD_ROOT%{_iceapedir}/{components,plugins}
+	$RPM_BUILD_ROOT%{_datadir}/%{name}
 
 %{__make} -C obj-%{_target_cpu}/suite/installer stage-package \
 	DESTDIR=$RPM_BUILD_ROOT \
 	MOZ_PKG_DIR=%{_iceapedir} \
 	PKG_SKIP_STRIP=1
 
-# preparing to create register
-# remove empty directory trees
-rm -fr dist/bin/chrome/{US,chatzilla,classic,comm,content-packs,cview,embed,embed-sample,en-US,en-mac,en-unix,en-win,help,inspector,messenger,modern,pipnss,pippki,toolkit,venkman,xmlterm}
-# non-unix
-rm -f dist/bin/chrome/en-{mac,win}.jar
+# enigmail must be installed manually
+install obj-%{_target_cpu}/mozilla/dist/bin/components/{{libenigmime,libipc}.so,{enigmail,enigprefs-service,enigMsgCompFields}.js} \
+	$RPM_BUILD_ROOT%{_libdir}/%{name}/components
+install obj-%{_target_cpu}/mozilla/dist/bin/chrome/{enigmail-en-US,enigmail-locale,enigmail-skin,enigmail,enigmime}.jar \
+	$RPM_BUILD_ROOT%{_libdir}/%{name}/chrome
 
-# creating and installing register
-LD_LIBRARY_PATH="mozilla/dist/bin" MOZILLA_FIVE_HOME="mozilla/dist/bin" mozilla/dist/bin/regxpcom
+# move arch independant ones to datadir
+mv $RPM_BUILD_ROOT%{_libdir}/%{name}/chrome $RPM_BUILD_ROOT%{_datadir}/%{name}/chrome
+mv $RPM_BUILD_ROOT%{_libdir}/%{name}/defaults $RPM_BUILD_ROOT%{_datadir}/%{name}/defaults
+mv $RPM_BUILD_ROOT%{_libdir}/%{name}/extensions $RPM_BUILD_ROOT%{_datadir}/%{name}/extensions
+mv $RPM_BUILD_ROOT%{_libdir}/%{name}/modules $RPM_BUILD_ROOT%{_datadir}/%{name}/modules
+mv $RPM_BUILD_ROOT%{_libdir}/%{name}/searchplugins $RPM_BUILD_ROOT%{_datadir}/%{name}/searchplugins
+mv $RPM_BUILD_ROOT%{_libdir}/%{name}/greprefs $RPM_BUILD_ROOT%{_datadir}/%{name}/greprefs
+mv $RPM_BUILD_ROOT%{_libdir}/%{name}/res $RPM_BUILD_ROOT%{_datadir}/%{name}/res
 
-ln -sf ../../share/%{name}/chrome $RPM_BUILD_ROOT%{_chromedir}
-ln -sf ../../share/%{name}/defaults $RPM_BUILD_ROOT%{_iceapedir}/defaults
-ln -sf ../../share/%{name}/dictionaries $RPM_BUILD_ROOT%{_iceapedir}/dictionaries
-ln -sf ../../share/%{name}/greprefs $RPM_BUILD_ROOT%{_iceapedir}/greprefs
-ln -sf ../../share/%{name}/icons $RPM_BUILD_ROOT%{_iceapedir}/icons
-ln -sf ../../share/%{name}/modules $RPM_BUILD_ROOT%{_iceapedir}/modules
-ln -sf ../../share/%{name}/plugins $RPM_BUILD_ROOT%{_iceapedir}/plugins
-ln -sf ../../share/%{name}/res $RPM_BUILD_ROOT%{_iceapedir}/res
-ln -sf ../../share/%{name}/searchplugins $RPM_BUILD_ROOT%{_iceapedir}/searchplugins
+ln -s ../../share/%{name}/chrome $RPM_BUILD_ROOT%{_libdir}/%{name}/chrome
+ln -s ../../share/%{name}/defaults $RPM_BUILD_ROOT%{_libdir}/%{name}/defaults
+ln -s ../../share/%{name}/extensions $RPM_BUILD_ROOT%{_libdir}/%{name}/extensions
+ln -s ../../share/%{name}/modules $RPM_BUILD_ROOT%{_libdir}/%{name}/modules
+ln -s ../../share/%{name}/searchplugins $RPM_BUILD_ROOT%{_libdir}/%{name}/searchplugins
+ln -s ../../share/%{name}/greprefs $RPM_BUILD_ROOT%{_libdir}/%{name}/greprefs
+ln -s ../../share/%{name}/res $RPM_BUILD_ROOT%{_libdir}/%{name}/res
 
-cp -frL mozilla/dist/bin/chrome/*	$RPM_BUILD_ROOT%{_datadir}/%{name}/chrome
-cp -frL mozilla/dist/bin/components/{[!m],m[!y]}*	$RPM_BUILD_ROOT%{_iceapedir}/components
-cp -frL mozilla/dist/bin/defaults/*	$RPM_BUILD_ROOT%{_datadir}/%{name}/defaults
-cp -frL mozilla/dist/bin/dictionaries/*	$RPM_BUILD_ROOT%{_datadir}/%{name}/dictionaries
-cp -frL mozilla/dist/bin/extensions/*		$RPM_BUILD_ROOT%{_datadir}/%{name}/extensions
-cp -frL mozilla/dist/bin/greprefs/*	$RPM_BUILD_ROOT%{_datadir}/%{name}/greprefs
-cp -frL mozilla/dist/bin/modules/*		$RPM_BUILD_ROOT%{_datadir}/%{name}/modules
-cp -frL mozilla/dist/bin/plugins/*		$RPM_BUILD_ROOT%{_datadir}/%{name}/plugins
-cp -frL mozilla/dist/bin/res/*		$RPM_BUILD_ROOT%{_datadir}/%{name}/res
-cp -frL mozilla/dist/bin/searchplugins/* $RPM_BUILD_ROOT%{_datadir}/%{name}/searchplugins
+rm -rf $RPM_BUILD_ROOT%{_libdir}/%{name}/dictionaries
+ln -s %{_datadir}/myspell $RPM_BUILD_ROOT%{_libdir}/%{name}/dictionaries
 
-install mozilla/dist/bin/*.so $RPM_BUILD_ROOT%{_iceapedir}
-
-ln -s %{_libdir}/libnssckbi.so $RPM_BUILD_ROOT%{_iceapedir}/libnssckbi.so
+touch $RPM_BUILD_ROOT%{_libdir}/%{name}/components/compreg.dat
+touch $RPM_BUILD_ROOT%{_libdir}/%{name}/components/xpti.dat
 
 install %{SOURCE4} %{SOURCE5} %{SOURCE6} %{SOURCE7} %{SOURCE8} \
 	$RPM_BUILD_ROOT%{_desktopdir}
 
 install suite/branding/icons/gtk/iceape.png $RPM_BUILD_ROOT%{_pixmapsdir}
-
-install mozilla/dist/bin/iceape-bin $RPM_BUILD_ROOT%{_iceapedir}
-install mozilla/dist/bin/regxpcom $RPM_BUILD_ROOT%{_iceapedir}
-install mozilla/dist/bin/xpidl $RPM_BUILD_ROOT%{_iceapedir}
-install mozilla/dist/bin/application.ini $RPM_BUILD_ROOT%{_iceapedir}
-install mozilla/dist/bin/platform.ini $RPM_BUILD_ROOT%{_iceapedir}
-
-cp $RPM_BUILD_ROOT%{_chromedir}/installed-chrome.txt \
-        $RPM_BUILD_ROOT%{_chromedir}/%{name}-installed-chrome.txt
 
 cat << 'EOF' > $RPM_BUILD_ROOT%{_bindir}/iceape
 #!/bin/sh
@@ -463,7 +452,7 @@ rm -f %{_iceapedir}/components/{compreg,xpti}.dat
 LD_LIBRARY_PATH=%{_iceapedir}${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 export LD_LIBRARY_PATH
 
-MOZILLA_FIVE_HOME=%{_iceapedir} %{_iceapedir}/regxpcom
+%{_libdir}/%{name}/iceape -register
 exit 0
 EOF
 
@@ -515,16 +504,17 @@ fi
 %dir %{_iceapedir}/components
 %dir %{_iceapedir}/defaults
 %dir %{_iceapedir}/dictionaries
+%dir %{_iceapedir}/extensions
 %dir %{_iceapedir}/greprefs
-%dir %{_iceapedir}/icons
 %dir %{_iceapedir}/modules
 %dir %{_iceapedir}/plugins
-%dir %{_iceapedir}/plugins/plugins
 %dir %{_iceapedir}/res
 %dir %{_iceapedir}/searchplugins
 %dir %{_datadir}/%{name}
 
 %{_iceapedir}/*.ini
+%{_iceapedir}/*.xml
+
 %attr(755,root,root) %{_iceapedir}/libxpcom.so
 %attr(755,root,root) %{_iceapedir}/libxpcom_core.so
 %attr(755,root,root) %{_iceapedir}/libgfxpsshar.so
@@ -535,15 +525,13 @@ fi
 %attr(755,root,root) %{_iceapedir}/libldif60.so
 %attr(755,root,root) %{_iceapedir}/libmozjs.so
 %attr(755,root,root) %{_iceapedir}/libprldap60.so
-%attr(755,root,root) %{_iceapedir}/libssldap60.so
 %attr(755,root,root) %{_iceapedir}/libthebes.so
 %attr(755,root,root) %{_iceapedir}/libxul.so
 
+%attr(755,root,root) %{_iceapedir}/iceape
+%attr(755,root,root) %{_iceapedir}/run-mozilla.sh
 %attr(755,root,root) %{_iceapedir}/iceape-bin
-%attr(755,root,root) %{_iceapedir}/reg*
-%attr(755,root,root) %{_iceapedir}/xpidl
-
-%attr(755,root,root) %{_iceapedir}/libnssckbi.so
+%attr(755,root,root) %{_iceapedir}/mozilla-xremote-client
 
 %attr(755,root,root) %{_iceapedir}/components/libaccess*.so
 %attr(755,root,root) %{_iceapedir}/components/libappcomps.so
@@ -568,7 +556,6 @@ fi
 %attr(755,root,root) %{_iceapedir}/components/libjsd.so
 %attr(755,root,root) %{_iceapedir}/components/libmork.so
 %attr(755,root,root) %{_iceapedir}/components/libmoz*.so
-%attr(755,root,root) %{_iceapedir}/components/libMyService.so
 %attr(755,root,root) %{_iceapedir}/components/libnecko*.so
 %attr(755,root,root) %{_iceapedir}/components/libns*.so
 %attr(755,root,root) %{_iceapedir}/components/liboji.so
@@ -585,7 +572,6 @@ fi
 %attr(755,root,root) %{_iceapedir}/components/libsuite.so
 %attr(755,root,root) %{_iceapedir}/components/libstoragecomps.so
 %attr(755,root,root) %{_iceapedir}/components/libsystem-pref.so
-%attr(755,root,root) %{_iceapedir}/components/libtestdynamic.so
 %attr(755,root,root) %{_iceapedir}/components/libtkautocomplete.so
 %attr(755,root,root) %{_iceapedir}/components/libtoolkitcomps.so
 %attr(755,root,root) %{_iceapedir}/components/libtxmgr.so
@@ -599,94 +585,11 @@ fi
 %attr(755,root,root) %{_iceapedir}/components/libx*.so
 %attr(755,root,root) %{_iceapedir}/components/libzipwriter.so
 
-%{_iceapedir}/components/access*.xpt
-%{_iceapedir}/components/alerts.xpt
-%{_iceapedir}/components/appshell.xpt
-%{_iceapedir}/components/appstartup.xpt
-%{_iceapedir}/components/autocomplete.xpt
-%{_iceapedir}/components/autoconfig.xpt
-%{_iceapedir}/components/caps.xpt
-%{_iceapedir}/components/chardet.xpt
-%{_iceapedir}/components/chrome.xpt
-%{_iceapedir}/components/commandhandler.xpt
-%{_iceapedir}/components/commandlines.xpt
-%{_iceapedir}/components/composer.xpt
-%{_iceapedir}/components/content*.xpt
-%{_iceapedir}/components/cookie.xpt
-%{_iceapedir}/components/directory.xpt
-%{_iceapedir}/components/docshell.xpt
-%{_iceapedir}/components/dom*.xpt
-%{_iceapedir}/components/downloads.xpt
-%{_iceapedir}/components/editor.xpt
-%{_iceapedir}/components/embed_base.xpt
-%{_iceapedir}/components/extensions.xpt
-%{_iceapedir}/components/exthandler.xpt
-%{_iceapedir}/components/exthelper.xpt
-%{_iceapedir}/components/fastfind.xpt
-%{_iceapedir}/components/feeds.xpt
-%{_iceapedir}/components/find.xpt
-%{_iceapedir}/components/filepicker.xpt
-%{_iceapedir}/components/gfx*.xpt
-%{_iceapedir}/components/htmlparser.xpt
-%{_iceapedir}/components/imgicon.xpt
-%{_iceapedir}/components/imglib2.xpt
-%{_iceapedir}/components/intl.xpt
-%{_iceapedir}/components/jar.xpt
-%{_iceapedir}/components/js*.xpt
-%{_iceapedir}/components/layout*.xpt
-%{_iceapedir}/components/locale.xpt
-%{_iceapedir}/components/loginmgr.xpt
-%{_iceapedir}/components/lwbrk.xpt
-%{_iceapedir}/components/mimetype.xpt
-%{_iceapedir}/components/moz*.xpt
-%{_iceapedir}/components/necko*.xpt
-%{_iceapedir}/components/oji.xpt
-%{_iceapedir}/components/parentalcontrols.xpt
-%{_iceapedir}/components/pipboot.xpt
-%{_iceapedir}/components/pipnss.xpt
-%{_iceapedir}/components/pippki.xpt
-%{_iceapedir}/components/places.xpt
-%{_iceapedir}/components/plugin.xpt
-%{_iceapedir}/components/pref.xpt
-%{_iceapedir}/components/prefetch.xpt
-%{_iceapedir}/components/profile.xpt
-%{_iceapedir}/components/proxyObjInst.xpt
-%{_iceapedir}/components/proxytest.xpt
-%{_iceapedir}/components/rdf.xpt
-%{_iceapedir}/components/satchel.xpt
-%{_iceapedir}/components/saxparser.xpt
-%{_iceapedir}/components/shellservice.xpt
-%{_iceapedir}/components/shistory.xpt
-%{_iceapedir}/components/smile.xpt
-%{_iceapedir}/components/spellchecker.xpt
-%{_iceapedir}/components/storage.xpt
-%{_iceapedir}/components/suitebrowser.xpt
-%{_iceapedir}/components/suitecommon.xpt
-%{_iceapedir}/components/suitefeeds.xpt
-%{_iceapedir}/components/suitemigration.xpt
-%{_iceapedir}/components/test_necko.xpt
-%{_iceapedir}/components/toolkitprofile.xpt
-%{_iceapedir}/components/toolkitremote.xpt
-%{_iceapedir}/components/txmgr.xpt
-%{_iceapedir}/components/txtsvc.xpt
-%{_iceapedir}/components/uconv.xpt
-%{_iceapedir}/components/unicharutil.xpt
-%{_iceapedir}/components/update.xpt
-%{_iceapedir}/components/uriloader.xpt
-%{_iceapedir}/components/urlformatter.xpt
-%{_iceapedir}/components/webBrowser_core.xpt
-%{_iceapedir}/components/webbrowserpersist.xpt
-%{_iceapedir}/components/webshell_idls.xpt
-%{_iceapedir}/components/widget.xpt
-%{_iceapedir}/components/windowds.xpt
-%{_iceapedir}/components/windowwatcher.xpt
-%{_iceapedir}/components/x*.xpt
-%{_iceapedir}/components/zipwriter.xpt
+%{_iceapedir}/components/browser.xpt
 
 %{_iceapedir}/components/FeedConverter.js
 %{_iceapedir}/components/FeedProcessor.js
 %{_iceapedir}/components/FeedWriter.js
-%{_iceapedir}/components/httpd.js
 %{_iceapedir}/components/jsconsole-clhandler.js
 %{_iceapedir}/components/NetworkGeolocationProvider.js
 %{_iceapedir}/components/nsAboutAbout.js
@@ -714,7 +617,6 @@ fi
 %{_iceapedir}/components/nsPlacesDBFlush.js
 %{_iceapedir}/components/nsProgressDialog.js
 %{_iceapedir}/components/nsProxyAutoConfig.js
-%{_iceapedir}/components/nsSample.js
 %{_iceapedir}/components/nsSessionStartup.js
 %{_iceapedir}/components/nsSessionStore.js
 %{_iceapedir}/components/nsSidebar.js
@@ -727,11 +629,9 @@ fi
 %{_iceapedir}/components/nsURLFormatter.js
 %{_iceapedir}/components/nsWebHandlerApp.js
 %{_iceapedir}/components/pluginGlue.js
-%{_iceapedir}/components/reftest-cmdline.js
 %{_iceapedir}/components/smileApplication.js
 %{_iceapedir}/components/storage-Legacy.js
 %{_iceapedir}/components/storage-mozStorage.js
-%{_iceapedir}/components/tp-cmdline.js
 %{_iceapedir}/components/txEXSLTRegExFunctions.js
 %{_iceapedir}/components/WebContentConverter.js
 
@@ -740,28 +640,21 @@ fi
 %ghost %{_iceapedir}/components/compreg.dat
 %ghost %{_iceapedir}/components/xpti.dat
 
+%attr(755,root,root) %{_iceapedir}/plugins/libnullplugin.so
+
 %dir %{_datadir}/%{name}/chrome
 %{_datadir}/%{name}/chrome/classic.jar
 %{_datadir}/%{name}/chrome/comm.jar
 %{_datadir}/%{name}/chrome/en-US.jar
-%{_datadir}/%{name}/chrome/pageloader.jar
 %{_datadir}/%{name}/chrome/pippki.jar
-%{_datadir}/%{name}/chrome/reftest.jar
 %{_datadir}/%{name}/chrome/reporter.jar
 %{_datadir}/%{name}/chrome/toolkit.jar
-%{_datadir}/%{name}/chrome/xslt-qa.jar
 
 %{_datadir}/%{name}/chrome/icons
 
-%{_datadir}/%{name}/chrome/%{name}-installed-chrome.txt
-%ghost %{_datadir}/%{name}/chrome/installed-chrome.txt
-
 %{_datadir}/%{name}/defaults
-%{_datadir}/%{name}/dictionaries
 %{_datadir}/%{name}/greprefs
-%{_datadir}/%{name}/icons
 %{_datadir}/%{name}/modules
-%{_datadir}/%{name}/plugins
 %{_datadir}/%{name}/res
 %{_datadir}/%{name}/searchplugins
 
@@ -784,12 +677,8 @@ fi
 %attr(755,root,root) %{_iceapedir}/components/libmail.so
 %attr(755,root,root) %{_iceapedir}/components/libmsg*.so
 
-%{_iceapedir}/components/addrbook.xpt
-%{_iceapedir}/components/impComm4xMail.xpt
-%{_iceapedir}/components/import.xpt
-%{_iceapedir}/components/mailview.xpt
-%{_iceapedir}/components/mime.xpt
-%{_iceapedir}/components/msg*.xpt
+%{_iceapedir}/isp
+%{_iceapedir}/components/mail.xpt
 
 %{_iceapedir}/components/glautocomp.js
 %{_iceapedir}/components/jsmimeemitter.js
@@ -814,15 +703,11 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_iceapedir}/components/libenigmime.so
 %attr(755,root,root) %{_iceapedir}/components/libipc.so
-%{_iceapedir}/components/enigmail.xpt
-%{_iceapedir}/components/enigmime.xpt
-%{_iceapedir}/components/ipc.xpt
 %{_iceapedir}/components/enigmail.js
 %{_iceapedir}/components/enigprefs-service.js
 %{_iceapedir}/components/enigMsgCompFields.js
 %{_datadir}/%{name}/chrome/enigmail-en-US.jar
 %{_datadir}/%{name}/chrome/enigmail-locale.jar
-%{_datadir}/%{name}/chrome/enigmail-skin-seamonkey.jar
 %{_datadir}/%{name}/chrome/enigmail-skin.jar
 %{_datadir}/%{name}/chrome/enigmail.jar
 %{_datadir}/%{name}/chrome/enigmime.jar
@@ -831,7 +716,6 @@ fi
 %defattr(644,root,root,755)
 %{_desktopdir}/%{name}-chat.desktop
 %{_datadir}/%{name}/extensions/{59c81df5-4b7a-477b-912d-4e0fdf64e5f2}/chrome/chatzilla.jar
-%{_datadir}/%{name}/extensions/{59c81df5-4b7a-477b-912d-4e0fdf64e5f2}/chrome/icons/default/chatzilla-window.ico
 %{_datadir}/%{name}/extensions/{59c81df5-4b7a-477b-912d-4e0fdf64e5f2}/chrome/icons/default/chatzilla-window.xpm
 %{_datadir}/%{name}/extensions/{59c81df5-4b7a-477b-912d-4e0fdf64e5f2}/chrome/icons/default/chatzilla-window16.xpm
 %{_datadir}/%{name}/extensions/{59c81df5-4b7a-477b-912d-4e0fdf64e5f2}/components/chatzilla-service.js
@@ -846,15 +730,12 @@ fi
 
 %files dom-inspector
 %defattr(644,root,root,755)
-%{_iceapedir}/components/inspector.xpt
 %{_datadir}/%{name}/extensions/inspector@mozilla.org/chrome/inspector.jar
 %{_datadir}/%{name}/extensions/inspector@mozilla.org/components/inspector-cmdline.js
 %{_datadir}/%{name}/extensions/inspector@mozilla.org/defaults/preferences/inspector.js
 %{_datadir}/%{name}/extensions/inspector@mozilla.org/install.rdf
 %{_datadir}/%{name}/extensions/inspector@mozilla.org/platform/Linux/chrome/icons/default/winInspectorMain.xpm
 %{_datadir}/%{name}/extensions/inspector@mozilla.org/platform/Linux/chrome/icons/default/winInspectorMain16.xpm
-%{_datadir}/%{name}/extensions/inspector@mozilla.org/platform/OS2/chrome/icons/default/winInspectorMain.ico
-%{_datadir}/%{name}/extensions/inspector@mozilla.org/platform/WINNT/chrome/icons/default/winInspectorMain.ico
 
 %if %{with gnomevfs}
 %files gnomevfs
