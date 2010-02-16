@@ -41,6 +41,7 @@ Patch7:		%{name}-prefs.patch
 Patch8:		%{name}-lcrmf.patch
 Patch9:		%{name}-pld-branding.patch
 Patch10:	%{name}-sqlite.patch
+Patch11:	%{name}-libpng.patch
 URL:		http://www.pld-linux.org/Packages/Iceape
 BuildRequires:	automake
 %{?with_svg:BuildRequires:	cairo-devel >= 1.0.0}
@@ -238,6 +239,7 @@ tar -C mailnews/extensions -zxf %{SOURCE1}
 %patch8 -p1
 %patch9 -p1
 %patch10 -p1
+%patch11 -p2
 
 %build
 cd mozilla
