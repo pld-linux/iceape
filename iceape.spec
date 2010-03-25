@@ -410,11 +410,13 @@ EOF
 rm -rf $RPM_BUILD_ROOT
 
 %post
-%{_sbindir}/%{name}-chrome+xpcom-generate
+if [ "$1" = 1 ]; then
+	%{_sbindir}/iceape-chrome+xpcom-generate
+fi
 %update_browser_plugins
 
 %postun
-%{_sbindir}/%{name}-chrome+xpcom-generate
+[ ! -x %{_sbindir}/iceape-chrome+xpcom-generate ] || %{_sbindir}/iceape-chrome+xpcom-generate
 if [ "$1" = 0 ]; then
 	%update_browser_plugins
 fi
