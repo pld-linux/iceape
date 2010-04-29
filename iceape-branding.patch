@@ -192,29 +192,6 @@ diff -urN mozilla.orig/suite/locales/en-US/chrome/branding/brand.dtd mozilla/sui
 +<!ENTITY  vendorShortName       "Iceape">
  <!ENTITY  sidebarName           "Sidebar">
  <!ENTITY  copyright.string      "Copyright &copy; 2003-2009 Contributors to the Mozilla project.">
-diff -urN mozilla.orig/suite/locales/en-US/chrome/branding/brand.properties mozilla/suite/locales/en-US/chrome/branding/brand.properties
---- mozilla.orig/suite/locales/en-US/chrome/branding/brand.properties	2009-10-17 15:48:26.000000000 +0200
-+++ mozilla/suite/locales/en-US/chrome/branding/brand.properties	2009-10-24 13:38:12.000000000 +0200
-@@ -1,11 +1,11 @@
--brandFullName=SeaMonkey
--brandShortName=SeaMonkey
--vendorShortName=SeaMonkey
-+brandFullName=Iceape
-+brandShortName=Iceape
-+vendorShortName=Iceape
- sidebarName=Sidebar
- extensions.getMoreLocalesURL=http://www.seamonkey-project.org/releases/#l10n
--extensions.getMoreExtensionsURL=https://%LOCALE%.add-ons.mozilla.com/%LOCALE%/%APP%/%VERSION%/extensions/
--extensions.getMoreThemesURL=https://%LOCALE%.add-ons.mozilla.com/%LOCALE%/%APP%/%VERSION%/themes/
--extensions.getMorePluginsURL=https://%LOCALE%.add-ons.mozilla.com/%LOCALE%/%APP%/%VERSION%/plugins/
--spellchecker.dictionaries.download.url=https://%LOCALE%.add-ons.mozilla.com/%LOCALE%/%APP%/%VERSION%/dictionaries/
-+extensions.getMoreExtensionsURL=https://%LOCALE%.add-ons.mozilla.com/%LOCALE%/seamonkey/%VERSION%/extensions/
-+extensions.getMoreThemesURL=https://%LOCALE%.add-ons.mozilla.com/%LOCALE%/seamonkey/%VERSION%/themes/
-+extensions.getMorePluginsURL=https://%LOCALE%.add-ons.mozilla.com/%LOCALE%/seamonkey/%VERSION%/plugins/
-+spellchecker.dictionaries.download.url=https://%LOCALE%.add-ons.mozilla.com/%LOCALE%/seamonkey/%VERSION%/dictionaries/
- app.releaseNotesURL=http://www.seamonkey-project.org/releases/seamonkey%VERSION%/
--app.vendorURL=http://www.seamonkey-project.org/
-+app.vendorURL=http://www.pld-linux.org/
 diff -urN mozilla.orig/suite/locales/en-US/chrome/browser/region.properties mozilla/suite/locales/en-US/chrome/browser/region.properties
 --- mozilla.orig/suite/locales/en-US/chrome/browser/region.properties	2009-10-17 15:48:26.000000000 +0200
 +++ mozilla/suite/locales/en-US/chrome/browser/region.properties	2009-10-24 13:36:43.000000000 +0200
@@ -356,3 +333,25 @@ diff -urN mozilla.orig/suite/themes/modern/install.rdf mozilla/suite/themes/mode
      <em:description>A contemporary theme for all components.</em:description>
  
      <!-- EXTENSION AUTHORS!
+--- mozilla/suite/locales/en-US/chrome/branding/brand.properties.org	2010-03-17 19:28:34.000000000 +0100
++++ mozilla/suite/locales/en-US/chrome/branding/brand.properties	2010-04-29 22:30:43.071835712 +0200
+@@ -1,11 +1,11 @@
+-brandFullName=SeaMonkey
+-brandShortName=SeaMonkey
+-vendorShortName=SeaMonkey
++brandFullName=Iceape
++brandShortName=Iceape
++vendorShortName=Iceape
+ sidebarName=Sidebar
+ extensions.getMoreLocalesURL=http://www.seamonkey-project.org/releases/#l10n
+-extensions.getMoreExtensionsURL=https://addons.mozilla.org/%LOCALE%/%APP%/
+-extensions.getMorePluginsURL=https://addons.mozilla.org/%LOCALE%/%APP%/plugins
+-extensions.getMoreThemesURL=https://addons.mozilla.org/%LOCALE%/%APP%/themes
+-spellchecker.dictionaries.download.url=https://addons.mozilla.org/%LOCALE%/%APP%/dictionaries
++extensions.getMoreExtensionsURL=https://addons.mozilla.org/%LOCALE%/seamonkey/
++extensions.getMorePluginsURL=https://addons.mozilla.org/%LOCALE%/seamonkey/plugins
++extensions.getMoreThemesURL=https://addons.mozilla.org/%LOCALE%/seamonkey/themes
++spellchecker.dictionaries.download.url=https://addons.mozilla.org/%LOCALE%/seamonkey/dictionaries
+ app.releaseNotesURL=http://www.seamonkey-project.org/releases/seamonkey%VERSION%/
+-app.vendorURL=http://www.seamonkey-project.org/
++app.vendorURL=http://www.pld-linux.org/
