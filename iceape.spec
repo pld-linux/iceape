@@ -53,6 +53,7 @@ Patch8:		%{name}-lcrmf.patch
 Patch10:	%{name}-install.patch
 URL:		http://www.pld-linux.org/Packages/Iceape
 BuildRequires:	automake
+BuildRequires:	alsa-lib-devel
 %{?with_svg:BuildRequires:	cairo-devel >= 1.0.0}
 BuildRequires:	freetype-devel >= 1:2.1.8
 %{?with_gnomevfs:BuildRequires:	gnome-vfs2-devel >= 2.0.0}
@@ -69,6 +70,7 @@ BuildRequires:	pkgconfig
 BuildRequires:	rpm >= 4.4.9-56
 BuildRequires:	rpmbuild(macros) >= 1.356
 BuildRequires:	sed >= 4.0
+BuildRequires:	startup-notification-devel
 BuildRequires:	xorg-lib-libXext-devel
 BuildRequires:	xorg-lib-libXft-devel >= 2.1
 BuildRequires:	xorg-lib-libXinerama-devel
@@ -358,7 +360,7 @@ install -d \
 # enigmail must be installed manually
 install obj-%{_target_cpu}/mozilla/dist/bin/components/{{libenigmime,libipc}.so,{enigmail,enigprefs-service,enigMsgCompFields}.js} \
 	$RPM_BUILD_ROOT%{_libdir}/%{name}/components
-install obj-%{_target_cpu}/mozilla/dist/bin/chrome/{enigmail-en-US,enigmail-locale,enigmail-skin,enigmail,enigmime}.jar \
+install obj-%{_target_cpu}/mozilla/dist/bin/chrome/{en-US,enigmail,enigmime}.jar \
 	$RPM_BUILD_ROOT%{_libdir}/%{name}/chrome
 
 # move arch independant ones to datadir
@@ -704,9 +706,7 @@ fi
 %{_iceapedir}/components/enigmail.js
 %{_iceapedir}/components/enigprefs-service.js
 %{_iceapedir}/components/enigMsgCompFields.js
-%{_datadir}/%{name}/chrome/enigmail-en-US.jar
-%{_datadir}/%{name}/chrome/enigmail-locale.jar
-%{_datadir}/%{name}/chrome/enigmail-skin.jar
+%{_datadir}/%{name}/chrome/en-US.jar
 %{_datadir}/%{name}/chrome/enigmail.jar
 %{_datadir}/%{name}/chrome/enigmime.jar
 
