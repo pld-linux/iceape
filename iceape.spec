@@ -4,7 +4,7 @@
 %bcond_with	gnomeui		# enable GnomeUI
 %bcond_without	gnome		# disable gnomevfs (alias)
 %bcond_without	svg		# disable svg support
-#
+
 %if %{without gnome}
 %undefine	with_gnomevfs
 %endif
@@ -15,7 +15,7 @@ Summary(pl.UTF-8):	Iceape - przeglądarka WWW
 Summary(pt_BR.UTF-8):	Navegador Iceape
 Name:		iceape
 Version:	1.1.18
-Release:	5
+Release:	6
 License:	MPL 1.1 or GPL v2+ or LGPL v2.1+
 Group:		X11/Applications/Networking
 Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/seamonkey-%{version}.source.tar.bz2
@@ -86,11 +86,11 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		filterout_cpp	-D_FORTIFY_SOURCE=[0-9]+
 
 # iceweasel/icedove/iceape provide their own versions
-%define		_noautoreqdep	libgfxpsshar.so libgkgfx.so libgtkxtbin.so libjsj.so libxlibrgb.so libxpcom_compat.so libxpcom_core.so libxpistub.so
+%define		_noautoreqdep	libgfxpsshar.so libgkgfx.so libgtkxtbin.so libjsj.so libxlibrgb.so libxpcom_compat.so libxpistub.so
 # we don't want these to satisfy xulrunner-devel
-%define		_noautoprov	libgtkembedmoz.so libldap50.so libmozjs.so libprldap50.so libssldap50.so libxpcom.so libxul.so
+%define		_noautoprov	libgtkembedmoz.so libldap50.so libmozjs.so libprldap50.so libssldap50.so libxpcom.so libxul.so libxpcom_core.so
 # and as we don't provide them, don't require either
-%define		_noautoreq	libgtkembedmoz.so libldap50.so libmozjs.so libprldap50.so libssldap50.so libxpcom.so libxul.so
+%define		_noautoreq	libgtkembedmoz.so libldap50.so libmozjs.so libprldap50.so libssldap50.so libxpcom.so libxul.so libxpcom_core.so
 
 %define		specflags	-fno-strict-aliasing
 
