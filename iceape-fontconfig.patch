@@ -1,0 +1,19 @@
+--- iceape-1.1.18/mozilla/configure~	2012-02-13 22:33:45.668928348 +0100
++++ iceape-1.1.18/mozilla/configure	2012-02-13 22:45:10.003704514 +0100
+@@ -13564,14 +13564,14 @@
+ 
+             echo $ac_n "checking MOZ_XFT_CFLAGS""... $ac_c" 1>&6
+ echo "configure:13567: checking MOZ_XFT_CFLAGS" >&5
+-            MOZ_XFT_CFLAGS=`$PKG_CONFIG --cflags "xft"`
++            MOZ_XFT_CFLAGS=`$PKG_CONFIG --cflags "xft" "fontconfig"`
+             echo "$ac_t""$MOZ_XFT_CFLAGS" 1>&6
+ 
+             echo $ac_n "checking MOZ_XFT_LIBS""... $ac_c" 1>&6
+ echo "configure:13572: checking MOZ_XFT_LIBS" >&5
+             ## don't use --libs since that can do evil things like add
+             ## -Wl,--export-dynamic
+-            MOZ_XFT_LIBS="`$PKG_CONFIG --libs-only-L \"xft\"` `$PKG_CONFIG --libs-only-l \"xft\"`"
++            MOZ_XFT_LIBS="`$PKG_CONFIG --libs-only-L \"xft\" \"fontconfig\"` `$PKG_CONFIG --libs-only-l \"xft\" \"fontconfig\"`"
+             echo "$ac_t""$MOZ_XFT_LIBS" 1>&6
+         else
+             MOZ_XFT_CFLAGS=""

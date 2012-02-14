@@ -1,0 +1,11 @@
+--- iceape-1.1.18/mozilla/mailnews/extensions/smime/build/Makefile.in~	2012-02-13 22:46:30.040928411 +0100
++++ iceape-1.1.18/mozilla/mailnews/extensions/smime/build/Makefile.in	2012-02-13 23:30:54.767986512 +0100
+@@ -80,7 +80,7 @@
+ 		$(NULL)
+ 
+ ifndef MOZ_STATIC_MAIL_BUILD
+-SHARED_LIBRARY_LIBS + = $(DIST)/lib/$(LIB_PREFIX)msgbsutl_s.$(LIB_SUFFIX)
++#SHARED_LIBRARY_LIBS += $(DIST)/lib/$(LIB_PREFIX)msgbsutl_s.$(LIB_SUFFIX)
+ endif
+ 
+ EXTRA_DSO_LDOPTS = \
