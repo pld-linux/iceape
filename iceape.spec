@@ -15,7 +15,7 @@ Summary(pl.UTF-8):	Iceape - przeglądarka WWW
 Summary(pt_BR.UTF-8):	Navegador Iceape
 Name:		iceape
 Version:	1.1.18
-Release:	8
+Release:	9
 License:	MPL 1.1 or GPL v2+ or LGPL v2.1+
 Group:		X11/Applications/Networking
 Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/seamonkey-%{version}.source.tar.bz2
@@ -42,6 +42,9 @@ Patch8:		%{name}-lcrmf.patch
 Patch9:		%{name}-pld-branding.patch
 Patch10:	%{name}-sqlite.patch
 Patch11:	%{name}-libpng.patch
+Patch12:	%{name}-libpng15.patch
+Patch13:	%{name}-fontconfig.patch
+Patch14:	%{name}-build.patch
 URL:		http://www.pld-linux.org/Packages/Iceape
 BuildRequires:	automake
 %{?with_svg:BuildRequires:	cairo-devel >= 1.0.0}
@@ -240,6 +243,9 @@ tar -C mailnews/extensions -zxf %{SOURCE1}
 %patch9 -p1
 %patch10 -p1
 %patch11 -p2
+%patch12 -p2
+%patch13 -p2
+%patch14 -p2
 
 %build
 cd mozilla
