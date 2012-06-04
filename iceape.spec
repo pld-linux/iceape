@@ -1,27 +1,26 @@
 #
 # Conditional build:
-%bcond_without	gnomevfs	# disable GnomeVFS support
 %bcond_with	gnomeui		# enable GnomeUI
-%bcond_without	gnome		# disable gnomevfs (alias)
+%bcond_without	gnome		# disable gnomeui (alias)
 %bcond_without	svg		# disable svg support
 
 %if %{without gnome}
-%undefine	with_gnomevfs
+%undefine	with_gnomeui
 %endif
-%define	enigmail_ver	0.96.0
+%define	enigmail_ver	1.4.1
 Summary:	Iceape - web browser
 Summary(es.UTF-8):	Navegador de Internet Iceape
 Summary(pl.UTF-8):	Iceape - przeglądarka WWW
 Summary(pt_BR.UTF-8):	Navegador Iceape
 Name:		iceape
-Version:	1.1.18
-Release:	9
+Version:	2.9.1
+Release:	0.1
 License:	MPL 1.1 or GPL v2+ or LGPL v2.1+
 Group:		X11/Applications/Networking
-Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/seamonkey-%{version}.source.tar.bz2
-# Source0-md5:	ef4455becf3a12833dca7dd92854aeaa
+Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/source/seamonkey-%{version}.source.tar.bz2
+# Source0-md5:	8dd18d93a6570c3c9f3873bb177ccc6b
 Source1:	http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_ver}.tar.gz
-# Source1-md5:	cf8c38e8d33965706df383ab33b3923c
+# Source1-md5:	0eba75fbcf8f0bb32d538df102fbb8e9
 Source2:	%{name}-branding.tar.bz2
 # Source2-md5:	841caa8235c5350737c09fbbc681e9d3
 Source3:	%{name}-rm_nonfree.sh
@@ -49,7 +48,6 @@ URL:		http://www.pld-linux.org/Packages/Iceape
 BuildRequires:	automake
 %{?with_svg:BuildRequires:	cairo-devel >= 1.0.0}
 BuildRequires:	freetype-devel >= 1:2.1.8
-%{?with_gnomevfs:BuildRequires:	gnome-vfs2-devel >= 2.0.0}
 BuildRequires:	gtk+2-devel
 BuildRequires:	libIDL-devel >= 0.8.0
 %{?with_gnomeui:BuildRequires:	libgnomeui-devel >= 2.0}
@@ -78,9 +76,12 @@ Provides:	iceape-embedded = %{epoch}:%{version}-%{release}
 Provides:	wwwbrowser
 Obsoletes:	light
 Obsoletes:	mozilla
+Obsoletes:	mozilla-gnomevfs
 Obsoletes:	seamonkey
 Obsoletes:	seamonkey-calendar
 Obsoletes:	seamonkey-libs
+Obsoletes:	seamonkey-mailnews
+Obsoletes:	seamonkey-gnomevfs
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_iceapedir	%{_libdir}/%{name}
@@ -117,26 +118,6 @@ Communicator.
 Iceape - полнофункциональный web-browser с открытыми исходными
 текстами, разработанный для максимального соотвествия стандартам,
 максмимальной переносимости и скорости работы
-
-%package mailnews
-Summary:	Iceape - programs for mail and news
-Summary(pl.UTF-8):	Iceape - programy do poczty i newsów
-Summary(ru.UTF-8):	Почтовая система на основе Iceape
-Group:		X11/Applications/Networking
-Requires(post,postun):	%{name} = %{epoch}:%{version}-%{release}
-Requires:	%{name} = %{epoch}:%{version}-%{release}
-Obsoletes:	mozilla-mailnews
-Obsoletes:	seamonkey-mailnews
-
-%description mailnews
-Programs for mail and news integrated with browser.
-
-%description mailnews -l pl.UTF-8
-Programy pocztowe i obsługa newsów zintegrowane z przeglądarką.
-
-%description mailnews -l ru.UTF-8
-Клиент почты и новостей, на основе Iceape Поддерживает IMAP, POP и
-NNTP и имеет простой интерфейс пользователя.
 
 %package addon-enigmail
 Summary:	Enigmail %{enigmail_ver} - PGP/GPG support for Iceape
@@ -207,21 +188,6 @@ To narzędzie pozwala na oglądanie DOM dla stron WWW w Iceape. Jest
 bardzo przydatne dla ludzi rozwijających chrome w Iceape lub
 tworzących strony WWW.
 
-%package gnomevfs
-Summary:	Gnome-VFS module providing support for smb:// URLs
-Summary(pl.UTF-8):	Moduł Gnome-VFS dodający wsparcie dla URLi smb://
-Group:		X11/Applications/Networking
-Requires(post,postun):	%{name} = %{epoch}:%{version}-%{release}
-Requires:	%{name} = %{epoch}:%{version}-%{release}
-Obsoletes:	mozilla-gnomevfs
-Obsoletes:	seamonkey-gnomevfs
-
-%description gnomevfs
-Gnome-VFS module providing support for smb:// URLs.
-
-%description gnomevfs -l pl.UTF-8
-Moduł Gnome-VFS dodający wsparcie dla URLi smb://.
-
 %prep
 %setup -qc
 cd mozilla
@@ -258,7 +224,6 @@ ac_cv_visibility_pragma=no; export ac_cv_visibility_pragma
 	%{!?debug:--disable-debug} \
 	--disable-elf-dynstr-gc \
 	%{!?with_gnomeui:--disable-gnomeui} \
-	%{!?with_gnomevfs:--disable-gnomevfs} \
 	--disable-pedantic \
 	--disable-tests \
 	--disable-xterm-updates \
@@ -426,24 +391,6 @@ fi
 if [ "$1" = 0 ]; then
 	%update_browser_plugins
 fi
-
-%post mailnews -p %{_sbindir}/%{name}-chrome+xpcom-generate
-%postun mailnews -p %{_sbindir}/%{name}-chrome+xpcom-generate
-
-%post addon-enigmail -p %{_sbindir}/%{name}-chrome+xpcom-generate
-%postun addon-enigmail -p %{_sbindir}/%{name}-chrome+xpcom-generate
-
-%post chat -p %{_sbindir}/%{name}-chrome+xpcom-generate
-%postun chat -p %{_sbindir}/%{name}-chrome+xpcom-generate
-
-%post js-debugger -p %{_sbindir}/%{name}-chrome+xpcom-generate
-%postun js-debugger -p %{_sbindir}/%{name}-chrome+xpcom-generate
-
-%post dom-inspector -p %{_sbindir}/%{name}-chrome+xpcom-generate
-%postun dom-inspector -p %{_sbindir}/%{name}-chrome+xpcom-generate
-
-%post gnomevfs -p %{_sbindir}/%{name}-chrome+xpcom-generate
-%postun gnomevfs -p %{_sbindir}/%{name}-chrome+xpcom-generate
 
 %files
 %defattr(644,root,root,755)
@@ -697,22 +644,6 @@ fi
 %{_desktopdir}/%{name}.desktop
 %{_desktopdir}/%{name}-composer.desktop
 
-%files mailnews
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_iceapedir}/libmsgbaseutil.so
-%attr(755,root,root) %{_iceapedir}/components/libaddrbook.so
-%attr(755,root,root) %{_iceapedir}/components/libbayesflt.so
-%attr(755,root,root) %{_iceapedir}/components/libimpText.so
-%attr(755,root,root) %{_iceapedir}/components/libimpComm4xMail.so
-%attr(755,root,root) %{_iceapedir}/components/libimport.so
-%attr(755,root,root) %{_iceapedir}/components/liblocalmail.so
-%attr(755,root,root) %{_iceapedir}/components/libmailnews.so
-%attr(755,root,root) %{_iceapedir}/components/libmailview.so
-%attr(755,root,root) %{_iceapedir}/components/libmime.so
-%attr(755,root,root) %{_iceapedir}/components/libmimeemitter.so
-%attr(755,root,root) %{_iceapedir}/components/libmsg*.so
-%attr(755,root,root) %{_iceapedir}/components/libvcard.so
-
 %{_iceapedir}/components/addrbook.xpt
 %{_iceapedir}/components/impComm4xMail.xpt
 %{_iceapedir}/components/import.xpt
@@ -774,9 +705,3 @@ fi
 %{_datadir}/%{name}/chrome/inspector.jar
 %{_datadir}/%{name}/chrome/icons/default/winInspectorMain*.xpm
 %{_datadir}/%{name}/defaults/pref/inspector.js
-
-%if %{with gnomevfs}
-%files gnomevfs
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_iceapedir}/components/libnkgnomevfs.so
-%endif
