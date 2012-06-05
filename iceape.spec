@@ -418,6 +418,9 @@ cd %{objdir}
 	installdir=%{_libdir}/%{name} \
 	PKG_SKIP_STRIP=1
 
+%{__make} -C iceape/branding install \
+	DESTDIR=$RPM_BUILD_ROOT
+
 cp -a mozilla/dist/iceape/* $RPM_BUILD_ROOT%{_libdir}/%{name}/
 
 %if %{with xulrunner}
@@ -481,8 +484,6 @@ chmod a+rx $RPM_BUILD_ROOT%{_bindir}/iceape
 install %{SOURCE4} %{SOURCE5} %{SOURCE6} %{SOURCE7} %{SOURCE8} \
 	$RPM_BUILD_ROOT%{_desktopdir}
 
-cp -p %{topdir}/comm-release/suite/branding/nightly/content/icon64.png $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
-
 # files created by iceape -register
 touch $RPM_BUILD_ROOT%{_libdir}/%{name}/components/compreg.dat
 touch $RPM_BUILD_ROOT%{_libdir}/%{name}/components/xpti.dat
@@ -536,11 +537,13 @@ rm -rf $RPM_BUILD_ROOT
 %post
 %{_libdir}/%{name}/register || :
 %update_browser_plugins
+%update_icon_cache hicolor
 %update_desktop_database
 
 %postun
 if [ "$1" = 0 ]; then
 	%update_browser_plugins
+	%update_icon_cache hicolor
 fi
 
 %files
@@ -727,7 +730,8 @@ fi
 %{_datadir}/%{name}/isp/movemail.rdf
 %{_datadir}/%{name}/isp/rss.rdf
 
-%{_pixmapsdir}/iceape.png
+%{_iconsdir}/hicolor/*/apps/iceape.png
+%{_iconsdir}/hicolor/scalable/apps/iceape.svg
 %{_desktopdir}/%{name}.desktop
 %{_desktopdir}/%{name}-composer.desktop
 %{_desktopdir}/%{name}-mail.desktop
