@@ -37,13 +37,14 @@ Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/sou
 Source1:	http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_ver}.tar.gz
 # Source1-md5:	0eba75fbcf8f0bb32d538df102fbb8e9
 Source2:	%{name}-branding.tar.bz2
-# Source2-md5:	841caa8235c5350737c09fbbc681e9d3
+# Source2-md5:	6cbf2f0e62c042946bf351f1e2d1b256
 Source3:	%{name}-rm_nonfree.sh
 Source4:	%{name}.desktop
 Source5:	%{name}-composer.desktop
 Source6:	%{name}-chat.desktop
 Source7:	%{name}-mail.desktop
 Source8:	%{name}-venkman.desktop
+Source9:	%{name}.sh
 Patch0:		%{name}-branding.patch
 Patch1:		%{name}-pld-branding.patch
 Patch2:		%{name}-agent.patch
@@ -77,8 +78,10 @@ BuildRequires:	libjpeg-devel >= 6b
 BuildRequires:	libnotify-devel >= 0.4
 BuildRequires:	libpng(APNG)-devel >= 0.10
 BuildRequires:	libpng-devel >= 1.4.1
+# rsvg-convert for iceape/branding
+BuildRequires:	librsvg
 BuildRequires:	libstdc++-devel
-BuildRequires:	libvpx-devel
+BuildRequires:	libvpx-devel >= 1.0.0
 BuildRequires:	nspr-devel >= 1:%{nspr_ver}
 BuildRequires:	nss-devel >= 1:%{nss_ver}
 BuildRequires:	pango-devel >= 1:1.14.0
@@ -252,6 +255,7 @@ tworzących strony WWW.
 %setup -qc
 cd comm-release
 tar -C mailnews/extensions -zxf %{SOURCE1}
+tar -jxf %{SOURCE2}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
@@ -358,6 +362,7 @@ ac_add_options --enable-system-hunspell
 ac_add_options --enable-system-sqlite
 ac_add_options --enable-application=suite
 ac_add_options --with-distribution-id=org.pld-linux
+ac_add_options --with-branding=iceape/branding
 %if %{with xulrunner}
 ac_add_options --with-system-libxul
 ac_add_options --with-libxul-sdk=$(pkg-config --variable=sdkdir libxul)
@@ -470,10 +475,10 @@ ln -s %{_datadir}/myspell $RPM_BUILD_ROOT%{_libdir}/%{name}/dictionaries
 ln -s %{_datadir}/myspell $RPM_BUILD_ROOT%{_libdir}/%{name}/hyphenation
 %endif
 
-sed 's,@LIBDIR@,%{_libdir},' %{SOURCE7} > $RPM_BUILD_ROOT%{_bindir}/iceape
+sed 's,@LIBDIR@,%{_libdir},' %{SOURCE9} > $RPM_BUILD_ROOT%{_bindir}/iceape
 chmod a+rx $RPM_BUILD_ROOT%{_bindir}/iceape
 
-install %{SOURCE2} %{SOURCE3} %{SOURCE4} %{SOURCE5} %{SOURCE6} \
+install %{SOURCE4} %{SOURCE5} %{SOURCE6} %{SOURCE7} %{SOURCE8} \
 	$RPM_BUILD_ROOT%{_desktopdir}
 
 cp -p %{topdir}/comm-release/suite/branding/nightly/content/icon64.png $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
