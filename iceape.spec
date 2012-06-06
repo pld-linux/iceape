@@ -135,6 +135,7 @@ Obsoletes:	seamonkey-calendar
 Obsoletes:	seamonkey-libs
 Obsoletes:	seamonkey-mailnews
 Obsoletes:	seamonkey-gnomevfs
+Conflicts:	iceape-lang-resources < %{version}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		topdir		%{_builddir}/%{name}-%{version}
