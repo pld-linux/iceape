@@ -16,7 +16,7 @@
 %define		enigmail_ver	1.4.2
 %define		nspr_ver	4.9
 %define		nss_ver		3.13.3
-%define		xulrunner_ver	12.0
+%define		xulrunner_ver	13.0
 
 %if %{without xulrunner}
 # The actual sqlite version (see RHBZ#480989):
@@ -28,16 +28,16 @@ Summary(es.UTF-8):	Navegador de Internet Iceape
 Summary(pl.UTF-8):	Iceape - przeglądarka WWW
 Summary(pt_BR.UTF-8):	Navegador Iceape
 Name:		iceape
-Version:	2.9.1
+Version:	2.10
 Release:	1
 License:	MPL 1.1 or GPL v2+ or LGPL v2.1+
 Group:		X11/Applications/Networking
 Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/source/seamonkey-%{version}.source.tar.bz2
-# Source0-md5:	8dd18d93a6570c3c9f3873bb177ccc6b
+# Source0-md5:	c2c41a12107a67e5eedef06d50e26c56
 Source1:	http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_ver}.tar.gz
 # Source1-md5:	ed608e1cd4cd20b96f7f5afdbf081141
 Source2:	%{name}-branding.tar.bz2
-# Source2-md5:	6cbf2f0e62c042946bf351f1e2d1b256
+# Source2-md5:	a18e5112591404f3feb358d410c08c53
 Source3:	%{name}-rm_nonfree.sh
 Source4:	%{name}.desktop
 Source5:	%{name}-composer.desktop
@@ -52,6 +52,7 @@ Patch3:		%{name}-glueload-fix.patch
 Patch4:		system-mozldap.patch
 Patch5:		makefile.patch
 Patch6:		system-cairo.patch
+Patch7:		system-libs.patch
 URL:		http://www.pld-linux.org/Packages/Iceape
 BuildRequires:	GConf2-devel >= 1.2.1
 BuildRequires:	OpenGL-devel
@@ -263,6 +264,7 @@ tar -jxf %{SOURCE2}
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p2
 
 %build
 cd comm-release
@@ -638,18 +640,13 @@ fi
 %endif
 
 %{_libdir}/%{name}/components/nsAbout.js
-%{_libdir}/%{name}/components/nsAboutCertError.js
-%{_libdir}/%{name}/components/nsAboutData.js
-%{_libdir}/%{name}/components/nsAboutFeeds.js
-%{_libdir}/%{name}/components/nsAboutLife.js
-%{_libdir}/%{name}/components/nsAboutRights.js
-%{_libdir}/%{name}/components/nsAboutSessionRestore.js
-%{_libdir}/%{name}/components/nsAboutSyncTabs.js
 %{_libdir}/%{name}/components/nsComposerCmdLineHandler.js
 %{_libdir}/%{name}/components/nsSuiteDownloadManagerUI.js
 %{_libdir}/%{name}/components/nsSuiteGlue.js
 %{_libdir}/%{name}/components/nsTypeAheadFind.js
 %{_libdir}/%{name}/components/smileApplication.js
+%{_libdir}/%{name}/components/ContactManager.js
+%{_libdir}/%{name}/components/messageWakeupService.js
 
 %if %{without xulrunner}
 %attr(755,root,root) %{_libdir}/%{name}/components/libdbusservice.so
