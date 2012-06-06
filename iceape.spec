@@ -480,6 +480,10 @@ ln -s %{_datadir}/myspell $RPM_BUILD_ROOT%{_libdir}/%{name}/dictionaries
 ln -s %{_datadir}/myspell $RPM_BUILD_ROOT%{_libdir}/%{name}/hyphenation
 %endif
 
+%{__sed} -e "s|%MOZAPPDIR%|%{_libdir}/%{name}|" \
+	 -e "s|%MOZ_APP_DISPLAYNAME%|Iceape|" \
+	%{topdir}/comm-release/mozilla/build/unix/mozilla.in > $RPM_BUILD_ROOT%{_libdir}/%{name}/iceape
+
 sed 's,@LIBDIR@,%{_libdir},' %{SOURCE9} > $RPM_BUILD_ROOT%{_bindir}/iceape
 chmod a+rx $RPM_BUILD_ROOT%{_bindir}/iceape
 
