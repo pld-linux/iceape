@@ -13,7 +13,7 @@
 %undefine	with_gnomeui
 %endif
 
-%define		enigmail_ver	1.4.1
+%define		enigmail_ver	1.4.2
 %define		nspr_ver	4.9
 %define		nss_ver		3.13.3
 %define		xulrunner_ver	12.0
@@ -35,7 +35,7 @@ Group:		X11/Applications/Networking
 Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/source/seamonkey-%{version}.source.tar.bz2
 # Source0-md5:	8dd18d93a6570c3c9f3873bb177ccc6b
 Source1:	http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_ver}.tar.gz
-# Source1-md5:	0eba75fbcf8f0bb32d538df102fbb8e9
+# Source1-md5:	ed608e1cd4cd20b96f7f5afdbf081141
 Source2:	%{name}-branding.tar.bz2
 # Source2-md5:	6cbf2f0e62c042946bf351f1e2d1b256
 Source3:	%{name}-rm_nonfree.sh
