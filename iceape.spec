@@ -28,12 +28,12 @@ Summary(es.UTF-8):	Navegador de Internet Iceape
 Summary(pl.UTF-8):	Iceape - przeglądarka WWW
 Summary(pt_BR.UTF-8):	Navegador Iceape
 Name:		iceape
-Version:	2.10
+Version:	2.10.1
 Release:	1
 License:	MPL 1.1 or GPL v2+ or LGPL v2.1+
 Group:		X11/Applications/Networking
 Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/source/seamonkey-%{version}.source.tar.bz2
-# Source0-md5:	c2c41a12107a67e5eedef06d50e26c56
+# Source0-md5:	1c89d3657b5e2e9765391208c5f9bfda
 Source1:	http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_ver}.tar.gz
 # Source1-md5:	ed608e1cd4cd20b96f7f5afdbf081141
 Source2:	%{name}-branding.tar.bz2
@@ -52,7 +52,6 @@ Patch3:		%{name}-glueload-fix.patch
 Patch4:		system-mozldap.patch
 Patch5:		makefile.patch
 Patch6:		system-cairo.patch
-Patch7:		system-libs.patch
 URL:		http://www.pld-linux.org/Packages/Iceape
 BuildRequires:	GConf2-devel >= 1.2.1
 BuildRequires:	OpenGL-devel
@@ -265,7 +264,6 @@ tar -jxf %{SOURCE2}
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
-%patch7 -p2
 
 %build
 cd comm-release
