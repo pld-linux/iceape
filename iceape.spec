@@ -29,7 +29,7 @@ Summary(pl.UTF-8):	Iceape - przeglądarka WWW
 Summary(pt_BR.UTF-8):	Navegador Iceape
 Name:		iceape
 Version:	2.10.1
-Release:	2
+Release:	3
 License:	MPL 1.1 or GPL v2+ or LGPL v2.1+
 Group:		X11/Applications/Networking
 Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/source/seamonkey-%{version}.source.tar.bz2
@@ -126,6 +126,8 @@ Requires:	startup-notification >= 0.8
 %endif
 Provides:	iceape-embedded = %{epoch}:%{version}-%{release}
 Provides:	wwwbrowser
+Obsoletes:	iceape-mailnews
+Obsoletes:	iceape-gnomevfs
 Obsoletes:	light
 Obsoletes:	mozilla
 Obsoletes:	mozilla-gnomevfs
