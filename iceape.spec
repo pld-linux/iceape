@@ -37,7 +37,7 @@ Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/sou
 Source1:	http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_ver}.tar.gz
 # Source1-md5:	4a253db11436a32ef81d5917c4ee6e25
 Source2:	%{name}-branding.tar.bz2
-# Source2-md5:	a18e5112591404f3feb358d410c08c53
+# Source2-md5:	0bc28b4382aa8a961f8f7b2ba66d8f89
 Source3:	%{name}-rm_nonfree.sh
 Source4:	%{name}.desktop
 Source5:	%{name}-composer.desktop
