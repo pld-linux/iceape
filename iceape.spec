@@ -591,18 +591,34 @@ fi
 
 %dir %{_libdir}/%{name}/components
 
+%{_libdir}/%{name}/components/BrowserElementAPI.js
+%{_libdir}/%{name}/components/ContactManager.js
 %{_libdir}/%{name}/components/FeedConverter.js
 %{_libdir}/%{name}/components/FeedWriter.js
+%{_libdir}/%{name}/components/SettingsManager.js
 %{_libdir}/%{name}/components/Weave.js
+%{_libdir}/%{name}/components/Webapps.js
 %{_libdir}/%{name}/components/WebContentConverter.js
-%{_libdir}/%{name}/components/browser.xpt
+%{_libdir}/%{name}/components/messageWakeupService.js
+%{_libdir}/%{name}/components/nsAbout.js
 %{_libdir}/%{name}/components/nsBrowserContentHandler.js
+%{_libdir}/%{name}/components/nsComposerCmdLineHandler.js
 %{_libdir}/%{name}/components/nsSessionStartup.js
 %{_libdir}/%{name}/components/nsSessionStore.js
 %{_libdir}/%{name}/components/nsSidebar.js
+%{_libdir}/%{name}/components/nsSuiteDownloadManagerUI.js
+%{_libdir}/%{name}/components/nsSuiteGlue.js
+%{_libdir}/%{name}/components/nsTypeAheadFind.js
+%{_libdir}/%{name}/components/nsUrlClassifierHashCompleter.js
+%{_libdir}/%{name}/components/nsUrlClassifierLib.js
+%{_libdir}/%{name}/components/nsUrlClassifierListManager.js
+%{_libdir}/%{name}/components/smileApplication.js
 
+%{_libdir}/%{name}/components/browser.xpt
 %{_libdir}/%{name}/components/components.manifest
 %{_libdir}/%{name}/components/interfaces.manifest
+
+%attr(755,root,root) %{_libdir}/%{name}/components/libsuite.so
 
 %if %{without xulrunner}
 %{_libdir}/%{name}/platform.ini
@@ -642,41 +658,22 @@ fi
 %{_libdir}/%{name}/components/nsSearchService.js
 %{_libdir}/%{name}/components/nsSearchSuggestions.js
 %{_libdir}/%{name}/components/nsTaggingService.js
-%{_libdir}/%{name}/components/nsURLFormatter.js
 %{_libdir}/%{name}/components/nsUpdateTimerManager.js
+%{_libdir}/%{name}/components/nsURLFormatter.js
 %{_libdir}/%{name}/components/nsWebHandlerApp.js
 %{_libdir}/%{name}/components/storage-Legacy.js
 %{_libdir}/%{name}/components/storage-mozStorage.js
 %{_libdir}/%{name}/components/txEXSLTRegExFunctions.js
-%endif
-
-%{_libdir}/%{name}/components/nsAbout.js
-%{_libdir}/%{name}/components/nsComposerCmdLineHandler.js
-%{_libdir}/%{name}/components/nsSuiteDownloadManagerUI.js
-%{_libdir}/%{name}/components/nsSuiteGlue.js
-%{_libdir}/%{name}/components/nsTypeAheadFind.js
-%{_libdir}/%{name}/components/smileApplication.js
-%{_libdir}/%{name}/components/ContactManager.js
-%{_libdir}/%{name}/components/messageWakeupService.js
-
-%if %{without xulrunner}
 %attr(755,root,root) %{_libdir}/%{name}/components/libdbusservice.so
-%endif
-
-%if %{without xulrunner}
 %attr(755,root,root) %{_libdir}/%{name}/components/libmozgnome.so
-%endif
-
-%attr(755,root,root) %{_libdir}/%{name}/components/libsuite.so
-
-%attr(755,root,root) %{_libdir}/%{name}/iceape
-%dir %{_libdir}/%{name}/plugins
-%if %{without xulrunner}
 %attr(755,root,root) %{_libdir}/%{name}/run-mozilla.sh
 %attr(755,root,root) %{_libdir}/%{name}/iceape-bin
 %attr(755,root,root) %{_libdir}/%{name}/mozilla-xremote-client
 %attr(755,root,root) %{_libdir}/%{name}/plugin-container
 %endif
+
+%attr(755,root,root) %{_libdir}/%{name}/iceape
+%dir %{_libdir}/%{name}/plugins
 
 # symlinks
 %{_libdir}/%{name}/chrome
