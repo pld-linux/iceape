@@ -86,7 +86,10 @@ diff --git a/suite/locales/en-US/chrome/branding/brand.properties b/suite/locale
 index f068049..f4a29a9 100644
 --- a/suite/locales/en-US/chrome/branding/brand.properties
 +++ b/suite/locales/en-US/chrome/branding/brand.properties
-@@ -1,6 +1,6 @@
+@@ -1,9 +1,9 @@
+ # License, v. 2.0. If a copy of the MPL was not distributed with this
+ # file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ 
 -brandFullName=SeaMonkey
 -brandShortName=SeaMonkey
 -vendorShortName=SeaMonkey

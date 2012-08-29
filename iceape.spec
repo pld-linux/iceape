@@ -13,10 +13,10 @@
 %undefine	with_gnomeui
 %endif
 
-%define		enigmail_ver	1.4.3
+%define		enigmail_ver	1.4.4
 %define		nspr_ver	4.9
 %define		nss_ver		3.13.3
-%define		xulrunner_ver	14.0
+%define		xulrunner_ver	15.0
 
 %if %{without xulrunner}
 # The actual sqlite version (see RHBZ#480989):
@@ -28,14 +28,14 @@ Summary(es.UTF-8):	Navegador de Internet Iceape
 Summary(pl.UTF-8):	Iceape - przeglądarka WWW
 Summary(pt_BR.UTF-8):	Navegador Iceape
 Name:		iceape
-Version:	2.11
+Version:	2.12
 Release:	1
 License:	MPL 1.1 or GPL v2+ or LGPL v2.1+
 Group:		X11/Applications/Networking
 Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/source/seamonkey-%{version}.source.tar.bz2
-# Source0-md5:	807e8993f8fe4a3a42e8f63ecfb0f15d
+# Source0-md5:	a13f7286ce923556e3a05a8844694667
 Source1:	http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_ver}.tar.gz
-# Source1-md5:	4a253db11436a32ef81d5917c4ee6e25
+# Source1-md5:	1bc36b5077f6b01b6acf0f75565dddc8
 Source2:	%{name}-branding.tar.bz2
 # Source2-md5:	0bc28b4382aa8a961f8f7b2ba66d8f89
 Source3:	%{name}-rm_nonfree.sh
@@ -52,6 +52,8 @@ Patch3:		%{name}-glueload-fix.patch
 Patch4:		system-mozldap.patch
 Patch5:		makefile.patch
 Patch6:		system-cairo.patch
+# Edit patch below and restore --system-site-packages when system virtualenv gets 1.7 upgrade
+Patch7:		system-virtualenv.patch
 URL:		http://www.pld-linux.org/Packages/Iceape
 BuildRequires:	GConf2-devel >= 1.2.1
 BuildRequires:	OpenGL-devel
@@ -90,6 +92,7 @@ BuildRequires:	perl-modules >= 5.004
 BuildRequires:	pkgconfig
 BuildRequires:	python >= 1:2.5
 BuildRequires:	python-modules
+BuildRequires:	python-virtualenv
 BuildRequires:	rpm >= 4.4.9-56
 BuildRequires:	rpmbuild(macros) >= 1.601
 BuildRequires:	sed >= 4.0
@@ -266,6 +269,7 @@ tar -jxf %{SOURCE2}
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 
 %build
 cd comm-release
@@ -591,7 +595,9 @@ fi
 
 %dir %{_libdir}/%{name}/components
 
-%{_libdir}/%{name}/components/BrowserElementAPI.js
+%{_libdir}/%{name}/components/Aitc.js
+%{_libdir}/%{name}/components/AppsService.js
+%{_libdir}/%{name}/components/BrowserElementParent.js
 %{_libdir}/%{name}/components/ContactManager.js
 %{_libdir}/%{name}/components/FeedConverter.js
 %{_libdir}/%{name}/components/FeedWriter.js
