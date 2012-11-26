@@ -13,10 +13,10 @@
 %undefine	with_gnomeui
 %endif
 
-%define		enigmail_ver	1.4.4
+%define		enigmail_ver	1.4.6
 %define		nspr_ver	4.9
 %define		nss_ver		3.13.3
-%define		xulrunner_ver	15.0
+%define		xulrunner_ver	17.0
 
 %if %{without xulrunner}
 # The actual sqlite version (see RHBZ#480989):
@@ -28,14 +28,14 @@ Summary(es.UTF-8):	Navegador de Internet Iceape
 Summary(pl.UTF-8):	Iceape - przeglądarka WWW
 Summary(pt_BR.UTF-8):	Navegador Iceape
 Name:		iceape
-Version:	2.12
-Release:	1
+Version:	2.14
+Release:	0.1
 License:	MPL 1.1 or GPL v2+ or LGPL v2.1+
 Group:		X11/Applications/Networking
 Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/source/seamonkey-%{version}.source.tar.bz2
-# Source0-md5:	a13f7286ce923556e3a05a8844694667
+# Source0-md5:	3974c95cc30357a35656175b318e4fd3
 Source1:	http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_ver}.tar.gz
-# Source1-md5:	1bc36b5077f6b01b6acf0f75565dddc8
+# Source1-md5:	3d42cff27e0f8da24bdabf8363d8261f
 Source2:	%{name}-branding.tar.bz2
 # Source2-md5:	0bc28b4382aa8a961f8f7b2ba66d8f89
 Source3:	%{name}-rm_nonfree.sh

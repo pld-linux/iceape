@@ -1,13 +1,13 @@
 --- mozilla/suite/browser/browser-prefs.js.orig	2007-03-21 23:39:25.000000000 +0100
 +++ mozilla/suite/browser/browser-prefs.js	2007-03-21 23:39:10.000000000 +0100
 @@ -61,6 +61,10 @@
- 
- #expand pref("general.useragent.extra.__MOZ_APP_NAME__", "__MOZ_APP_DISPLAYNAME__/__MOZ_APP_VERSION__");
+ pref("general.useragent.override.natweststockbrokers.com", "Gecko/[^ ]*#Gecko/20100101"); // bug 804179
+ pref("general.useragent.override.raiffeisen.hu",         "Gecko/[^ ]*#Gecko/20100101"); // bug 795348
  
 +pref("general.useragent.vendor", "PLD");
 +pref("general.useragent.vendorSub", "3.0");
 +pref("general.useragent.vendorComment", "Th");
 +
- // 0 = blank, 1 = home (browser.startup.homepage), 2 = last
+ // 0 = blank, 1 = home (browser.startup.homepage), 2 = last visited page, 3 = resume previous browser session
  pref("browser.startup.page",                1);
  pref("browser.startup.homepage",	   "chrome://navigator-region/locale/region.properties");
