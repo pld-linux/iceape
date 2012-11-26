@@ -29,7 +29,7 @@ Summary(pl.UTF-8):	Iceape - przeglądarka WWW
 Summary(pt_BR.UTF-8):	Navegador Iceape
 Name:		iceape
 Version:	2.14
-Release:	0.1
+Release:	1
 License:	MPL 1.1 or GPL v2+ or LGPL v2.1+
 Group:		X11/Applications/Networking
 Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/source/seamonkey-%{version}.source.tar.bz2
@@ -596,19 +596,20 @@ fi
 %dir %{_libdir}/%{name}/components
 
 %{_libdir}/%{name}/components/Aitc.js
+%{_libdir}/%{name}/components/AlarmsManager.js
 %{_libdir}/%{name}/components/AppsService.js
 %{_libdir}/%{name}/components/BrowserElementParent.js
+%{_libdir}/%{name}/components/ColorAnalyzer.js
 %{_libdir}/%{name}/components/ContactManager.js
 %{_libdir}/%{name}/components/FeedConverter.js
 %{_libdir}/%{name}/components/FeedWriter.js
-%{_libdir}/%{name}/components/SettingsManager.js
-%{_libdir}/%{name}/components/Weave.js
-%{_libdir}/%{name}/components/Webapps.js
-%{_libdir}/%{name}/components/WebContentConverter.js
 %{_libdir}/%{name}/components/messageWakeupService.js
+%{_libdir}/%{name}/components/newMailNotificationService.js
 %{_libdir}/%{name}/components/nsAbout.js
 %{_libdir}/%{name}/components/nsBrowserContentHandler.js
 %{_libdir}/%{name}/components/nsComposerCmdLineHandler.js
+%{_libdir}/%{name}/components/nsDOMIdentity.js
+%{_libdir}/%{name}/components/nsIDService.js
 %{_libdir}/%{name}/components/nsSessionStartup.js
 %{_libdir}/%{name}/components/nsSessionStore.js
 %{_libdir}/%{name}/components/nsSidebar.js
@@ -618,7 +619,13 @@ fi
 %{_libdir}/%{name}/components/nsUrlClassifierHashCompleter.js
 %{_libdir}/%{name}/components/nsUrlClassifierLib.js
 %{_libdir}/%{name}/components/nsUrlClassifierListManager.js
+%{_libdir}/%{name}/components/SettingsManager.js
+%{_libdir}/%{name}/components/SiteSpecificUserAgent.js
 %{_libdir}/%{name}/components/smileApplication.js
+%{_libdir}/%{name}/components/TCPSocket.js
+%{_libdir}/%{name}/components/Weave.js
+%{_libdir}/%{name}/components/Webapps.js
+%{_libdir}/%{name}/components/WebContentConverter.js
 
 %{_libdir}/%{name}/components/browser.xpt
 %{_libdir}/%{name}/components/components.manifest
