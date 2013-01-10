@@ -153,6 +153,10 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_noautoreq	libmozjs.so libxpcom.so libxul.so libjemalloc.so %{!?with_xulrunner:libmozalloc.so}
 %define		_noautoreqdep	libgfxpsshar.so libgkgfx.so libgtkxtbin.so libjsj.so libxpcom_compat.so libxpistub.so
 
+# disable debuginfo package due to debugedit not being able to do its job on libxul.so
+# same problem as: https://bugzilla.redhat.com/show_bug.cgi?id=304121
+%define		_enable_debug_packages		0
+
 %description
 Iceape is an open-source web browser, designed for standards
 compliance, performance and portability.
