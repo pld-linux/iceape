@@ -391,6 +391,7 @@ EOF
 	STRIP="/bin/true" \
 	MOZ_MAKE_FLAGS="%{?_smp_mflags}" \
 	installdir=%{_libdir}/%{name} \
+	XLIBS="-lX11 -lXt" \
 	CC="%{__cc}" \
 	CXX="%{__cxx}"
 
@@ -528,10 +529,8 @@ cd mozilla/dist/bin
 cp -rfLp chrome/enigmail.jar $ext_dir/chrome
 cp -rfLp components/enig* $ext_dir/components
 cp -rfLp components/libenigmime.so $ext_dir/components
-cp -rfLp components/libipc.so $ext_dir/components
-cp -rfLp components/ipc.xpt $ext_dir/components
 cp -rfLp defaults/preferences/enigmail.js $ext_dir/defaults/preferences
-cp -rfLp modules/{commonFuncs,enigmailCommon,keyManagement,pipeConsole,pipeTransport,subprocess}.jsm $ext_dir/modules
+cp -rfLp modules/{commonFuncs,enigmailCommon,keyManagement,pipeConsole,subprocess}.jsm $ext_dir/modules
 cp -rfLp modules/{subprocess_worker_unix,subprocess_worker_win}.js $ext_dir/modules
 cd -
 cp -p %{topdir}/comm-release/mailnews/extensions/enigmail/package/install.rdf $ext_dir
@@ -612,6 +611,7 @@ fi
 %{_libdir}/%{name}/components/nsIDService.js
 %{_libdir}/%{name}/components/nsSessionStartup.js
 %{_libdir}/%{name}/components/nsSessionStore.js
+%{_libdir}/%{name}/components/nsSetDefault.js
 %{_libdir}/%{name}/components/nsSidebar.js
 %{_libdir}/%{name}/components/nsSuiteDownloadManagerUI.js
 %{_libdir}/%{name}/components/nsSuiteGlue.js
@@ -623,6 +623,7 @@ fi
 %{_libdir}/%{name}/components/SiteSpecificUserAgent.js
 %{_libdir}/%{name}/components/smileApplication.js
 %{_libdir}/%{name}/components/TCPSocket.js
+%{_libdir}/%{name}/components/TCPSocketParentIntermediary.js
 %{_libdir}/%{name}/components/Weave.js
 %{_libdir}/%{name}/components/Webapps.js
 %{_libdir}/%{name}/components/WebContentConverter.js
@@ -667,7 +668,6 @@ fi
 %{_libdir}/%{name}/components/nsPlacesAutoComplete.js
 %{_libdir}/%{name}/components/nsPlacesExpiration.js
 %{_libdir}/%{name}/components/nsPrompter.js
-%{_libdir}/%{name}/components/nsProxyAutoConfig.js
 %{_libdir}/%{name}/components/nsSearchService.js
 %{_libdir}/%{name}/components/nsSearchSuggestions.js
 %{_libdir}/%{name}/components/nsTaggingService.js
@@ -711,7 +711,6 @@ fi
 %exclude %{_datadir}/%{name}/modules/enigmailCommon.jsm
 %exclude %{_datadir}/%{name}/modules/keyManagement.jsm
 %exclude %{_datadir}/%{name}/modules/pipeConsole.jsm
-%exclude %{_datadir}/%{name}/modules/pipeTransport.jsm
 %exclude %{_datadir}/%{name}/modules/subprocess.jsm
 %exclude %{_datadir}/%{name}/modules/subprocess_worker_unix.js
 %exclude %{_datadir}/%{name}/modules/subprocess_worker_win.js
