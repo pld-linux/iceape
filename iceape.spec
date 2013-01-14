@@ -29,7 +29,7 @@ Summary(pl.UTF-8):	Iceape - przeglądarka WWW
 Summary(pt_BR.UTF-8):	Navegador Iceape
 Name:		iceape
 Version:	2.15
-Release:	1
+Release:	2
 License:	MPL 1.1 or GPL v2+ or LGPL v2.1+
 Group:		X11/Applications/Networking
 Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/source/seamonkey-%{version}.source.tar.bz2
@@ -76,7 +76,9 @@ BuildRequires:	libffi-devel >= 6:3.0.9
 %{?with_gnomeui:BuildRequires:  libgnome-keyring-devel}
 %{?with_gnomeui:BuildRequires:  libgnomeui-devel >= 2.2.0}
 BuildRequires:	libiw-devel
+# requires libjpeg-turbo implementing at least libjpeg 6b API
 BuildRequires:	libjpeg-devel >= 6b
+BuildRequires:	libjpeg-turbo-devel
 BuildRequires:	libnotify-devel >= 0.4
 BuildRequires:	libpng(APNG)-devel >= 0.10
 BuildRequires:	libpng-devel >= 1.4.1
@@ -118,6 +120,7 @@ Requires:	browser-plugins >= 2.0
 Requires:	cairo >= 1.10.2-5
 Requires:	dbus-glib >= 0.60
 Requires:	gtk+2 >= 2:2.18
+Requires:	libjpeg-turbo
 Requires:	libpng >= 1.4.1
 Requires:	libpng(APNG) >= 0.10
 Requires:	myspell-common
