@@ -16,7 +16,7 @@
 %define		enigmail_ver	1.5.1
 %define		nspr_ver	4.9.3
 %define		nss_ver		3.14.1
-%define		xulrunner_ver	18.0
+%define		xulrunner_ver	18.0.2
 
 %if %{without xulrunner}
 # The actual sqlite version (see RHBZ#480989):
@@ -55,6 +55,7 @@ Patch6:		system-cairo.patch
 # Edit patch below and restore --system-site-packages when system virtualenv gets 1.7 upgrade
 Patch7:		system-virtualenv.patch
 Patch8:		gyp-slashism.patch
+Patch9:		%{name}-system-xulrunner.patch
 URL:		http://www.pld-linux.org/Packages/Iceape
 BuildRequires:	GConf2-devel >= 1.2.1
 BuildRequires:	OpenGL-devel
@@ -107,6 +108,7 @@ BuildRequires:	xorg-lib-libXinerama-devel
 BuildRequires:	xorg-lib-libXt-devel
 %if %{with xulrunner}
 BuildRequires:	xulrunner-devel >= 2:%{xulrunner_ver}
+BuildRequires:	xulrunner-devel < 2:19
 %endif
 BuildRequires:	yasm
 BuildRequires:	zip
@@ -275,6 +277,7 @@ tar -jxf %{SOURCE2}
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
+%patch9 -p2
 
 %build
 cd comm-release

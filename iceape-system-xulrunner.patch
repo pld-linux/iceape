@@ -1,0 +1,11 @@
+--- iceape-2.15.2/comm-release/suite/browser/Makefile.in.orig	2013-02-03 09:04:13.000000000 +0100
++++ iceape-2.15.2/comm-release/suite/browser/Makefile.in	2013-02-24 15:15:09.573091923 +0100
+@@ -26,7 +26,7 @@
+ 
+ ifdef LIBXUL_SDK
+ PREF_JS_EXPORTS += \
+-	$(srcdir)/channel-prefs.js
++	$(srcdir)/channel-prefs.js \
+ 	$(NULL)
+ endif
+ 
