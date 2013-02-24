@@ -13,7 +13,7 @@
 %undefine	with_gnomeui
 %endif
 
-%define		enigmail_ver	1.5.0
+%define		enigmail_ver	1.5.1
 %define		nspr_ver	4.9.3
 %define		nss_ver		3.14.1
 %define		xulrunner_ver	18.0
@@ -28,14 +28,14 @@ Summary(es.UTF-8):	Navegador de Internet Iceape
 Summary(pl.UTF-8):	Iceape - przeglądarka WWW
 Summary(pt_BR.UTF-8):	Navegador Iceape
 Name:		iceape
-Version:	2.15.1
+Version:	2.15.2
 Release:	1
 License:	MPL 1.1 or GPL v2+ or LGPL v2.1+
 Group:		X11/Applications/Networking
-Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/source/seamonkey-%{version}.source.tar.bz2
-# Source0-md5:	883757087d041e0a991c1ed96d161fa1
+Source0:	http://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/source/seamonkey-%{version}.source.tar.bz2
+# Source0-md5:	1938c5a9673e94e9f5c809f5dbfe8d29
 Source1:	http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_ver}.tar.gz
-# Source1-md5:	af4b3534417f32dc201765e4de6ecc86
+# Source1-md5:	3e71f84ed2c11471282412ebe4f5eb2d
 Source2:	%{name}-branding.tar.bz2
 # Source2-md5:	0bc28b4382aa8a961f8f7b2ba66d8f89
 Source3:	%{name}-rm_nonfree.sh
@@ -640,6 +640,7 @@ fi
 %attr(755,root,root) %{_libdir}/%{name}/components/libsuite.so
 
 %if %{without xulrunner}
+%{_libdir}/%{name}/dependentlibs.list
 %{_libdir}/%{name}/platform.ini
 %{_libdir}/%{name}/components/ConsoleAPI.js
 %{_libdir}/%{name}/components/FeedProcessor.js
