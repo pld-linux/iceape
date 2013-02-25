@@ -610,6 +610,13 @@ fi
 %{_libdir}/%{name}/components/ContactManager.js
 %{_libdir}/%{name}/components/FeedConverter.js
 %{_libdir}/%{name}/components/FeedWriter.js
+%{_libdir}/%{name}/components/SettingsManager.js
+%{_libdir}/%{name}/components/SiteSpecificUserAgent.js
+%{_libdir}/%{name}/components/TCPSocket.js
+%{_libdir}/%{name}/components/TCPSocketParentIntermediary.js
+%{_libdir}/%{name}/components/Weave.js
+%{_libdir}/%{name}/components/Webapps.js
+%{_libdir}/%{name}/components/WebContentConverter.js
 %{_libdir}/%{name}/components/messageWakeupService.js
 %{_libdir}/%{name}/components/newMailNotificationService.js
 %{_libdir}/%{name}/components/nsAbout.js
@@ -627,14 +634,7 @@ fi
 %{_libdir}/%{name}/components/nsUrlClassifierHashCompleter.js
 %{_libdir}/%{name}/components/nsUrlClassifierLib.js
 %{_libdir}/%{name}/components/nsUrlClassifierListManager.js
-%{_libdir}/%{name}/components/SettingsManager.js
-%{_libdir}/%{name}/components/SiteSpecificUserAgent.js
 %{_libdir}/%{name}/components/smileApplication.js
-%{_libdir}/%{name}/components/TCPSocket.js
-%{_libdir}/%{name}/components/TCPSocketParentIntermediary.js
-%{_libdir}/%{name}/components/Weave.js
-%{_libdir}/%{name}/components/Webapps.js
-%{_libdir}/%{name}/components/WebContentConverter.js
 
 %{_libdir}/%{name}/components/browser.xpt
 %{_libdir}/%{name}/components/components.manifest
