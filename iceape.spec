@@ -28,12 +28,12 @@ Summary(es.UTF-8):	Navegador de Internet Iceape
 Summary(pl.UTF-8):	Iceape - przeglądarka WWW
 Summary(pt_BR.UTF-8):	Navegador Iceape
 Name:		iceape
-Version:	2.15.2
+Version:	2.17.1
 Release:	1
 License:	MPL 1.1 or GPL v2+ or LGPL v2.1+
 Group:		X11/Applications/Networking
 Source0:	http://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/source/seamonkey-%{version}.source.tar.bz2
-# Source0-md5:	1938c5a9673e94e9f5c809f5dbfe8d29
+# Source0-md5:	a95013068da38fe3f8db30e0ebe6f2f5
 Source1:	http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_ver}.tar.gz
 # Source1-md5:	3e71f84ed2c11471282412ebe4f5eb2d
 Source2:	%{name}-branding.tar.bz2
