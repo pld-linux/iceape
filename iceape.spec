@@ -15,7 +15,7 @@
 
 %define		enigmail_ver	1.5.1
 %define		nspr_ver	4.9.3
-%define		nss_ver		3.14.1
+%define		nss_ver		3.14.3
 %define		xulrunner_ver	18.0.2
 
 %if %{without xulrunner}
@@ -100,7 +100,7 @@ BuildRequires:	python-virtualenv
 BuildRequires:	rpm >= 4.4.9-56
 BuildRequires:	rpmbuild(macros) >= 1.601
 BuildRequires:	sed >= 4.0
-BuildRequires:	sqlite3-devel >= 3.7.10
+BuildRequires:	sqlite3-devel >= 3.7.15.2
 BuildRequires:	startup-notification-devel >= 0.8
 BuildRequires:	xorg-lib-libXScrnSaver-devel
 BuildRequires:	xorg-lib-libXext-devel
