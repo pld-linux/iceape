@@ -462,7 +462,7 @@ cp -a mozilla/dist/%{name}-%{version}.en-US.linux-*.crashreporter-symbols.zip $R
 cp -a mozilla/dist/bin/extensions/calendar-timezones@mozilla.org \
 	mozilla/dist/bin/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103} \
 	$RPM_BUILD_ROOT%{_libdir}/%{name}/extensions
-		
+
 # move arch independant ones to datadir
 mv $RPM_BUILD_ROOT%{_libdir}/%{name}/chrome $RPM_BUILD_ROOT%{_datadir}/%{name}/chrome
 mv $RPM_BUILD_ROOT%{_libdir}/%{name}/defaults $RPM_BUILD_ROOT%{_datadir}/%{name}/defaults
@@ -536,7 +536,6 @@ install -d $ext_dir/{chrome,components,defaults/preferences,modules}
 cd mozilla/dist/bin
 cp -rfLp chrome/enigmail.jar $ext_dir/chrome
 cp -rfLp components/enig* $ext_dir/components
-cp -rfLp components/libenigmime.so $ext_dir/components
 cp -rfLp defaults/preferences/enigmail.js $ext_dir/defaults/preferences
 cp -rfLp modules/{commonFuncs,enigmailCommon,keyManagement,pipeConsole,subprocess}.jsm $ext_dir/modules
 cp -rfLp modules/{subprocess_worker_unix,subprocess_worker_win}.js $ext_dir/modules
@@ -635,6 +634,7 @@ fi
 %{_libdir}/%{name}/components/nsUrlClassifierLib.js
 %{_libdir}/%{name}/components/nsUrlClassifierListManager.js
 %{_libdir}/%{name}/components/smileApplication.js
+%{_libdir}/%{name}/components/PermissionSettings.js
 
 %{_libdir}/%{name}/components/browser.xpt
 %{_libdir}/%{name}/components/components.manifest
@@ -801,7 +801,6 @@ fi
 %{_libdir}/%{name}/extensions/{847b3a00-7ab1-11d4-8f02-006008948af5}/chrome.manifest
 %{_libdir}/%{name}/extensions/{847b3a00-7ab1-11d4-8f02-006008948af5}/install.rdf
 %dir %{_libdir}/%{name}/extensions/{847b3a00-7ab1-11d4-8f02-006008948af5}/components
-%attr(755,root,root) %{_libdir}/%{name}/extensions/{847b3a00-7ab1-11d4-8f02-006008948af5}/components/*.so
 %{_libdir}/%{name}/extensions/{847b3a00-7ab1-11d4-8f02-006008948af5}/components/*.xpt
 %{_libdir}/%{name}/extensions/{847b3a00-7ab1-11d4-8f02-006008948af5}/components/*.js
 %dir %{_libdir}/%{name}/extensions/{847b3a00-7ab1-11d4-8f02-006008948af5}/modules
