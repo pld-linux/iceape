@@ -7,7 +7,7 @@
 %bcond_with	tests		# enable tests (whatever they check)
 %bcond_without	kerberos	# disable krb5 support
 
-%define		enigmail_ver	1.5.1
+%define		enigmail_ver	1.5.2
 %define		nspr_ver	4.9.3
 %define		nss_ver		3.14.3
 %define		xulrunner_ver	23.0
@@ -29,7 +29,7 @@ Group:		X11/Applications/Networking
 Source0:	http://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/source/seamonkey-%{version}.source.tar.bz2
 # Source0-md5:	04b961790658233b7dafb5222b251bf5
 Source1:	http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_ver}.tar.gz
-# Source1-md5:	3e71f84ed2c11471282412ebe4f5eb2d
+# Source1-md5:	4e79cc5bb289cb292b4d40885f45cd33
 Source2:	%{name}-branding.tar.bz2
 # Source2-md5:	3feee544ef515f1dbf19b14479916784
 Source3:	%{name}-rm_nonfree.sh
