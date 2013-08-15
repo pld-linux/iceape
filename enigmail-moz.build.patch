@@ -1,0 +1,73 @@
+diff -urN iceape-2.20/comm-release/mailnews/extensions/enigmail/build.orig/Makefile.in iceape-2.20/comm-release/mailnews/extensions/enigmail/build/Makefile.in
+--- iceape-2.20/comm-release/mailnews/extensions/enigmail/build.orig/Makefile.in	2013-01-20 18:08:40.000000000 +0100
++++ iceape-2.20/comm-release/mailnews/extensions/enigmail/build/Makefile.in	2013-08-08 21:06:45.870424762 +0200
+@@ -35,8 +35,6 @@
+ 
+ # Makefile for build directory
+ 
+-DIRS =
+-
+ # Specify these as parameters to the make command
+ XPI_MODULE	= enigmime
+ XPI_MODULE_VERS = 1.5
+diff -urN iceape-2.20/comm-release/mailnews/extensions/enigmail/ipc.orig/Makefile.in iceape-2.20/comm-release/mailnews/extensions/enigmail/ipc/Makefile.in
+--- iceape-2.20/comm-release/mailnews/extensions/enigmail/ipc.orig/Makefile.in	2013-01-20 18:08:40.000000000 +0100
++++ iceape-2.20/comm-release/mailnews/extensions/enigmail/ipc/Makefile.in	2013-08-08 21:08:25.191537344 +0200
+@@ -41,10 +41,4 @@
+ 
+ include $(DEPTH)/config/autoconf.mk
+ 
+-DIRS            = modules
+-
+-ifneq ($(OS_ARCH),WINNT)
+-  DIRS += src
+-endif
+-
+ include $(topsrcdir)/config/rules.mk
+diff -urN iceape-2.20/comm-release/mailnews/extensions/enigmail/ipc.orig/moz.build iceape-2.20/comm-release/mailnews/extensions/enigmail/ipc/moz.build
+--- iceape-2.20/comm-release/mailnews/extensions/enigmail/ipc.orig/moz.build	1970-01-01 01:00:00.000000000 +0100
++++ iceape-2.20/comm-release/mailnews/extensions/enigmail/ipc/moz.build	2013-08-08 21:07:45.667761563 +0200
+@@ -0,0 +1,1 @@
++DIRS += ['modules', 'src']
+diff -urN iceape-2.20/comm-release/mailnews/extensions/enigmail/Makefile.in.orig iceape-2.20/comm-release/mailnews/extensions/enigmail/Makefile.in
+--- iceape-2.20/comm-release/mailnews/extensions/enigmail/Makefile.in.orig	2013-01-20 18:08:40.000000000 +0100
++++ iceape-2.20/comm-release/mailnews/extensions/enigmail/Makefile.in	2013-08-08 21:11:17.083457182 +0200
+@@ -51,14 +51,8 @@
+ 
+ GECKO18 = $(shell test $(MOZILLA_MAJOR_VERSION) -lt 19 && echo 1)
+ 
+-DIRS = ipc public
+-
+-ifeq ($(GECKO18),1)
+-  DIRS += src build
+-endif
+-
+-DIRS += ui package lang
+-
++STANDALONE_MAKEFILE := 1
++
+ include $(topsrcdir)/config/config.mk
+ 
+ include $(topsrcdir)/config/rules.mk
+diff -urN iceape-2.20/comm-release/mailnews/extensions/enigmail/moz.build.orig iceape-2.20/comm-release/mailnews/extensions/enigmail/moz.build
+--- iceape-2.20/comm-release/mailnews/extensions/enigmail/moz.build.orig	1970-01-01 01:00:00.000000000 +0100
++++ iceape-2.20/comm-release/mailnews/extensions/enigmail/moz.build	2013-08-08 21:11:28.480250891 +0200
+@@ -0,0 +1,1 @@
++DIRS += ['ipc', 'public', 'ui', 'package', 'lang']
+diff -urN iceape-2.20/comm-release/mailnews/extensions/enigmail/ui.orig/Makefile.in iceape-2.20/comm-release/mailnews/extensions/enigmail/ui/Makefile.in
+--- iceape-2.20/comm-release/mailnews/extensions/enigmail/ui.orig/Makefile.in	2013-01-20 18:08:40.000000000 +0100
++++ iceape-2.20/comm-release/mailnews/extensions/enigmail/ui/Makefile.in	2013-08-08 21:10:36.089666637 +0200
+@@ -41,8 +41,6 @@
+ VPATH      = @srcdir@
+ srcdir     = @srcdir@
+ 
+-DIRS = content
+-
+ MYJARFILE = enigmail.jar
+ 
+ include $(DEPTH)/config/autoconf.mk
+diff -urN iceape-2.20/comm-release/mailnews/extensions/enigmail/ui.orig/moz.build iceape-2.20/comm-release/mailnews/extensions/enigmail/ui/moz.build
+--- iceape-2.20/comm-release/mailnews/extensions/enigmail/ui.orig/moz.build	1970-01-01 01:00:00.000000000 +0100
++++ iceape-2.20/comm-release/mailnews/extensions/enigmail/ui/moz.build	2013-08-08 21:10:29.579593990 +0200
+@@ -0,0 +1 @@
++DIRS += ['content']

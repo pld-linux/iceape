@@ -1,22 +1,16 @@
 #
 # Conditional build:
 %bcond_without	enigmail	# don't build enigmail - GPG/PGP support
-%bcond_without	gnomeui		# disable gnomeui support
-%bcond_without	gnome		# disable gnomeui (alias)
 %bcond_without	ldap		# disable e-mail address lookups in LDAP directories
 %bcond_without	lightning	# disable Sunbird/Lightning calendar
 %bcond_with	xulrunner	# build with system xulrunner
 %bcond_with	tests		# enable tests (whatever they check)
 %bcond_without	kerberos	# disable krb5 support
 
-%if %{without gnome}
-%undefine	with_gnomeui
-%endif
-
 %define		enigmail_ver	1.5.1
 %define		nspr_ver	4.9.3
 %define		nss_ver		3.14.3
-%define		xulrunner_ver	18.0.2
+%define		xulrunner_ver	23.0
 
 %if %{without xulrunner}
 # The actual sqlite version (see RHBZ#480989):
@@ -28,16 +22,16 @@ Summary(es.UTF-8):	Navegador de Internet Iceape
 Summary(pl.UTF-8):	Iceape - przeglądarka WWW
 Summary(pt_BR.UTF-8):	Navegador Iceape
 Name:		iceape
-Version:	2.17.1
-Release:	1
+Version:	2.20
+Release:	0.1
 License:	MPL 1.1 or GPL v2+ or LGPL v2.1+
 Group:		X11/Applications/Networking
 Source0:	http://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/source/seamonkey-%{version}.source.tar.bz2
-# Source0-md5:	a95013068da38fe3f8db30e0ebe6f2f5
+# Source0-md5:	04b961790658233b7dafb5222b251bf5
 Source1:	http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_ver}.tar.gz
 # Source1-md5:	3e71f84ed2c11471282412ebe4f5eb2d
 Source2:	%{name}-branding.tar.bz2
-# Source2-md5:	0bc28b4382aa8a961f8f7b2ba66d8f89
+# Source2-md5:	3feee544ef515f1dbf19b14479916784
 Source3:	%{name}-rm_nonfree.sh
 Source4:	%{name}.desktop
 Source5:	%{name}-composer.desktop
@@ -56,6 +50,8 @@ Patch6:		system-cairo.patch
 Patch7:		system-virtualenv.patch
 Patch8:		gyp-slashism.patch
 Patch9:		%{name}-system-xulrunner.patch
+Patch10:	enigmail-moz.build.patch
+Patch11:	packaging.patch
 URL:		http://www.pld-linux.org/Packages/Iceape
 BuildRequires:	GConf2-devel >= 1.2.1
 BuildRequires:	OpenGL-devel
@@ -74,9 +70,6 @@ BuildRequires:	libdnet-devel
 BuildRequires:	libevent-devel >= 1.4.7
 # standalone libffi 3.0.9 or gcc's from 4.5(?)+
 BuildRequires:	libffi-devel >= 6:3.0.9
-%{?with_gnomeui:BuildRequires:  libgnome-devel >= 2.0}
-%{?with_gnomeui:BuildRequires:  libgnome-keyring-devel}
-%{?with_gnomeui:BuildRequires:  libgnomeui-devel >= 2.2.0}
 BuildRequires:	libiw-devel
 # requires libjpeg-turbo implementing at least libjpeg 6b API
 BuildRequires:	libjpeg-devel >= 6b
@@ -271,13 +264,15 @@ tar -jxf %{SOURCE2}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
-%patch4 -p1
+#patch3 -p1
+#patch4 -p1
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
 %patch9 -p2
+%patch10 -p2
+%patch11 -p2
 
 %build
 cd comm-release
@@ -340,11 +335,7 @@ ac_add_options --enable-tests
 ac_add_options --disable-tests
 %endif
 ac_add_options --enable-gio
-%if %{with gnomeui}
-ac_add_options --enable-gnomeui
-%else
 ac_add_options --disable-gnomeui
-%endif
 ac_add_options --disable-gnomevfs
 %if %{with ldap}
 ac_add_options --enable-ldap
@@ -434,7 +425,9 @@ install -d \
 %browser_plugins_add_browser %{name} -p %{_libdir}/%{name}/plugins
 
 cd %{objdir}
+cwd=`pwd`
 %{__make} -C suite/installer stage-package \
+	LD_LIBRARY_PATH=$cwd/mozilla/dist/lib \
 	DESTDIR=$RPM_BUILD_ROOT \
 	installdir=%{_libdir}/%{name} \
 	PKG_SKIP_STRIP=1
@@ -546,13 +539,13 @@ cp -p %{topdir}/comm-release/mailnews/extensions/enigmail/package/chrome.manifes
 
 # never package these. always remove
 # nss
-%{__rm} -f $RPM_BUILD_ROOT%{_libdir}/%{name}/lib{freebl3,nss3,nssckbi,nssdbm3,nssutil3,smime3,softokn3,ssl3}.*
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}/lib{freebl3,nss3,nssckbi,nssdbm3,nssutil3,smime3,softokn3,ssl3}.*
 # nspr
-%{__rm} -f $RPM_BUILD_ROOT%{_libdir}/%{name}/lib{nspr4,plc4,plds4}.so
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}/lib{nspr4,plc4,plds4}.so
 # mozldap
-%{__rm} -f $RPM_BUILD_ROOT%{_libdir}/%{name}/lib{ldap,ldif,prldap,ssldap}60.so
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}/lib{ldap,ldif,prldap,ssldap}60.so
 # testpilot quiz
-%{__rm} -f $RPM_BUILD_ROOT%{_libdir}/%{name}/distribution/extensions/tbtestpilot@labs.mozilla.com.xpi
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}/distribution/extensions/tbtestpilot@labs.mozilla.com.xpi
 
 %clean
 rm -rf $RPM_BUILD_ROOT
