@@ -31,7 +31,7 @@ Source0:	http://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/so
 Source1:	http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_ver}.tar.gz
 # Source1-md5:	4a2bbcb020bdb282a660fda8c70d5608
 Source2:	%{name}-branding.tar.bz2
-# Source2-md5:	0bc28b4382aa8a961f8f7b2ba66d8f89
+# Source2-md5:	3feee544ef515f1dbf19b14479916784
 Source3:	%{name}-rm_nonfree.sh
 Source4:	%{name}.desktop
 Source5:	%{name}-composer.desktop
@@ -42,15 +42,12 @@ Source9:	%{name}.sh
 Patch0:		%{name}-branding.patch
 Patch1:		%{name}-pld-branding.patch
 Patch2:		%{name}-agent.patch
-Patch3:		%{name}-glueload-fix.patch
 Patch4:		system-mozldap.patch
 Patch5:		makefile.patch
 # Edit patch below and restore --system-site-packages when system virtualenv gets 1.7 upgrade
 Patch7:		system-virtualenv.patch
 Patch8:		gyp-slashism.patch
 Patch9:		%{name}-system-xulrunner.patch
-Patch10:	enigmail-moz.build.patch
-Patch11:	packaging.patch
 URL:		http://www.pld-linux.org/Packages/Iceape
 BuildRequires:	GConf2-devel >= 1.2.1
 BuildRequires:	OpenGL-devel
@@ -80,6 +77,7 @@ BuildRequires:	libpng-devel >= 1.4.1
 BuildRequires:	librsvg
 BuildRequires:	libstdc++-devel
 BuildRequires:	libvpx-devel >= 1.0.0
+BuildRequires:	mozldap-devel
 BuildRequires:	nspr-devel >= 1:%{nspr_ver}
 BuildRequires:	nss-devel >= 1:%{nss_ver}
 BuildRequires:	pango-devel >= 1:1.14.0
@@ -263,14 +261,11 @@ tar -jxf %{SOURCE2}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-#patch3 -p1
-#patch4 -p1
+%patch4 -p1
 %patch5 -p1
 %patch7 -p1
 %patch8 -p1
 %patch9 -p2
-%patch10 -p2
-%patch11 -p2
 
 %build
 cd comm-release
@@ -312,7 +307,6 @@ ac_add_options --localstatedir=%{_localstatedir}
 ac_add_options --sharedstatedir=%{_sharedstatedir}
 ac_add_options --mandir=%{_mandir}
 ac_add_options --infodir=%{_infodir}
-ac_add_options --disable-elf-hack
 %if %{?debug:1}0
 ac_add_options --disable-optimize
 ac_add_options --enable-debug
@@ -353,6 +347,7 @@ ac_add_options --enable-calendar
 %else
 ac_add_options --disable-calendar
 %endif
+ac_add_options --disable-elf-dynstr-gc
 ac_add_options --disable-installer
 ac_add_options --disable-javaxpcom
 ac_add_options --disable-updater
@@ -450,30 +445,19 @@ cp -a mozilla/dist/%{name}-%{version}.en-US.linux-*.crashreporter-symbols.zip $R
 %endif
 
 # copy manually lightning files, somewhy they are not installed by make
-cp -a mozilla/dist/bin/extensions/calendar-timezones@mozilla.org \
-	mozilla/dist/bin/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103} \
+cp -a mozilla/dist/bin/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103} \
 	$RPM_BUILD_ROOT%{_libdir}/%{name}/extensions
 
 # move arch independant ones to datadir
 mv $RPM_BUILD_ROOT%{_libdir}/%{name}/chrome $RPM_BUILD_ROOT%{_datadir}/%{name}/chrome
 mv $RPM_BUILD_ROOT%{_libdir}/%{name}/defaults $RPM_BUILD_ROOT%{_datadir}/%{name}/defaults
 mv $RPM_BUILD_ROOT%{_libdir}/%{name}/isp $RPM_BUILD_ROOT%{_datadir}/%{name}/isp
-mv $RPM_BUILD_ROOT%{_libdir}/%{name}/modules $RPM_BUILD_ROOT%{_datadir}/%{name}/modules
 mv $RPM_BUILD_ROOT%{_libdir}/%{name}/searchplugins $RPM_BUILD_ROOT%{_datadir}/%{name}/searchplugins
-%if %{without xulrunner}
-mv $RPM_BUILD_ROOT%{_libdir}/%{name}/greprefs.js $RPM_BUILD_ROOT%{_datadir}/%{name}/greprefs.js
-mv $RPM_BUILD_ROOT%{_libdir}/%{name}/res $RPM_BUILD_ROOT%{_datadir}/%{name}/res
-%endif
 
 ln -s ../../share/%{name}/chrome $RPM_BUILD_ROOT%{_libdir}/%{name}/chrome
 ln -s ../../share/%{name}/defaults $RPM_BUILD_ROOT%{_libdir}/%{name}/defaults
 ln -s ../../share/%{name}/isp $RPM_BUILD_ROOT%{_libdir}/%{name}/isp
-ln -s ../../share/%{name}/modules $RPM_BUILD_ROOT%{_libdir}/%{name}/modules
 ln -s ../../share/%{name}/searchplugins $RPM_BUILD_ROOT%{_libdir}/%{name}/searchplugins
-%if %{without xulrunner}
-ln -s ../../share/%{name}/greprefs.js $RPM_BUILD_ROOT%{_libdir}/%{name}/greprefs.js
-ln -s ../../share/%{name}/res $RPM_BUILD_ROOT%{_libdir}/%{name}/res
-%endif
 
 mv $RPM_BUILD_ROOT%{_libdir}/%{name}/distribution/extensions/* \
 	$RPM_BUILD_ROOT%{_libdir}/%{name}/extensions/
@@ -486,8 +470,6 @@ install -d $RPM_BUILD_ROOT%{_datadir}/%{name}/extensions
 %if %{without xulrunner}
 %{__rm} -r $RPM_BUILD_ROOT%{_libdir}/%{name}/dictionaries
 ln -s %{_datadir}/myspell $RPM_BUILD_ROOT%{_libdir}/%{name}/dictionaries
-%{__rm} -r $RPM_BUILD_ROOT%{_libdir}/%{name}/hyphenation
-ln -s %{_datadir}/myspell $RPM_BUILD_ROOT%{_libdir}/%{name}/hyphenation
 %endif
 
 %{__sed} -e "s|%MOZAPPDIR%|%{_libdir}/%{name}|" \
@@ -537,13 +519,13 @@ cp -p %{topdir}/comm-release/mailnews/extensions/enigmail/package/chrome.manifes
 
 # never package these. always remove
 # nss
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}/lib{freebl3,nss3,nssckbi,nssdbm3,nssutil3,smime3,softokn3,ssl3}.*
+#%{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}/lib{freebl3,nss3,nssckbi,nssdbm3,nssutil3,smime3,softokn3,ssl3}.*
 # nspr
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}/lib{nspr4,plc4,plds4}.so
+#%{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}/lib{nspr4,plc4,plds4}.so
 # mozldap
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}/lib{ldap,ldif,prldap,ssldap}60.so
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}/lib{ldap,ldif,prldap}60.so
 # testpilot quiz
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}/distribution/extensions/tbtestpilot@labs.mozilla.com.xpi
+#%{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}/distribution/extensions/tbtestpilot@labs.mozilla.com.xpi
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -572,11 +554,11 @@ fi
 %if %{without xulrunner}
 %attr(755,root,root) %{_libdir}/%{name}/libmozalloc.so
 %attr(755,root,root) %{_libdir}/%{name}/libmozjs.so
-%attr(755,root,root) %{_libdir}/%{name}/libxpcom.so
 %attr(755,root,root) %{_libdir}/%{name}/libxul.so
 %endif
 
 %{_libdir}/%{name}/blocklist.xml
+%{_libdir}/%{name}/omni.ja
 %attr(755,root,root) %{_libdir}/%{name}/register
 
 %if %{with crashreporter}
@@ -591,92 +573,12 @@ fi
 %{_libdir}/%{name}/chrome.manifest
 
 %dir %{_libdir}/%{name}/components
-
-%{_libdir}/%{name}/components/Aitc.js
-%{_libdir}/%{name}/components/AlarmsManager.js
-%{_libdir}/%{name}/components/AppsService.js
-%{_libdir}/%{name}/components/BrowserElementParent.js
-%{_libdir}/%{name}/components/ColorAnalyzer.js
-%{_libdir}/%{name}/components/ContactManager.js
-%{_libdir}/%{name}/components/FeedConverter.js
-%{_libdir}/%{name}/components/FeedWriter.js
-%{_libdir}/%{name}/components/SettingsManager.js
-%{_libdir}/%{name}/components/SiteSpecificUserAgent.js
-%{_libdir}/%{name}/components/TCPSocket.js
-%{_libdir}/%{name}/components/TCPSocketParentIntermediary.js
-%{_libdir}/%{name}/components/Weave.js
-%{_libdir}/%{name}/components/Webapps.js
-%{_libdir}/%{name}/components/WebContentConverter.js
-%{_libdir}/%{name}/components/messageWakeupService.js
-%{_libdir}/%{name}/components/newMailNotificationService.js
-%{_libdir}/%{name}/components/nsAbout.js
-%{_libdir}/%{name}/components/nsBrowserContentHandler.js
-%{_libdir}/%{name}/components/nsComposerCmdLineHandler.js
-%{_libdir}/%{name}/components/nsDOMIdentity.js
-%{_libdir}/%{name}/components/nsIDService.js
-%{_libdir}/%{name}/components/nsSessionStartup.js
-%{_libdir}/%{name}/components/nsSessionStore.js
-%{_libdir}/%{name}/components/nsSetDefault.js
-%{_libdir}/%{name}/components/nsSidebar.js
-%{_libdir}/%{name}/components/nsSuiteDownloadManagerUI.js
-%{_libdir}/%{name}/components/nsSuiteGlue.js
-%{_libdir}/%{name}/components/nsTypeAheadFind.js
-%{_libdir}/%{name}/components/nsUrlClassifierHashCompleter.js
-%{_libdir}/%{name}/components/nsUrlClassifierLib.js
-%{_libdir}/%{name}/components/nsUrlClassifierListManager.js
-%{_libdir}/%{name}/components/smileApplication.js
-%{_libdir}/%{name}/components/PermissionSettings.js
-
-%{_libdir}/%{name}/components/browser.xpt
 %{_libdir}/%{name}/components/components.manifest
-%{_libdir}/%{name}/components/interfaces.manifest
-
 %attr(755,root,root) %{_libdir}/%{name}/components/libsuite.so
 
 %if %{without xulrunner}
 %{_libdir}/%{name}/dependentlibs.list
 %{_libdir}/%{name}/platform.ini
-%{_libdir}/%{name}/components/ConsoleAPI.js
-%{_libdir}/%{name}/components/FeedProcessor.js
-%{_libdir}/%{name}/components/GPSDGeolocationProvider.js
-%{_libdir}/%{name}/components/NetworkGeolocationProvider.js
-%{_libdir}/%{name}/components/PlacesCategoriesStarter.js
-%{_libdir}/%{name}/components/TelemetryPing.js
-%{_libdir}/%{name}/components/addonManager.js
-%{_libdir}/%{name}/components/amContentHandler.js
-%{_libdir}/%{name}/components/amWebInstallListener.js
-%{_libdir}/%{name}/components/contentAreaDropListener.js
-%{_libdir}/%{name}/components/contentSecurityPolicy.js
-%{_libdir}/%{name}/components/crypto-SDR.js
-%{_libdir}/%{name}/components/jsconsole-clhandler.js
-%{_libdir}/%{name}/components/nsBadCertHandler.js
-%{_libdir}/%{name}/components/nsBlocklistService.js
-%{_libdir}/%{name}/components/nsContentDispatchChooser.js
-%{_libdir}/%{name}/components/nsContentPrefService.js
-%{_libdir}/%{name}/components/nsDefaultCLH.js
-%{_libdir}/%{name}/components/nsFilePicker.js
-%{_libdir}/%{name}/components/nsFormAutoComplete.js
-%{_libdir}/%{name}/components/nsFormHistory.js
-%{_libdir}/%{name}/components/nsHandlerService.js
-%{_libdir}/%{name}/components/nsHelperAppDlg.js
-%{_libdir}/%{name}/components/nsINIProcessor.js
-%{_libdir}/%{name}/components/nsInputListAutoComplete.js
-%{_libdir}/%{name}/components/nsLivemarkService.js
-%{_libdir}/%{name}/components/nsLoginInfo.js
-%{_libdir}/%{name}/components/nsLoginManager.js
-%{_libdir}/%{name}/components/nsLoginManagerPrompter.js
-%{_libdir}/%{name}/components/nsPlacesAutoComplete.js
-%{_libdir}/%{name}/components/nsPlacesExpiration.js
-%{_libdir}/%{name}/components/nsPrompter.js
-%{_libdir}/%{name}/components/nsSearchService.js
-%{_libdir}/%{name}/components/nsSearchSuggestions.js
-%{_libdir}/%{name}/components/nsTaggingService.js
-%{_libdir}/%{name}/components/nsUpdateTimerManager.js
-%{_libdir}/%{name}/components/nsURLFormatter.js
-%{_libdir}/%{name}/components/nsWebHandlerApp.js
-%{_libdir}/%{name}/components/storage-Legacy.js
-%{_libdir}/%{name}/components/storage-mozStorage.js
-%{_libdir}/%{name}/components/txEXSLTRegExFunctions.js
 %attr(755,root,root) %{_libdir}/%{name}/components/libdbusservice.so
 %attr(755,root,root) %{_libdir}/%{name}/components/libmozgnome.so
 %attr(755,root,root) %{_libdir}/%{name}/run-mozilla.sh
@@ -691,35 +593,17 @@ fi
 # symlinks
 %{_libdir}/%{name}/chrome
 %{_libdir}/%{name}/defaults
-%{_libdir}/%{name}/modules
 %{_libdir}/%{name}/searchplugins
 %if %{with xulrunner}
 %{_libdir}/%{name}/xulrunner
 %else
 %{_libdir}/%{name}/dictionaries
-%{_libdir}/%{name}/hyphenation
-%{_libdir}/%{name}/greprefs.js
-%{_libdir}/%{name}/res
 %endif
 
 %dir %{_datadir}/%{name}
 %{_datadir}/%{name}/chrome
 %{_datadir}/%{name}/defaults
-%{_datadir}/%{name}/modules
-%if %{with enigmail}
-%exclude %{_datadir}/%{name}/modules/commonFuncs.jsm
-%exclude %{_datadir}/%{name}/modules/enigmailCommon.jsm
-%exclude %{_datadir}/%{name}/modules/keyManagement.jsm
-%exclude %{_datadir}/%{name}/modules/pipeConsole.jsm
-%exclude %{_datadir}/%{name}/modules/subprocess.jsm
-%exclude %{_datadir}/%{name}/modules/subprocess_worker_unix.js
-%exclude %{_datadir}/%{name}/modules/subprocess_worker_win.js
-%endif
 %{_datadir}/%{name}/searchplugins
-%if %{without xulrunner}
-%{_datadir}/%{name}/greprefs.js
-%{_datadir}/%{name}/res
-%endif
 
 %dir %{_datadir}/%{name}/extensions
 %dir %{_libdir}/%{name}/extensions
@@ -730,22 +614,6 @@ fi
 # files created by iceape -register
 %ghost %{_libdir}/%{name}/components/compreg.dat
 %ghost %{_libdir}/%{name}/components/xpti.dat
-
-%{_libdir}/%{name}/components/glautocomp.js
-%{_libdir}/%{name}/components/jsmimeemitter.js
-%{_libdir}/%{name}/components/mail.xpt
-%{_libdir}/%{name}/components/mdn-service.js
-%{_libdir}/%{name}/components/msgAsyncPrompter.js
-%{_libdir}/%{name}/components/newsblog.js
-%{_libdir}/%{name}/components/nsAbAutoCompleteMyDomain.js
-%{_libdir}/%{name}/components/nsAbAutoCompleteSearch.js
-%{_libdir}/%{name}/components/nsAbLDAPAttributeMap.js
-%{_libdir}/%{name}/components/nsLDAPProtocolHandler.js
-%{_libdir}/%{name}/components/nsMailNewsCommandLineHandler.js
-%{_libdir}/%{name}/components/nsMsgTraitService.js
-%{_libdir}/%{name}/components/nsSMTPProtocolHandler.js
-%{_libdir}/%{name}/components/offlineStartup.js
-%{_libdir}/%{name}/components/smime-service.js
 
 %{_libdir}/%{name}/isp
 %dir %{_datadir}/%{name}/isp
@@ -780,7 +648,6 @@ fi
 %{_libdir}/%{name}/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103}/modules
 %{_libdir}/%{name}/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103}/calendar-js
 %{_libdir}/%{name}/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103}/timezones.sqlite
-%{_libdir}/%{name}/extensions/calendar-timezones@mozilla.org
 %endif
 
 %if %{with enigmail}
