@@ -13,7 +13,7 @@ diff -urN iceape-2.20/comm-release/mailnews/extensions/enigmail/build.orig/Makef
 diff -urN iceape-2.20/comm-release/mailnews/extensions/enigmail/ipc.orig/Makefile.in iceape-2.20/comm-release/mailnews/extensions/enigmail/ipc/Makefile.in
 --- iceape-2.20/comm-release/mailnews/extensions/enigmail/ipc.orig/Makefile.in	2013-01-20 18:08:40.000000000 +0100
 +++ iceape-2.20/comm-release/mailnews/extensions/enigmail/ipc/Makefile.in	2013-08-08 21:08:25.191537344 +0200
-@@ -41,10 +41,4 @@
+@@ -41,12 +41,6 @@
  
  include $(DEPTH)/config/autoconf.mk
  
@@ -23,7 +23,9 @@ diff -urN iceape-2.20/comm-release/mailnews/extensions/enigmail/ipc.orig/Makefil
 -  DIRS += src
 -endif
 -
- include $(topsrcdir)/config/rules.mk
+ .PHONY: dirs $(DIRS)
+ 
+ all: dirs
 diff -urN iceape-2.20/comm-release/mailnews/extensions/enigmail/ipc.orig/moz.build iceape-2.20/comm-release/mailnews/extensions/enigmail/ipc/moz.build
 --- iceape-2.20/comm-release/mailnews/extensions/enigmail/ipc.orig/moz.build	1970-01-01 01:00:00.000000000 +0100
 +++ iceape-2.20/comm-release/mailnews/extensions/enigmail/ipc/moz.build	2013-08-08 21:07:45.667761563 +0200
@@ -46,9 +48,9 @@ diff -urN iceape-2.20/comm-release/mailnews/extensions/enigmail/Makefile.in.orig
 -
 +STANDALONE_MAKEFILE := 1
 +
- include $(topsrcdir)/config/config.mk
+ PLATFORM_STR = unknown
  
- include $(topsrcdir)/config/rules.mk
+ # Edit the lines below as needed, depending upon your platform(s)
 diff -urN iceape-2.20/comm-release/mailnews/extensions/enigmail/moz.build.orig iceape-2.20/comm-release/mailnews/extensions/enigmail/moz.build
 --- iceape-2.20/comm-release/mailnews/extensions/enigmail/moz.build.orig	1970-01-01 01:00:00.000000000 +0100
 +++ iceape-2.20/comm-release/mailnews/extensions/enigmail/moz.build	2013-08-08 21:11:28.480250891 +0200
@@ -63,9 +65,9 @@ diff -urN iceape-2.20/comm-release/mailnews/extensions/enigmail/ui.orig/Makefile
  
 -DIRS = content
 -
- MYJARFILE = enigmail.jar
+ .PHONY: dirs $(DIRS)
  
- include $(DEPTH)/config/autoconf.mk
+ all: dirs jar
 diff -urN iceape-2.20/comm-release/mailnews/extensions/enigmail/ui.orig/moz.build iceape-2.20/comm-release/mailnews/extensions/enigmail/ui/moz.build
 --- iceape-2.20/comm-release/mailnews/extensions/enigmail/ui.orig/moz.build	1970-01-01 01:00:00.000000000 +0100
 +++ iceape-2.20/comm-release/mailnews/extensions/enigmail/ui/moz.build	2013-08-08 21:10:29.579593990 +0200

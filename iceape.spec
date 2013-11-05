@@ -7,7 +7,7 @@
 %bcond_with	tests		# enable tests (whatever they check)
 %bcond_without	kerberos	# disable krb5 support
 
-%define		enigmail_ver	1.5.2
+%define		enigmail_ver	1.6
 %define		nspr_ver	4.9.3
 %define		nss_ver		3.14.3
 %define		xulrunner_ver	23.0
@@ -22,16 +22,16 @@ Summary(es.UTF-8):	Navegador de Internet Iceape
 Summary(pl.UTF-8):	Iceape - przeglądarka WWW
 Summary(pt_BR.UTF-8):	Navegador Iceape
 Name:		iceape
-Version:	2.20
+Version:	2.22
 Release:	0.1
 License:	MPL 1.1 or GPL v2+ or LGPL v2.1+
 Group:		X11/Applications/Networking
 Source0:	http://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/source/seamonkey-%{version}.source.tar.bz2
-# Source0-md5:	04b961790658233b7dafb5222b251bf5
+# Source0-md5:	49b92ed98c23efdbdafa39b9dee920a7
 Source1:	http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_ver}.tar.gz
-# Source1-md5:	4e79cc5bb289cb292b4d40885f45cd33
+# Source1-md5:	4a2bbcb020bdb282a660fda8c70d5608
 Source2:	%{name}-branding.tar.bz2
-# Source2-md5:	3feee544ef515f1dbf19b14479916784
+# Source2-md5:	0bc28b4382aa8a961f8f7b2ba66d8f89
 Source3:	%{name}-rm_nonfree.sh
 Source4:	%{name}.desktop
 Source5:	%{name}-composer.desktop
@@ -45,7 +45,6 @@ Patch2:		%{name}-agent.patch
 Patch3:		%{name}-glueload-fix.patch
 Patch4:		system-mozldap.patch
 Patch5:		makefile.patch
-Patch6:		system-cairo.patch
 # Edit patch below and restore --system-site-packages when system virtualenv gets 1.7 upgrade
 Patch7:		system-virtualenv.patch
 Patch8:		gyp-slashism.patch
@@ -267,7 +266,6 @@ tar -jxf %{SOURCE2}
 #patch3 -p1
 #patch4 -p1
 %patch5 -p1
-%patch6 -p1
 %patch7 -p1
 %patch8 -p1
 %patch9 -p2
