@@ -23,7 +23,7 @@ Summary(pl.UTF-8):	Iceape - przeglądarka WWW
 Summary(pt_BR.UTF-8):	Navegador Iceape
 Name:		iceape
 Version:	2.22
-Release:	0.1
+Release:	1
 License:	MPL 1.1 or GPL v2+ or LGPL v2.1+
 Group:		X11/Applications/Networking
 Source0:	http://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/source/seamonkey-%{version}.source.tar.bz2
@@ -42,6 +42,7 @@ Source9:	%{name}.sh
 Patch0:		%{name}-branding.patch
 Patch1:		%{name}-pld-branding.patch
 Patch2:		%{name}-agent.patch
+Patch3:		enable-addons.patch
 Patch4:		system-mozldap.patch
 Patch5:		makefile.patch
 # Edit patch below and restore --system-site-packages when system virtualenv gets 1.7 upgrade
@@ -261,6 +262,7 @@ tar -jxf %{SOURCE2}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p2
 %patch4 -p1
 %patch5 -p1
 %patch7 -p1
@@ -523,6 +525,7 @@ cp -p %{topdir}/comm-release/mailnews/extensions/enigmail/package/chrome.manifes
 # nspr
 #%{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}/lib{nspr4,plc4,plds4}.so
 # mozldap
+%{__sed} -i '/lib\(ldap\|ldif\|prldap\)60.so/d' $RPM_BUILD_ROOT%{_libdir}/%{name}/dependentlibs.list
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}/lib{ldap,ldif,prldap}60.so
 # testpilot quiz
 #%{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}/distribution/extensions/tbtestpilot@labs.mozilla.com.xpi
