@@ -1,6 +1,6 @@
 #
 # Conditional build:
-%bcond_without	enigmail	# don't build enigmail - GPG/PGP support
+%bcond_with	enigmail	# don't build enigmail - GPG/PGP support
 %bcond_without	ldap		# disable e-mail address lookups in LDAP directories
 %bcond_without	lightning	# disable Sunbird/Lightning calendar
 %bcond_with	xulrunner	# build with system xulrunner
@@ -10,7 +10,7 @@
 %define		enigmail_ver	1.6
 %define		nspr_ver	4.9.3
 %define		nss_ver		3.14.3
-%define		xulrunner_ver	23.0
+%define		xulrunner_ver	28.0
 
 %if %{without xulrunner}
 # The actual sqlite version (see RHBZ#480989):
@@ -22,12 +22,12 @@ Summary(es.UTF-8):	Navegador de Internet Iceape
 Summary(pl.UTF-8):	Iceape - przeglądarka WWW
 Summary(pt_BR.UTF-8):	Navegador Iceape
 Name:		iceape
-Version:	2.22
+Version:	2.25
 Release:	1
 License:	MPL 1.1 or GPL v2+ or LGPL v2.1+
 Group:		X11/Applications/Networking
 Source0:	http://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/source/seamonkey-%{version}.source.tar.bz2
-# Source0-md5:	49b92ed98c23efdbdafa39b9dee920a7
+# Source0-md5:	e9597622d2d843ed9095a9e1eeab01f1
 Source1:	http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_ver}.tar.gz
 # Source1-md5:	4a2bbcb020bdb282a660fda8c70d5608
 Source2:	%{name}-branding.tar.bz2
@@ -397,12 +397,12 @@ EOF
 %if %{with enigmail}
 cd mailnews/extensions/enigmail
 ./makemake -r -o %{objdir}
-%{__make} -C %{objdir}/mailnews/extensions/enigmail \
+%{__make} -j1 -C %{objdir}/mailnews/extensions/enigmail \
 	STRIP="/bin/true" \
 	CC="%{__cc}" \
 	CXX="%{__cxx}"
 
-%{__make} -C %{objdir}/mailnews/extensions/enigmail xpi \
+%{__make} -j1 -C %{objdir}/mailnews/extensions/enigmail xpi \
 	STRIP="/bin/true" \
 	CC="%{__cc}" \
 	CXX="%{__cxx}"
