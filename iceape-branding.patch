@@ -135,3 +135,7 @@ index d20cb5b..4fa63af 100644
  #ifdef MOZ_UPDATER
  @BINPATH@/icons/updater.png
  #endif
+--- comm-release/iceape/branding/moz.build.orig	2013-06-26 01:46:34.000000000 +0200
++++ comm-release/iceape/branding/moz.build	2014-05-14 19:15:04.603937775 +0200
+@@ -0,0 +1 @@
++JAR_MANIFESTS += ['jar.mn']

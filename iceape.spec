@@ -1,16 +1,18 @@
 #
 # Conditional build:
 %bcond_with	enigmail	# don't build enigmail - GPG/PGP support
+%bcond_with	gtk3		# GTK+ 3.x instead of 2.x
 %bcond_without	ldap		# disable e-mail address lookups in LDAP directories
 %bcond_without	lightning	# disable Sunbird/Lightning calendar
-%bcond_with	xulrunner	# build with system xulrunner
-%bcond_with	tests		# enable tests (whatever they check)
 %bcond_without	kerberos	# disable krb5 support
+%bcond_with	xulrunner	# build with system xulrunner
+%bcond_with	crashreporter	# report crashes to crash-stats.mozilla.com
+%bcond_with	tests		# enable tests (whatever they check)
 
 %define		enigmail_ver	1.6
-%define		nspr_ver	4.9.3
-%define		nss_ver		3.14.3
-%define		xulrunner_ver	28.0
+%define		nspr_ver	4.10.3
+%define		nss_ver		3.16
+%define		xulrunner_ver	29.0
 
 %if %{without xulrunner}
 # The actual sqlite version (see RHBZ#480989):
@@ -22,12 +24,12 @@ Summary(es.UTF-8):	Navegador de Internet Iceape
 Summary(pl.UTF-8):	Iceape - przeglądarka WWW
 Summary(pt_BR.UTF-8):	Navegador Iceape
 Name:		iceape
-Version:	2.25
+Version:	2.26
 Release:	1
 License:	MPL 1.1 or GPL v2+ or LGPL v2.1+
 Group:		X11/Applications/Networking
 Source0:	http://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/source/seamonkey-%{version}.source.tar.bz2
-# Source0-md5:	e9597622d2d843ed9095a9e1eeab01f1
+# Source0-md5:	1749f6350209e35e0bede3bf4e56c42c
 Source1:	http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_ver}.tar.gz
 # Source1-md5:	4a2bbcb020bdb282a660fda8c70d5608
 Source2:	%{name}-branding.tar.bz2
@@ -45,9 +47,9 @@ Patch2:		%{name}-agent.patch
 Patch3:		enable-addons.patch
 Patch4:		system-mozldap.patch
 Patch5:		makefile.patch
+Patch6:		%{name}-pixman.patch
 # Edit patch below and restore --system-site-packages when system virtualenv gets 1.7 upgrade
 Patch7:		system-virtualenv.patch
-Patch8:		gyp-slashism.patch
 Patch9:		%{name}-system-xulrunner.patch
 URL:		http://www.pld-linux.org/Packages/Iceape
 BuildRequires:	GConf2-devel >= 1.2.1
@@ -58,8 +60,9 @@ BuildRequires:	bzip2-devel
 BuildRequires:	cairo-devel >= 1.10.2-5
 BuildRequires:	dbus-glib-devel >= 0.60
 BuildRequires:	freetype-devel >= 1:2.1.8
-BuildRequires:	glib2-devel >= 1:2.18
-BuildRequires:	gtk+2-devel >= 2:2.10
+BuildRequires:	glib2-devel >= 1:2.20
+%{!?with_gtk3:BuildRequires:	gtk+2-devel >= 2:2.18}
+%{?with_gtk3:BuildRequires:	gtk+3-devel >= 3.0.0}
 %{?with_kerberos:BuildRequires:	heimdal-devel >= 0.7.1}
 BuildRequires:	hunspell-devel
 BuildRequires:	libIDL-devel >= 0.8.0
@@ -67,17 +70,17 @@ BuildRequires:	libdnet-devel
 BuildRequires:	libevent-devel >= 1.4.7
 # standalone libffi 3.0.9 or gcc's from 4.5(?)+
 BuildRequires:	libffi-devel >= 6:3.0.9
-BuildRequires:	libiw-devel
+BuildRequires:	libicu-devel >= 50.1
 # requires libjpeg-turbo implementing at least libjpeg 6b API
 BuildRequires:	libjpeg-devel >= 6b
 BuildRequires:	libjpeg-turbo-devel
 BuildRequires:	libnotify-devel >= 0.4
 BuildRequires:	libpng(APNG)-devel >= 0.10
-BuildRequires:	libpng-devel >= 1.4.1
+BuildRequires:	libpng-devel >= 2:1.6.7
 # rsvg-convert for iceape/branding
 BuildRequires:	librsvg
 BuildRequires:	libstdc++-devel
-BuildRequires:	libvpx-devel >= 1.0.0
+BuildRequires:	libvpx-devel >= 1.3.0
 BuildRequires:	mozldap-devel
 BuildRequires:	nspr-devel >= 1:%{nspr_ver}
 BuildRequires:	nss-devel >= 1:%{nss_ver}
@@ -91,15 +94,16 @@ BuildRequires:	python-virtualenv
 BuildRequires:	rpm >= 4.4.9-56
 BuildRequires:	rpmbuild(macros) >= 1.601
 BuildRequires:	sed >= 4.0
-BuildRequires:	sqlite3-devel >= 3.7.15.2
+BuildRequires:	sqlite3-devel >= 3.8.2
 BuildRequires:	startup-notification-devel >= 0.8
+BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXScrnSaver-devel
 BuildRequires:	xorg-lib-libXext-devel
 BuildRequires:	xorg-lib-libXinerama-devel
 BuildRequires:	xorg-lib-libXt-devel
 %if %{with xulrunner}
 BuildRequires:	xulrunner-devel >= 2:%{xulrunner_ver}
-BuildRequires:	xulrunner-devel < 2:19
+BuildRequires:	xulrunner-devel < 2:30
 %endif
 BuildRequires:	yasm
 BuildRequires:	zip
@@ -113,10 +117,13 @@ Requires:	hicolor-icon-theme
 Requires:	browser-plugins >= 2.0
 Requires:	cairo >= 1.10.2-5
 Requires:	dbus-glib >= 0.60
-Requires:	gtk+2 >= 2:2.18
+Requires:	glib2 >= 1:2.20
+%{!?with_gtk3:Requires:	gtk+2 >= 2:2.18}
+%{?with_gtk3:Requires:	gtk+3 >= 3.0.0}
 Requires:	libjpeg-turbo
-Requires:	libpng >= 1.4.1
+Requires:	libpng >= 2:1.6.7
 Requires:	libpng(APNG) >= 0.10
+Requires:	libvpx >= 1.3.0
 Requires:	myspell-common
 Requires:	nspr >= 1:%{nspr_ver}
 Requires:	nss >= 1:%{nss_ver}
@@ -265,8 +272,8 @@ tar -jxf %{SOURCE2}
 %patch3 -p2
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 %patch7 -p1
-%patch8 -p1
 %patch9 -p2
 
 %build
@@ -328,45 +335,47 @@ ac_add_options --enable-tests
 %else
 ac_add_options --disable-tests
 %endif
-ac_add_options --enable-gio
-ac_add_options --disable-gnomeui
-ac_add_options --disable-gnomevfs
-%if %{with ldap}
-ac_add_options --enable-ldap
-ac_add_options --with-system-ldap
+%if %{with lightning}
+ac_add_options --enable-calendar
 %else
-ac_add_options --disable-ldap
+ac_add_options --disable-calendar
 %endif
 %if %{with crashreporter}
 ac_add_options --enable-crashreporter
 %else
 ac_add_options --disable-crashreporter
 %endif
-ac_add_options --disable-xterm-updates
-ac_add_options --enable-postscript
-%if %{with lightning}
-ac_add_options --enable-calendar
-%else
-ac_add_options --disable-calendar
-%endif
 ac_add_options --disable-elf-dynstr-gc
+ac_add_options --disable-gnomeui
+ac_add_options --disable-gnomevfs
 ac_add_options --disable-installer
 ac_add_options --disable-javaxpcom
 ac_add_options --disable-updater
+ac_add_options --disable-xterm-updates
+ac_add_options --enable-application=suite
 ac_add_options --enable-crypto
+ac_add_options --enable-default-toolkit=%{?with_gtk3:cairo-gtk3}%{!?with_gtk3:cairo-gtk2}
+ac_add_options --enable-gio
+%if %{with ldap}
+ac_add_options --enable-ldap
+ac_add_options --with-system-ldap
+%else
+ac_add_options --disable-ldap
+%endif
 ac_add_options --enable-libxul
 ac_add_options --enable-pango
+ac_add_options --enable-postscript
 ac_add_options --enable-shared-js
 ac_add_options --enable-startup-notification
 ac_add_options --enable-system-cairo
 ac_add_options --enable-system-hunspell
 ac_add_options --enable-system-sqlite
-ac_add_options --enable-application=suite
-ac_add_options --with-distribution-id=org.pld-linux
 ac_add_options --with-branding=iceape/branding
+ac_add_options --with-default-mozilla-five-home=%{_libdir}/%{name}
+ac_add_options --with-distribution-id=org.pld-linux
 %if %{with xulrunner}
-ac_add_options --with-system-libxul
 ac_add_options --with-libxul-sdk=$(pkg-config --variable=sdkdir libxul)
+ac_add_options --with-system-libxul
 %endif
 ac_add_options --with-pthreads
 ac_add_options --with-system-bz2
@@ -378,7 +387,6 @@ ac_add_options --with-system-nspr
 ac_add_options --with-system-nss
 ac_add_options --with-system-png
 ac_add_options --with-system-zlib
-ac_add_options --with-default-mozilla-five-home=%{_libdir}/%{name}
 EOF
 
 %{__make} -j1 -f client.mk build \
@@ -453,13 +461,16 @@ cp -a mozilla/dist/bin/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103} \
 # move arch independant ones to datadir
 mv $RPM_BUILD_ROOT%{_libdir}/%{name}/chrome $RPM_BUILD_ROOT%{_datadir}/%{name}/chrome
 mv $RPM_BUILD_ROOT%{_libdir}/%{name}/defaults $RPM_BUILD_ROOT%{_datadir}/%{name}/defaults
-mv $RPM_BUILD_ROOT%{_libdir}/%{name}/isp $RPM_BUILD_ROOT%{_datadir}/%{name}/isp
 mv $RPM_BUILD_ROOT%{_libdir}/%{name}/searchplugins $RPM_BUILD_ROOT%{_datadir}/%{name}/searchplugins
 
 ln -s ../../share/%{name}/chrome $RPM_BUILD_ROOT%{_libdir}/%{name}/chrome
 ln -s ../../share/%{name}/defaults $RPM_BUILD_ROOT%{_libdir}/%{name}/defaults
-ln -s ../../share/%{name}/isp $RPM_BUILD_ROOT%{_libdir}/%{name}/isp
 ln -s ../../share/%{name}/searchplugins $RPM_BUILD_ROOT%{_libdir}/%{name}/searchplugins
+
+%if %{without xulrunner}
+mv $RPM_BUILD_ROOT%{_libdir}/%{name}/isp $RPM_BUILD_ROOT%{_datadir}/%{name}/isp
+ln -s ../../share/%{name}/isp $RPM_BUILD_ROOT%{_libdir}/%{name}/isp
+%endif
 
 mv $RPM_BUILD_ROOT%{_libdir}/%{name}/distribution/extensions/* \
 	$RPM_BUILD_ROOT%{_libdir}/%{name}/extensions/
@@ -519,16 +530,12 @@ cp -p %{topdir}/comm-release/mailnews/extensions/enigmail/package/install.rdf $e
 cp -p %{topdir}/comm-release/mailnews/extensions/enigmail/package/chrome.manifest $ext_dir/chrome.manifest
 %endif
 
+%if %{without xulrunner}
 # never package these. always remove
-# nss
-#%{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}/lib{freebl3,nss3,nssckbi,nssdbm3,nssutil3,smime3,softokn3,ssl3}.*
-# nspr
-#%{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}/lib{nspr4,plc4,plds4}.so
 # mozldap
 %{__sed} -i '/lib\(ldap\|ldif\|prldap\)60.so/d' $RPM_BUILD_ROOT%{_libdir}/%{name}/dependentlibs.list
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}/lib{ldap,ldif,prldap}60.so
-# testpilot quiz
-#%{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}/distribution/extensions/tbtestpilot@labs.mozilla.com.xpi
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -618,6 +625,7 @@ fi
 %ghost %{_libdir}/%{name}/components/compreg.dat
 %ghost %{_libdir}/%{name}/components/xpti.dat
 
+%if %{without xulrunner}
 %{_libdir}/%{name}/isp
 %dir %{_datadir}/%{name}/isp
 %{_datadir}/%{name}/isp/Bogofilter.sfd
@@ -627,6 +635,7 @@ fi
 %{_datadir}/%{name}/isp/SpamPal.sfd
 %{_datadir}/%{name}/isp/movemail.rdf
 %{_datadir}/%{name}/isp/rss.rdf
+%endif
 
 %{_iconsdir}/hicolor/*/apps/iceape.png
 %{_iconsdir}/hicolor/scalable/apps/iceape.svg
