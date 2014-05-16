@@ -26,7 +26,7 @@ Summary(pt_BR.UTF-8):	Navegador Iceape
 Name:		iceape
 Version:	2.26
 Release:	1
-License:	MPL 1.1 or GPL v2+ or LGPL v2.1+
+License:	MPL v2.0
 Group:		X11/Applications/Networking
 Source0:	http://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/source/seamonkey-%{version}.source.tar.bz2
 # Source0-md5:	1749f6350209e35e0bede3bf4e56c42c
