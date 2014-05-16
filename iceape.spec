@@ -1,6 +1,6 @@
 #
 # Conditional build:
-%bcond_with	enigmail	# don't build enigmail - GPG/PGP support
+%bcond_with	enigmail	# enigmail - GPG/PGP support [broken as of 2.26]
 %bcond_with	gtk3		# GTK+ 3.x instead of 2.x
 %bcond_without	ldap		# disable e-mail address lookups in LDAP directories
 %bcond_without	lightning	# disable Sunbird/Lightning calendar
@@ -131,7 +131,7 @@ Requires:	pango >= 1:1.14.0
 Requires:	sqlite3 >= %{sqlite_build_version}
 Requires:	startup-notification >= 0.8
 %endif
-Provides:	iceape-embedded = %{epoch}:%{version}-%{release}
+Provides:	iceape-embedded = %{version}-%{release}
 Provides:	wwwbrowser
 Obsoletes:	iceape-mailnews
 Obsoletes:	iceape-gnomevfs
@@ -197,7 +197,7 @@ funkcjonalność kalendarza.
 Summary:	Enigmail %{enigmail_ver} - PGP/GPG support for Iceape
 Summary(pl.UTF-8):	Enigmail %{enigmail_ver} - obsługa PGP/GPG dla Iceape
 Group:		X11/Applications/Networking
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	%{name} = %{version}-%{release}
 Requires:	gnupg >= 1.4.2.2
 Obsoletes:	seamonkey-addon-enigmail
 
@@ -215,8 +215,8 @@ funkcjonalności GnuPG.
 Summary:	Iceape Chat - integrated IRC client
 Summary(pl.UTF-8):	Iceape Chat - zintegrowany klient IRC-a
 Group:		X11/Applications/Networking
-Requires(post,postun):	%{name} = %{epoch}:%{version}-%{release}
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires(post,postun):	%{name} = %{version}-%{release}
+Requires:	%{name} = %{version}-%{release}
 Obsoletes:	mozilla-chat
 Obsoletes:	seamonkey-chat
 
@@ -231,8 +231,8 @@ Iceape - klient IRC-a zintegrowany z przeglądarką Iceape.
 Summary:	JavaScript debugger for use with Iceape
 Summary(pl.UTF-8):	Odpluskwiacz JavaScriptu do używania z Iceape
 Group:		X11/Applications/Networking
-Requires(post,postun):	%{name} = %{epoch}:%{version}-%{release}
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires(post,postun):	%{name} = %{version}-%{release}
+Requires:	%{name} = %{version}-%{release}
 Obsoletes:	mozilla-js-debugger
 Obsoletes:	seamonkey-js-debugger
 
@@ -246,8 +246,8 @@ Odpluskwiacz JavaScriptu do używania z Iceape.
 Summary:	A tool for inspecting the DOM of pages in Iceape
 Summary(pl.UTF-8):	Narzędzie do oglądania DOM stron w Iceape
 Group:		X11/Applications/Networking
-Requires(post,postun):	%{name} = %{epoch}:%{version}-%{release}
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires(post,postun):	%{name} = %{version}-%{release}
+Requires:	%{name} = %{version}-%{release}
 Obsoletes:	mozilla-dom-inspector
 Obsoletes:	seamonkey-dom-inspector
 
