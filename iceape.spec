@@ -1,6 +1,5 @@
 #
 # Conditional build:
-%bcond_with	enigmail	# enigmail - GPG/PGP support [broken as of 2.26]
 %bcond_with	gtk3		# GTK+ 3.x instead of 2.x
 %bcond_without	ldap		# disable e-mail address lookups in LDAP directories
 %bcond_without	lightning	# disable Sunbird/Lightning calendar
@@ -9,7 +8,6 @@
 %bcond_with	crashreporter	# report crashes to crash-stats.mozilla.com
 %bcond_with	tests		# enable tests (whatever they check)
 
-%define		enigmail_ver	1.6
 %define		nspr_ver	4.10.3
 %define		nss_ver		3.16
 %define		xulrunner_ver	29.0
@@ -24,14 +22,12 @@ Summary(es.UTF-8):	Navegador de Internet Iceape
 Summary(pl.UTF-8):	Iceape - przeglądarka WWW
 Summary(pt_BR.UTF-8):	Navegador Iceape
 Name:		iceape
-Version:	2.26
+Version:	2.26.1
 Release:	1
 License:	MPL v2.0
 Group:		X11/Applications/Networking
 Source0:	http://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/source/seamonkey-%{version}.source.tar.bz2
-# Source0-md5:	1749f6350209e35e0bede3bf4e56c42c
-Source1:	http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_ver}.tar.gz
-# Source1-md5:	4a2bbcb020bdb282a660fda8c70d5608
+# Source0-md5:	4bfa46b370b4d211eef56b90277a9517
 Source2:	%{name}-branding.tar.bz2
 # Source2-md5:	3feee544ef515f1dbf19b14479916784
 Source3:	%{name}-rm_nonfree.sh
@@ -193,24 +189,6 @@ Lightning is an calendar extension to Icedove email client.
 Lightning to rozszerzenie do klienta poczty Icedove dodające
 funkcjonalność kalendarza.
 
-%package addon-enigmail
-Summary:	Enigmail %{enigmail_ver} - PGP/GPG support for Iceape
-Summary(pl.UTF-8):	Enigmail %{enigmail_ver} - obsługa PGP/GPG dla Iceape
-Group:		X11/Applications/Networking
-Requires:	%{name} = %{version}-%{release}
-Requires:	gnupg >= 1.4.2.2
-Obsoletes:	seamonkey-addon-enigmail
-
-%description addon-enigmail
-Enigmail is an extension to the mail client of Iceape / SeaMonkey /
-Mozilla / Netscape and Mozilla Thunderbird which allows users to
-access the authentication and encryption features provided by GnuPG.
-
-%description addon-enigmail -l pl.UTF-8
-Enigmail jest rozszerzeniem dla klienta pocztowego Iceape, SeaMonkey,
-Mozilla i Mozilla Thunderdbird pozwalającym użytkownikowi korzystać z
-funkcjonalności GnuPG.
-
 %package chat
 Summary:	Iceape Chat - integrated IRC client
 Summary(pl.UTF-8):	Iceape Chat - zintegrowany klient IRC-a
@@ -264,7 +242,6 @@ tworzących strony WWW.
 %prep
 %setup -qc
 cd comm-release
-tar -C mailnews/extensions -zxf %{SOURCE1}
 tar -jxf %{SOURCE2}
 %patch0 -p1
 %patch1 -p1
@@ -402,20 +379,6 @@ EOF
 %{__make} -j1 -C obj-%{_target_cpu} buildsymbols
 %endif
 
-%if %{with enigmail}
-cd mailnews/extensions/enigmail
-./makemake -r -o %{objdir}
-%{__make} -j1 -C %{objdir}/mailnews/extensions/enigmail \
-	STRIP="/bin/true" \
-	CC="%{__cc}" \
-	CXX="%{__cxx}"
-
-%{__make} -j1 -C %{objdir}/mailnews/extensions/enigmail xpi \
-	STRIP="/bin/true" \
-	CC="%{__cc}" \
-	CXX="%{__cxx}"
-%endif
-
 %install
 rm -rf $RPM_BUILD_ROOT
 cd comm-release
@@ -515,20 +478,6 @@ unset TMPDIR TMP || :
 rm -rf $HOME
 EOF
 chmod 755 $RPM_BUILD_ROOT%{_libdir}/%{name}/register
-
-%if %{with enigmail}
-ext_dir=$RPM_BUILD_ROOT%{_libdir}/%{name}/extensions/\{847b3a00-7ab1-11d4-8f02-006008948af5\}
-install -d $ext_dir/{chrome,components,defaults/preferences,modules}
-cd mozilla/dist/bin
-cp -rfLp chrome/enigmail.jar $ext_dir/chrome
-cp -rfLp components/enig* $ext_dir/components
-cp -rfLp defaults/preferences/enigmail.js $ext_dir/defaults/preferences
-cp -rfLp modules/{commonFuncs,enigmailCommon,keyManagement,pipeConsole,subprocess}.jsm $ext_dir/modules
-cp -rfLp modules/{subprocess_worker_unix,subprocess_worker_win}.js $ext_dir/modules
-cd -
-cp -p %{topdir}/comm-release/mailnews/extensions/enigmail/package/install.rdf $ext_dir
-cp -p %{topdir}/comm-release/mailnews/extensions/enigmail/package/chrome.manifest $ext_dir/chrome.manifest
-%endif
 
 %if %{without xulrunner}
 # never package these. always remove
@@ -660,22 +609,6 @@ fi
 %{_libdir}/%{name}/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103}/modules
 %{_libdir}/%{name}/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103}/calendar-js
 %{_libdir}/%{name}/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103}/timezones.sqlite
-%endif
-
-%if %{with enigmail}
-%files addon-enigmail
-%defattr(644,root,root,755)
-%dir %{_libdir}/%{name}/extensions/{847b3a00-7ab1-11d4-8f02-006008948af5}
-%{_libdir}/%{name}/extensions/{847b3a00-7ab1-11d4-8f02-006008948af5}/defaults
-%{_libdir}/%{name}/extensions/{847b3a00-7ab1-11d4-8f02-006008948af5}/chrome
-%{_libdir}/%{name}/extensions/{847b3a00-7ab1-11d4-8f02-006008948af5}/chrome.manifest
-%{_libdir}/%{name}/extensions/{847b3a00-7ab1-11d4-8f02-006008948af5}/install.rdf
-%dir %{_libdir}/%{name}/extensions/{847b3a00-7ab1-11d4-8f02-006008948af5}/components
-%{_libdir}/%{name}/extensions/{847b3a00-7ab1-11d4-8f02-006008948af5}/components/*.xpt
-%{_libdir}/%{name}/extensions/{847b3a00-7ab1-11d4-8f02-006008948af5}/components/*.js
-%dir %{_libdir}/%{name}/extensions/{847b3a00-7ab1-11d4-8f02-006008948af5}/modules
-%{_libdir}/%{name}/extensions/{847b3a00-7ab1-11d4-8f02-006008948af5}/modules/*.jsm
-%{_libdir}/%{name}/extensions/{847b3a00-7ab1-11d4-8f02-006008948af5}/modules/*.js
 %endif
 
 %files chat
