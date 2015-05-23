@@ -23,7 +23,7 @@ Summary(pl.UTF-8):	Iceape - przeglądarka WWW
 Summary(pt_BR.UTF-8):	Navegador Iceape
 Name:		iceape
 Version:	2.26.1
-Release:	1
+Release:	2
 License:	MPL v2.0
 Group:		X11/Applications/Networking
 Source0:	http://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/source/seamonkey-%{version}.source.tar.bz2
@@ -46,6 +46,7 @@ Patch5:		makefile.patch
 Patch6:		%{name}-pixman.patch
 # Edit patch below and restore --system-site-packages when system virtualenv gets 1.7 upgrade
 Patch7:		system-virtualenv.patch
+Patch8:		libvpx2.patch
 Patch9:		%{name}-system-xulrunner.patch
 URL:		http://www.pld-linux.org/Packages/Iceape
 BuildRequires:	GConf2-devel >= 1.2.1
@@ -251,6 +252,7 @@ tar -jxf %{SOURCE2}
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
 %patch9 -p2
 
 %build
