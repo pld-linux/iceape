@@ -1,0 +1,127 @@
+--- iceape-2.26.1/comm-release/mozilla/js/src/builtin/TypedObject.cpp~	2014-06-13 02:46:08.000000000 +0200
++++ iceape-2.26.1/comm-release/mozilla/js/src/builtin/TypedObject.cpp	2015-12-26 19:03:08.174777332 +0100
+@@ -753,7 +753,7 @@
+     // Extract ArrayType.prototype
+     RootedObject arrayTypePrototype(cx, GetPrototype(cx, arrayTypeGlobal));
+     if (!arrayTypePrototype)
+-        return nullptr;
++        return false;
+ 
+     // Create the instance of ArrayType
+     RootedObject obj(
+@@ -766,7 +766,7 @@
+     if (!JSObject::defineProperty(cx, obj, cx->names().length,
+                                   lengthVal, nullptr, nullptr,
+                                   JSPROP_READONLY | JSPROP_PERMANENT))
+-        return nullptr;
++        return false;
+ 
+     args.rval().setObject(*obj);
+     return true;
+@@ -814,7 +814,7 @@
+     if (!JSObject::defineProperty(cx, obj, cx->names().length,
+                                   lengthVal, nullptr, nullptr,
+                                   JSPROP_READONLY | JSPROP_PERMANENT))
+-        return nullptr;
++        return false;
+ 
+     // Add `unsized` property, which is a link from the sized
+     // array to the unsized array.
+@@ -822,7 +822,7 @@
+     if (!JSObject::defineProperty(cx, obj, cx->names().unsized,
+                                   unsizedTypeObjValue, nullptr, nullptr,
+                                   JSPROP_READONLY | JSPROP_PERMANENT))
+-        return nullptr;
++        return false;
+ 
+     args.rval().setObject(*obj);
+     return true;
+@@ -1244,14 +1244,14 @@
+ #define BINARYDATA_SCALAR_DEFINE(constant_, type_, name_)                       \
+     if (!DefineSimpleTypeObject<ScalarType>(cx, global, module, constant_,      \
+                                             cx->names().name_))                 \
+-        return nullptr;
++        return false;
+     JS_FOR_EACH_SCALAR_TYPE_REPR(BINARYDATA_SCALAR_DEFINE)
+ #undef BINARYDATA_SCALAR_DEFINE
+ 
+ #define BINARYDATA_REFERENCE_DEFINE(constant_, type_, name_)                    \
+     if (!DefineSimpleTypeObject<ReferenceType>(cx, global, module, constant_,   \
+                                                cx->names().name_))              \
+-        return nullptr;
++        return false;
+     JS_FOR_EACH_REFERENCE_TYPE_REPR(BINARYDATA_REFERENCE_DEFINE)
+ #undef BINARYDATA_REFERENCE_DEFINE
+ 
+@@ -1261,14 +1261,14 @@
+     arrayType = DefineMetaTypeObject<ArrayType>(
+         cx, global, module, TypedObjectModuleObject::ArrayTypePrototype);
+     if (!arrayType)
+-        return nullptr;
++        return false;
+ 
+     RootedValue arrayTypeValue(cx, ObjectValue(*arrayType));
+     if (!JSObject::defineProperty(cx, module, cx->names().ArrayType,
+                                   arrayTypeValue,
+                                   nullptr, nullptr,
+                                   JSPROP_READONLY | JSPROP_PERMANENT))
+-        return nullptr;
++        return false;
+ 
+     // StructType.
+ 
+@@ -1276,23 +1276,23 @@
+     structType = DefineMetaTypeObject<StructType>(
+         cx, global, module, TypedObjectModuleObject::StructTypePrototype);
+     if (!structType)
+-        return nullptr;
++        return false;
+ 
+     RootedValue structTypeValue(cx, ObjectValue(*structType));
+     if (!JSObject::defineProperty(cx, module, cx->names().StructType,
+                                   structTypeValue,
+                                   nullptr, nullptr,
+                                   JSPROP_READONLY | JSPROP_PERMANENT))
+-        return nullptr;
++        return false;
+ 
+     //  Handle
+ 
+     RootedObject handle(cx, NewBuiltinClassInstance(cx, &JSObject::class_));
+     if (!module)
+-        return nullptr;
++        return false;
+ 
+     if (!JS_DefineFunctions(cx, handle, TypedHandle::handleStaticMethods))
+-        return nullptr;
++        return false;
+ 
+     RootedValue handleValue(cx, ObjectValue(*handle));
+     if (!JSObject::defineProperty(cx, module, cx->names().Handle,
+@@ -1300,7 +1300,7 @@
+                                   nullptr, nullptr,
+                                   JSPROP_READONLY | JSPROP_PERMANENT))
+     {
+-        return nullptr;
++        return false;
+     }
+ 
+     // Everything is setup, install module on the global object:
+@@ -1311,7 +1311,7 @@
+                                   nullptr, nullptr,
+                                   0))
+     {
+-        return nullptr;
++        return false;
+     }
+ 
+     return module;
+@@ -2404,7 +2404,7 @@
+     // Create zeroed wrapper object.
+     Rooted<TypedObject*> obj(cx, createZeroed(cx, callee, length));
+     if (!obj)
+-        return nullptr;
++        return false;
+ 
+     if (nextArg < argc) {
+         RootedValue initial(cx, args[nextArg++]);

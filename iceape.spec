@@ -48,6 +48,7 @@ Patch6:		%{name}-pixman.patch
 Patch7:		system-virtualenv.patch
 Patch8:		libvpx2.patch
 Patch9:		%{name}-system-xulrunner.patch
+Patch10:	gcc5.patch
 URL:		http://www.pld-linux.org/Packages/Iceape
 BuildRequires:	GConf2-devel >= 1.2.1
 BuildRequires:	OpenGL-devel
@@ -254,6 +255,7 @@ tar -jxf %{SOURCE2}
 %patch7 -p1
 %patch8 -p1
 %patch9 -p2
+%patch10 -p2
 
 %build
 cd comm-release
