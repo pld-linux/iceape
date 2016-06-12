@@ -4,51 +4,42 @@
 %bcond_without	ldap		# disable e-mail address lookups in LDAP directories
 %bcond_without	lightning	# disable Sunbird/Lightning calendar
 %bcond_without	kerberos	# disable krb5 support
-%bcond_with	xulrunner	# build with system xulrunner
 %bcond_with	crashreporter	# report crashes to crash-stats.mozilla.com
 %bcond_with	tests		# enable tests (whatever they check)
 
 %define		nspr_ver	4.10.3
 %define		nss_ver		3.16
-%define		xulrunner_ver	29.0
 
-%if %{without xulrunner}
 # The actual sqlite version (see RHBZ#480989):
 %define		sqlite_build_version %(pkg-config --silence-errors --modversion sqlite3 2>/dev/null || echo ERROR)
-%endif
 
 Summary:	Iceape - web browser
 Summary(es.UTF-8):	Navegador de Internet Iceape
 Summary(pl.UTF-8):	Iceape - przeglądarka WWW
 Summary(pt_BR.UTF-8):	Navegador Iceape
 Name:		iceape
-Version:	2.26.1
-Release:	5
+Version:	2.40
+Release:	1
 License:	MPL v2.0
 Group:		X11/Applications/Networking
-Source0:	http://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/source/seamonkey-%{version}.source.tar.bz2
-# Source0-md5:	4bfa46b370b4d211eef56b90277a9517
-Source2:	%{name}-branding.tar.bz2
-# Source2-md5:	3feee544ef515f1dbf19b14479916784
+Source0:	http://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/source/seamonkey-%{version}.source.tar.xz
+# Source0-md5:	5789df8f96e14577c275f10fdf8462f3
+Source1:	%{name}-branding.tar.xz
+# Source1-md5:	2eca62062b4d1022f94b5cf49bc024d3
 Source3:	%{name}-rm_nonfree.sh
 Source4:	%{name}.desktop
 Source5:	%{name}-composer.desktop
 Source6:	%{name}-chat.desktop
 Source7:	%{name}-mail.desktop
-Source8:	%{name}-venkman.desktop
-Source9:	%{name}.sh
+Source8:	%{name}.sh
 Patch0:		%{name}-branding.patch
 Patch1:		%{name}-pld-branding.patch
 Patch2:		%{name}-agent.patch
 Patch3:		enable-addons.patch
-Patch4:		system-mozldap.patch
-Patch5:		makefile.patch
-Patch6:		%{name}-pixman.patch
 # Edit patch below and restore --system-site-packages when system virtualenv gets 1.7 upgrade
-Patch7:		system-virtualenv.patch
-Patch8:		libvpx2.patch
-Patch9:		%{name}-system-xulrunner.patch
-Patch10:	gcc5.patch
+Patch4:		system-virtualenv.patch
+Patch5:		no-logging.patch
+Patch6:		libsuite.patch
 URL:		http://www.pld-linux.org/Packages/Iceape
 BuildRequires:	GConf2-devel >= 1.2.1
 BuildRequires:	OpenGL-devel
@@ -88,7 +79,8 @@ BuildRequires:	perl-modules >= 5.004
 BuildRequires:	pkgconfig
 BuildRequires:	python >= 1:2.5
 BuildRequires:	python-modules
-BuildRequires:	python-virtualenv
+BuildRequires:	python-simplejson
+BuildRequires:	python-virtualenv >= 15
 BuildRequires:	rpm >= 4.4.9-56
 BuildRequires:	rpmbuild(macros) >= 1.601
 BuildRequires:	sed >= 4.0
@@ -99,19 +91,12 @@ BuildRequires:	xorg-lib-libXScrnSaver-devel
 BuildRequires:	xorg-lib-libXext-devel
 BuildRequires:	xorg-lib-libXinerama-devel
 BuildRequires:	xorg-lib-libXt-devel
-%if %{with xulrunner}
-BuildRequires:	xulrunner-devel >= 2:%{xulrunner_ver}
-BuildRequires:	xulrunner-devel < 2:30
-%endif
 BuildRequires:	yasm
 BuildRequires:	zip
 BuildRequires:	zlib-devel >= 1.2.3
 Requires(post):	mktemp >= 1.5-18
 Requires:	desktop-file-utils
 Requires:	hicolor-icon-theme
-%if %{with xulrunner}
-%requires_eq_to	xulrunner xulrunner-devel
-%else
 Requires:	browser-plugins >= 2.0
 Requires:	cairo >= 1.10.2-5
 Requires:	dbus-glib >= 0.60
@@ -128,7 +113,6 @@ Requires:	nss >= 1:%{nss_ver}
 Requires:	pango >= 1:1.14.0
 Requires:	sqlite3 >= %{sqlite_build_version}
 Requires:	startup-notification >= 0.8
-%endif
 Provides:	iceape-embedded = %{version}-%{release}
 Provides:	wwwbrowser
 Obsoletes:	iceape-mailnews
@@ -144,7 +128,7 @@ Obsoletes:	seamonkey-gnomevfs
 Conflicts:	iceape-lang-resources < %{version}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		topdir		%{_builddir}/%{name}-%{version}
+%define		topdir		%{_builddir}/seamonkey-%{version}
 %define		objdir		%{topdir}/obj-%{_target_cpu}
 
 %define		filterout_cpp	-D_FORTIFY_SOURCE=[0-9]+
@@ -152,7 +136,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 # don't satisfy other packages
 %define		_noautoprovfiles	%{_libdir}/%{name}
 # and as we don't provide them, don't require either
-%define		_noautoreq	libmozjs.so libxpcom.so libxul.so libjemalloc.so %{!?with_xulrunner:libmozalloc.so}
+%define		_noautoreq	libmozjs.so libxpcom.so libxul.so libjemalloc.so libmozalloc.so
 %define		_noautoreqdep	libgfxpsshar.so libgkgfx.so libgtkxtbin.so libjsj.so libxpcom_compat.so libxpistub.so
 
 %description
@@ -207,21 +191,6 @@ browser.
 %description chat -l pl.UTF-8
 Iceape - klient IRC-a zintegrowany z przeglądarką Iceape.
 
-%package js-debugger
-Summary:	JavaScript debugger for use with Iceape
-Summary(pl.UTF-8):	Odpluskwiacz JavaScriptu do używania z Iceape
-Group:		X11/Applications/Networking
-Requires(post,postun):	%{name} = %{version}-%{release}
-Requires:	%{name} = %{version}-%{release}
-Obsoletes:	mozilla-js-debugger
-Obsoletes:	seamonkey-js-debugger
-
-%description js-debugger
-JavaScript debugger for use with Iceape.
-
-%description js-debugger -l pl.UTF-8
-Odpluskwiacz JavaScriptu do używania z Iceape.
-
 %package dom-inspector
 Summary:	A tool for inspecting the DOM of pages in Iceape
 Summary(pl.UTF-8):	Narzędzie do oglądania DOM stron w Iceape
@@ -242,42 +211,18 @@ bardzo przydatne dla ludzi rozwijających chrome w Iceape lub
 tworzących strony WWW.
 
 %prep
-%setup -qc
-cd comm-release
-tar -jxf %{SOURCE2}
+%setup -q -a1 -n seamonkey-%{version}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p2
+%patch3 -p1
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p2
-%patch10 -p2
 
 %build
-cd comm-release
-%if %{with xulrunner}
-if [ "$(grep -E '^[0-9]+\.' mozilla/config/milestone.txt)" != "%{xulrunner_ver}" ]; then
-	echo >&2
-	echo >&2 "Xulrunner version %{xulrunner_ver} does not match mozilla/config/milestone.txt!"
-	echo >&2
-	exit 1
-fi
-%endif
-
-cp -f %{_datadir}/automake/config.* build/autoconf
-cp -f %{_datadir}/automake/config.* mozilla/build/autoconf
-cp -f %{_datadir}/automake/config.* mozilla/nsprpub/build/autoconf
-cp -f %{_datadir}/automake/config.* ldap/sdks/c-sdk/config/autoconf
-
 cat << EOF > .mozconfig
 mk_add_options MOZ_OBJDIR=%{objdir}
-
-export CFLAGS="%{rpmcflags}"
-export CXXFLAGS="%{rpmcflags}"
 
 %if %{with crashreporter}
 export MOZ_DEBUG_SYMBOLS=1
@@ -306,7 +251,6 @@ ac_add_options --enable-crash-on-assert
 %else
 ac_add_options --disable-debug
 ac_add_options --disable-debug-modules
-ac_add_options --disable-logging
 ac_add_options --enable-optimize="%{rpmcflags} -Os"
 %endif
 ac_add_options --disable-strip
@@ -337,6 +281,7 @@ ac_add_options --disable-xterm-updates
 ac_add_options --enable-application=suite
 ac_add_options --enable-crypto
 ac_add_options --enable-default-toolkit=%{?with_gtk3:cairo-gtk3}%{!?with_gtk3:cairo-gtk2}
+ac_add_options --enable-extensions=default,irc
 ac_add_options --enable-gio
 %if %{with ldap}
 ac_add_options --enable-ldap
@@ -347,7 +292,8 @@ ac_add_options --disable-ldap
 ac_add_options --enable-libxul
 ac_add_options --enable-pango
 ac_add_options --enable-postscript
-ac_add_options --enable-shared-js
+# breaks build
+#ac_add_options --enable-shared-js
 ac_add_options --enable-startup-notification
 ac_add_options --enable-system-cairo
 ac_add_options --enable-system-hunspell
@@ -355,13 +301,10 @@ ac_add_options --enable-system-sqlite
 ac_add_options --with-branding=iceape/branding
 ac_add_options --with-default-mozilla-five-home=%{_libdir}/%{name}
 ac_add_options --with-distribution-id=org.pld-linux
-%if %{with xulrunner}
-ac_add_options --with-libxul-sdk=$(pkg-config --variable=sdkdir libxul)
-ac_add_options --with-system-libxul
-%endif
 ac_add_options --with-pthreads
 ac_add_options --with-system-bz2
 ac_add_options --with-system-ffi
+ac_add_options --with-system-icu
 ac_add_options --with-system-jpeg
 ac_add_options --with-system-libevent
 ac_add_options --with-system-libvpx
@@ -369,6 +312,13 @@ ac_add_options --with-system-nspr
 ac_add_options --with-system-nss
 ac_add_options --with-system-png
 ac_add_options --with-system-zlib
+ac_add_options --enable-xinerama
+ac_add_options --disable-xprint
+ac_add_options --enable-svg
+ac_add_options --enable-canvas
+ac_add_options --enable-safe-browsing
+ac_add_options --enable-chrome-format=omni
+ac_add_options --disable-necko-wifi
 EOF
 
 %{__make} -j1 -f client.mk build \
@@ -386,7 +336,6 @@ EOF
 
 %install
 rm -rf $RPM_BUILD_ROOT
-cd comm-release
 install -d \
 	$RPM_BUILD_ROOT{%{_bindir},%{_libdir}} \
 	$RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir}} \
@@ -398,7 +347,6 @@ install -d \
 cd %{objdir}
 cwd=`pwd`
 %{__make} -C suite/installer stage-package \
-	LD_LIBRARY_PATH=$cwd/mozilla/dist/lib \
 	DESTDIR=$RPM_BUILD_ROOT \
 	installdir=%{_libdir}/%{name} \
 	PKG_SKIP_STRIP=1
@@ -406,12 +354,7 @@ cwd=`pwd`
 %{__make} -C iceape/branding install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-cp -a mozilla/dist/iceape/* $RPM_BUILD_ROOT%{_libdir}/%{name}/
-
-%if %{with xulrunner}
-# >= 5.0 seems to require this
-ln -s ../xulrunner $RPM_BUILD_ROOT%{_libdir}/%{name}/xulrunner
-%endif
+cp -a dist/iceape/* $RPM_BUILD_ROOT%{_libdir}/%{name}/
 
 # Enable crash reporter for Thunderbird application
 %if %{with crashreporter}
@@ -419,12 +362,14 @@ ln -s ../xulrunner $RPM_BUILD_ROOT%{_libdir}/%{name}/xulrunner
 
 # Add debuginfo for crash-stats.mozilla.com
 install -d $RPM_BUILD_ROOT%{_exec_prefix}/lib/debug%{_libdir}/%{name}
-cp -a mozilla/dist/%{name}-%{version}.en-US.linux-*.crashreporter-symbols.zip $RPM_BUILD_ROOT%{_prefix}/lib/debug%{_libdir}/%{name}
+cp -a dist/%{name}-%{version}.en-US.linux-*.crashreporter-symbols.zip $RPM_BUILD_ROOT%{_prefix}/lib/debug%{_libdir}/%{name}
 %endif
 
+%if %{with lightning}
 # copy manually lightning files, somewhy they are not installed by make
-cp -a mozilla/dist/bin/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103} \
+cp -a dist/bin/distribution/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103}.xpi \
 	$RPM_BUILD_ROOT%{_libdir}/%{name}/extensions
+%endif
 
 # move arch independant ones to datadir
 mv $RPM_BUILD_ROOT%{_libdir}/%{name}/chrome $RPM_BUILD_ROOT%{_datadir}/%{name}/chrome
@@ -435,10 +380,8 @@ ln -s ../../share/%{name}/chrome $RPM_BUILD_ROOT%{_libdir}/%{name}/chrome
 ln -s ../../share/%{name}/defaults $RPM_BUILD_ROOT%{_libdir}/%{name}/defaults
 ln -s ../../share/%{name}/searchplugins $RPM_BUILD_ROOT%{_libdir}/%{name}/searchplugins
 
-%if %{without xulrunner}
 mv $RPM_BUILD_ROOT%{_libdir}/%{name}/isp $RPM_BUILD_ROOT%{_datadir}/%{name}/isp
 ln -s ../../share/%{name}/isp $RPM_BUILD_ROOT%{_libdir}/%{name}/isp
-%endif
 
 mv $RPM_BUILD_ROOT%{_libdir}/%{name}/distribution/extensions/* \
 	$RPM_BUILD_ROOT%{_libdir}/%{name}/extensions/
@@ -448,19 +391,17 @@ mv $RPM_BUILD_ROOT%{_libdir}/%{name}/distribution/extensions/* \
 # XRE_SYS_LOCAL_EXTENSION_PARENT_DIR and XRE_SYS_SHARE_EXTENSION_PARENT_DIR
 install -d $RPM_BUILD_ROOT%{_datadir}/%{name}/extensions
  
-%if %{without xulrunner}
 %{__rm} -r $RPM_BUILD_ROOT%{_libdir}/%{name}/dictionaries
 ln -s %{_datadir}/myspell $RPM_BUILD_ROOT%{_libdir}/%{name}/dictionaries
-%endif
 
 %{__sed} -e "s|%MOZAPPDIR%|%{_libdir}/%{name}|" \
 	 -e "s|%MOZ_APP_DISPLAYNAME%|Iceape|" \
-	%{topdir}/comm-release/mozilla/build/unix/mozilla.in > $RPM_BUILD_ROOT%{_libdir}/%{name}/iceape
+	%{topdir}/mozilla/build/unix/mozilla.in > $RPM_BUILD_ROOT%{_libdir}/%{name}/iceape
 
-sed 's,@LIBDIR@,%{_libdir},' %{SOURCE9} > $RPM_BUILD_ROOT%{_bindir}/iceape
+sed 's,@LIBDIR@,%{_libdir},' %{SOURCE8} > $RPM_BUILD_ROOT%{_bindir}/iceape
 chmod a+rx $RPM_BUILD_ROOT%{_bindir}/iceape
 
-install %{SOURCE4} %{SOURCE5} %{SOURCE6} %{SOURCE7} %{SOURCE8} \
+install %{SOURCE4} %{SOURCE5} %{SOURCE6} %{SOURCE7} \
 	$RPM_BUILD_ROOT%{_desktopdir}
 
 # files created by iceape -register
@@ -484,12 +425,10 @@ rm -rf $HOME
 EOF
 chmod 755 $RPM_BUILD_ROOT%{_libdir}/%{name}/register
 
-%if %{without xulrunner}
 # never package these. always remove
 # mozldap
 %{__sed} -i '/lib\(ldap\|ldif\|prldap\)60.so/d' $RPM_BUILD_ROOT%{_libdir}/%{name}/dependentlibs.list
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}/lib{ldap,ldif,prldap}60.so
-%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -515,11 +454,9 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %{_browserpluginsconfdir}/blacklist.d/%{name}.*.blacklist
 
 %dir %{_libdir}/%{name}
-%if %{without xulrunner}
-%attr(755,root,root) %{_libdir}/%{name}/libmozalloc.so
-%attr(755,root,root) %{_libdir}/%{name}/libmozjs.so
+%attr(755,root,root) %{_libdir}/%{name}/liblgpllibs.so
+#%attr(755,root,root) %{_libdir}/%{name}/libmozjs.so
 %attr(755,root,root) %{_libdir}/%{name}/libxul.so
-%endif
 
 %{_libdir}/%{name}/blocklist.xml
 %{_libdir}/%{name}/omni.ja
@@ -540,16 +477,12 @@ fi
 %{_libdir}/%{name}/components/components.manifest
 %attr(755,root,root) %{_libdir}/%{name}/components/libsuite.so
 
-%if %{without xulrunner}
 %{_libdir}/%{name}/dependentlibs.list
 %{_libdir}/%{name}/platform.ini
-%attr(755,root,root) %{_libdir}/%{name}/components/libdbusservice.so
 %attr(755,root,root) %{_libdir}/%{name}/components/libmozgnome.so
 %attr(755,root,root) %{_libdir}/%{name}/run-mozilla.sh
 %attr(755,root,root) %{_libdir}/%{name}/iceape-bin
-%attr(755,root,root) %{_libdir}/%{name}/mozilla-xremote-client
 %attr(755,root,root) %{_libdir}/%{name}/plugin-container
-%endif
 
 %attr(755,root,root) %{_libdir}/%{name}/iceape
 %dir %{_libdir}/%{name}/plugins
@@ -558,11 +491,7 @@ fi
 %{_libdir}/%{name}/chrome
 %{_libdir}/%{name}/defaults
 %{_libdir}/%{name}/searchplugins
-%if %{with xulrunner}
-%{_libdir}/%{name}/xulrunner
-%else
 %{_libdir}/%{name}/dictionaries
-%endif
 
 %dir %{_datadir}/%{name}
 %{_datadir}/%{name}/chrome
@@ -579,7 +508,6 @@ fi
 %ghost %{_libdir}/%{name}/components/compreg.dat
 %ghost %{_libdir}/%{name}/components/xpti.dat
 
-%if %{without xulrunner}
 %{_libdir}/%{name}/isp
 %dir %{_datadir}/%{name}/isp
 %{_datadir}/%{name}/isp/Bogofilter.sfd
@@ -589,7 +517,6 @@ fi
 %{_datadir}/%{name}/isp/SpamPal.sfd
 %{_datadir}/%{name}/isp/movemail.rdf
 %{_datadir}/%{name}/isp/rss.rdf
-%endif
 
 %{_iconsdir}/hicolor/*/apps/iceape.png
 %{_iconsdir}/hicolor/scalable/apps/iceape.svg
@@ -600,31 +527,13 @@ fi
 %if %{with lightning}
 %files addon-lightning
 %defattr(644,root,root,755)
-%dir %{_libdir}/%{name}/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103}
-%{_libdir}/%{name}/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103}/application.ini
-%{_libdir}/%{name}/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103}/chrome
-%{_libdir}/%{name}/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103}/chrome.manifest
-%{_libdir}/%{name}/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103}/defaults
-%{_libdir}/%{name}/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103}/install.rdf
-%dir %{_libdir}/%{name}/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103}/components
-%attr(755,root,root) %{_libdir}/%{name}/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103}/components/*.so
-%{_libdir}/%{name}/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103}/components/*.js
-%{_libdir}/%{name}/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103}/components/*.manifest
-%{_libdir}/%{name}/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103}/components/*.xpt
-%{_libdir}/%{name}/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103}/modules
-%{_libdir}/%{name}/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103}/calendar-js
-%{_libdir}/%{name}/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103}/timezones.sqlite
+%{_libdir}/%{name}/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103}.xpi
 %endif
 
 %files chat
 %defattr(644,root,root,755)
 %{_libdir}/%{name}/extensions/{59c81df5-4b7a-477b-912d-4e0fdf64e5f2}.xpi
 %{_desktopdir}/%{name}-chat.desktop
-
-%files js-debugger
-%defattr(644,root,root,755)
-%{_libdir}/%{name}/extensions/{f13b157f-b174-47e7-a34d-4815ddfdfeb8}.xpi
-%{_desktopdir}/%{name}-venkman.desktop
 
 %files dom-inspector
 %defattr(644,root,root,755)
