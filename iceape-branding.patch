@@ -22,24 +22,28 @@ index 1e3799e..ae4cb1f 100644
  pref("browser.search.defaultenginename", "chrome://communicator-region/locale/region.properties");
 @@ -563,7 +563,7 @@ pref("extensions.blocklist.interval", 86400);
  pref("extensions.blocklist.level", 2);
- pref("extensions.blocklist.url", "https://addons.mozilla.org/blocklist/3/%APP_ID%/%APP_VERSION%/%PRODUCT%/%BUILD_ID%/%BUILD_TARGET%/%LOCALE%/%CHANNEL%/%OS_VERSION%/%DISTRIBUTION%/%DISTRIBUTION_VERSION%/%PING_COUNT%/%TOTAL_PING_COUNT%/%DAYS_SINCE_LAST_PING%/");
+ pref("extensions.blocklist.url", "https://blocklist.addons.mozilla.org/blocklist/3/%APP_ID%/%APP_VERSION%/%PRODUCT%/%BUILD_ID%/%BUILD_TARGET%/%LOCALE%/%CHANNEL%/%OS_VERSION%/%DISTRIBUTION%/%DISTRIBUTION_VERSION%/%PING_COUNT%/%TOTAL_PING_COUNT%/%DAYS_SINCE_LAST_PING%/");
  pref("extensions.blocklist.detailsURL", "https://www.mozilla.com/%LOCALE%/blocklist/");
--pref("extensions.blocklist.itemURL", "https://addons.mozilla.org/%LOCALE%/%APP%/blocked/%blockID%");
-+pref("extensions.blocklist.itemURL", "https://addons.mozilla.org/%LOCALE%/seamonkey/blocked/%blockID%");
+-pref("extensions.blocklist.itemURL", "https://blocklist.addons.mozilla.org/%LOCALE%/%APP%/blocked/%blockID%");
++pref("extensions.blocklist.itemURL", "https://blocklist.addons.mozilla.org/%LOCALE%/seamonkey/blocked/%blockID%");
  
  // Update preferences for installed Extensions and Themes.
  // Symmetric (can be overridden by individual extensions),
-@@ -587,11 +587,11 @@ pref("extensions.autoDisableScopes", 15);
+@@ -587,13 +587,13 @@ pref("extensions.autoDisableScopes", 15);
  // Preferences for AMO integration
  pref("extensions.getAddons.cache.enabled", true);  // also toggles personalized recommendations
  pref("extensions.getAddons.maxResults", 15);
 -pref("extensions.getAddons.get.url", "https://services.addons.mozilla.org/%LOCALE%/%APP%/api/%API_VERSION%/search/guid:%IDS%?src=seamonkey&appOS=%OS%&appVersion=%VERSION%");
 -pref("extensions.getAddons.getWithPerformance.url", "https://services.addons.mozilla.org/%LOCALE%/%APP%/api/%API_VERSION%/search/guid:%IDS%?src=seamonkey&appOS=%OS%&appVersion=%VERSION%&tMain=%TIME_MAIN%&tFirstPaint=%TIME_FIRST_PAINT%&tSessionRestored=%TIME_SESSION_RESTORED%");
+-pref("extensions.getAddons.link.url", "https://addons.mozilla.org/%LOCALE%/%APP%/");
+-pref("extensions.getAddons.recommended.url", "https://services.addons.mozilla.org/%LOCALE%/%APP%/api/%API_VERSION%/list/recommended/all/%MAX_RESULTS%/%OS%/%VERSION%?src=seamonkey");
 -pref("extensions.getAddons.search.browseURL", "https://addons.mozilla.org/%LOCALE%/%APP%/search?q=%TERMS%");
 -pref("extensions.getAddons.search.url", "https://services.addons.mozilla.org/%LOCALE%/%APP%/api/%API_VERSION%/search/%TERMS%/all/%MAX_RESULTS%/%OS%/%VERSION%/%COMPATIBILITY_MODE%?src=seamonkey");
 -pref("extensions.webservice.discoverURL", "https://services.addons.mozilla.org/%LOCALE%/%APP%/discovery/pane/%VERSION%/%OS%");
 +pref("extensions.getAddons.get.url", "https://services.addons.mozilla.org/%LOCALE%/seamonkey/api/%API_VERSION%/search/guid:%IDS%?src=seamonkey&appOS=%OS%&appVersion=%VERSION%");
 +pref("extensions.getAddons.getWithPerformance.url", "https://services.addons.mozilla.org/%LOCALE%/seamonkey/api/%API_VERSION%/search/guid:%IDS%?src=seamonkey&appOS=%OS%&appVersion=%VERSION%&tMain=%TIME_MAIN%&tFirstPaint=%TIME_FIRST_PAINT%&tSessionRestored=%TIME_SESSION_RESTORED%");
++pref("extensions.getAddons.link.url", "https://addons.mozilla.org/%LOCALE%/seamonkey/");
++pref("extensions.getAddons.recommended.url", "https://services.addons.mozilla.org/%LOCALE%/seamonkey%/api/%API_VERSION%/list/recommended/all/%MAX_RESULTS%/%OS%/%VERSION%?src=seamonkey");
 +pref("extensions.getAddons.search.browseURL", "https://addons.mozilla.org/%LOCALE%/seamonkey/search?q=%TERMS%");
 +pref("extensions.getAddons.search.url", "https://services.addons.mozilla.org/%LOCALE%/seamonkey/api/%API_VERSION%/search/%TERMS%/all/%MAX_RESULTS%/%OS%/%VERSION%/%COMPATIBILITY_MODE%?src=seamonkey");
 +pref("extensions.webservice.discoverURL", "https://services.addons.mozilla.org/%LOCALE%/seamonkey/discovery/pane/%VERSION%/%OS%");
@@ -58,9 +62,9 @@ index f56a77e..56e49f2 100644
 -browser.throbber.url=http://www.seamonkey-project.org/
 +browser.startup.homepage=about:
 +browser.throbber.url=http://www.pld-linux.org/Packages/Iceape
- browser.search.defaulturl=http://www.google.com/search?q=
  
  browser.translation.service=http://translate.google.com/translate?prev=/language_tools&u=
+ browser.translation.serviceDomain=translate.google.com
 @@ -11,7 +11,7 @@ browser.translation.serviceDomain=translate.google.com
  
  #config.js
@@ -128,12 +132,12 @@ index d20cb5b..4fa63af 100644
 --- comm-release/suite/installer/package-manifest.in~	2012-06-05 07:50:28.000000000 +0200
 +++ comm-release/suite/installer/package-manifest.in	2012-06-06 14:55:27.764056749 +0200
 @@ -480,7 +480,6 @@
- @BINPATH@/chrome/icons/default/places.png
- @BINPATH@/chrome/icons/default/places16.png
- @BINPATH@/chrome/icons/default/places48.png
--@BINPATH@/chrome/icons/default/seamonkey.png
+ @RESPATH@/chrome/icons/default/places.png
+ @RESPATH@/chrome/icons/default/places16.png
+ @RESPATH@/chrome/icons/default/places48.png
+-@RESPATH@/chrome/icons/default/seamonkey.png
  #ifdef MOZ_UPDATER
- @BINPATH@/icons/updater.png
+ @RESPATH@/icons/updater.png
  #endif
 --- comm-release/iceape/branding/moz.build.orig	2013-06-26 01:46:34.000000000 +0200
 +++ comm-release/iceape/branding/moz.build	2014-05-14 19:15:04.603937775 +0200

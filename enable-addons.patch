@@ -1,6 +1,5 @@
-diff -up seamonkey-2.5/comm-release/mail/app/profile/all-thunderbird.js.old seamonkey-2.5/comm-release/mail/app/profile/all-thunderbird.js
---- seamonkey-2.5/comm-release/mail/app/profile/all-thunderbird.js.old	2011-11-21 11:20:08.000000000 +0100
-+++ seamonkey-2.5/comm-release/mail/app/profile/all-thunderbird.js	2011-12-14 12:40:24.074179826 +0100
+--- seamonkey-2.5/mail/app/profile/all-thunderbird.js.old	2011-11-21 11:20:08.000000000 +0100
++++ seamonkey-2.5/mail/app/profile/all-thunderbird.js	2011-12-14 12:40:24.074179826 +0100
 @@ -138,7 +138,7 @@ pref("extensions.update.autoUpdateDefaul
  // Disable add-ons installed into the shared user and shared system areas by
  // default. This does not include the application directory. See the SCOPE
@@ -10,36 +9,41 @@ diff -up seamonkey-2.5/comm-release/mail/app/profile/all-thunderbird.js.old seam
  
  // Preferences for AMO integration
  pref("extensions.getAddons.cache.enabled", true);
---- iceape-2.26/comm-release/mozilla/toolkit/mozapps/extensions/XPIProvider.jsm.orig	2014-05-14 18:10:44.574018230 +0200
-+++ iceape-2.26/comm-release/mozilla/toolkit/mozapps/extensions/XPIProvider.jsm	2014-05-14 18:13:00.020682073 +0200
-@@ -2051,7 +2051,7 @@
-         this.showUpgradeUI();
-         flushCaches = true;
-       }
--      else if (aAppChanged === undefined) {
-+      else {
-         // For new profiles we will never need to show the add-on selection UI
+--- iceape-2.26/mozilla/toolkit/mozapps/extensions/internal/XPIProvider.jsm.orig	2014-05-14 18:10:44.574018230 +0200
++++ iceape-2.26/mozilla/toolkit/mozapps/extensions/internal/XPIProvider.jsm	2014-05-14 18:13:00.020682073 +0200
+@@ -2102,11 +2102,9 @@ var XPIProvider = {
+ 
+       AddonManagerPrivate.markProviderSafe(this);
+ 
+-      if (aAppChanged === undefined) {
+-        // For new profiles we will never need to show the add-on selection UI
++        // For all profiles we will never need to show the add-on selection UI
          Services.prefs.setBoolPref(PREF_SHOWN_SELECTION_UI, true);
-       }
---- iceape-2.22/comm-release/suite/browser/browser-prefs.js~	2013-11-06 19:54:38.789734061 +0100
-+++ iceape-2.22/comm-release/suite/browser/browser-prefs.js	2013-11-06 20:55:33.765611935 +0100
+-      }
+-      else if (aAppChanged && !this.allAppGlobal &&
++      if (aAppChanged && !this.allAppGlobal &&
+                Preferences.get(PREF_EM_SHOW_MISMATCH_UI, true)) {
+         if (!Preferences.get(PREF_SHOWN_SELECTION_UI, false)) {
+           // Flip a flag to indicate that we interrupted startup with an interactive prompt
+--- iceape-2.22/suite/browser/browser-prefs.js~	2013-11-06 19:54:38.789734061 +0100
++++ iceape-2.22/suite/browser/browser-prefs.js	2013-11-06 20:55:33.765611935 +0100
 @@ -616,7 +616,7 @@
  // Disable add-ons installed into the shared user and shared system areas by
  // default. This does not include the application directory. See the SCOPE
  // constants in AddonManager.jsm for values to use here.
 -pref("extensions.autoDisableScopes", 15);
-+pref("extensions.autoDisableScopes", 0);
++pref("extensions.autoDisableScopes", 3);
  
  // Preferences for AMO integration
  pref("extensions.getAddons.cache.enabled", true);  // also toggles personalized recommendations
---- iceape-2.22/comm-release/mozilla/browser/app/profile/firefox.js~	2013-10-29 02:20:40.000000000 +0100
-+++ iceape-2.22/comm-release/mozilla/browser/app/profile/firefox.js	2013-11-06 20:56:58.633092070 +0100
+--- iceape-2.22/mozilla/browser/app/profile/firefox.js~	2013-10-29 02:20:40.000000000 +0100
++++ iceape-2.22/mozilla/browser/app/profile/firefox.js	2013-11-06 20:56:58.633092070 +0100
 @@ -62,7 +62,7 @@
  
  // Disable add-ons that are not installed by the user in all scopes by default.
  // See the SCOPE constants in AddonManager.jsm for values to use here.
 -pref("extensions.autoDisableScopes", 15);
-+pref("extensions.autoDisableScopes", 0);
++pref("extensions.autoDisableScopes", 3);
  
  // Dictionary download preference
  pref("browser.dictionaries.download.url", "https://addons.mozilla.org/%LOCALE%/firefox/dictionaries/");
