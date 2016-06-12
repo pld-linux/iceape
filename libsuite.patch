@@ -1,0 +1,14 @@
+diff -Nrbu seamonkey-2.39/suite/build/moz.build seamonkey-2.39-OK/suite/build/moz.build
+--- seamonkey-2.39/suite/build/moz.build	2015-11-04 04:43:23.000000000 +0300
++++ seamonkey-2.39-OK/suite/build/moz.build	2016-01-15 23:58:18.603109110 +0300
+@@ -27,10 +27,4 @@
+         'shell32',
+     ]
+ 
+-# js needs to come after xul for now, because it is an archive and its content
+-# is discarded when it comes first.
+-USE_LIBS += [
+-    'js',
+-]
+-
+ OS_LIBS += CONFIG['TK_LIBS']
