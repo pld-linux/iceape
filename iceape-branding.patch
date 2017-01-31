@@ -20,15 +20,6 @@ index 1e3799e..ae4cb1f 100644
  
  // pointer to the default engine name
  pref("browser.search.defaultenginename", "chrome://communicator-region/locale/region.properties");
-@@ -563,7 +563,7 @@ pref("extensions.blocklist.interval", 86400);
- pref("extensions.blocklist.level", 2);
- pref("extensions.blocklist.url", "https://blocklist.addons.mozilla.org/blocklist/3/%APP_ID%/%APP_VERSION%/%PRODUCT%/%BUILD_ID%/%BUILD_TARGET%/%LOCALE%/%CHANNEL%/%OS_VERSION%/%DISTRIBUTION%/%DISTRIBUTION_VERSION%/%PING_COUNT%/%TOTAL_PING_COUNT%/%DAYS_SINCE_LAST_PING%/");
- pref("extensions.blocklist.detailsURL", "https://www.mozilla.com/%LOCALE%/blocklist/");
--pref("extensions.blocklist.itemURL", "https://blocklist.addons.mozilla.org/%LOCALE%/%APP%/blocked/%blockID%");
-+pref("extensions.blocklist.itemURL", "https://blocklist.addons.mozilla.org/%LOCALE%/seamonkey/blocked/%blockID%");
- 
- // Update preferences for installed Extensions and Themes.
- // Symmetric (can be overridden by individual extensions),
 @@ -587,13 +587,13 @@ pref("extensions.autoDisableScopes", 15);
  // Preferences for AMO integration
  pref("extensions.getAddons.cache.enabled", true);  // also toggles personalized recommendations

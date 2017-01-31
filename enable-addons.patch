@@ -9,22 +9,6 @@
  
  // Preferences for AMO integration
  pref("extensions.getAddons.cache.enabled", true);
---- iceape-2.26/mozilla/toolkit/mozapps/extensions/internal/XPIProvider.jsm.orig	2014-05-14 18:10:44.574018230 +0200
-+++ iceape-2.26/mozilla/toolkit/mozapps/extensions/internal/XPIProvider.jsm	2014-05-14 18:13:00.020682073 +0200
-@@ -2102,11 +2102,9 @@ var XPIProvider = {
- 
-       AddonManagerPrivate.markProviderSafe(this);
- 
--      if (aAppChanged === undefined) {
--        // For new profiles we will never need to show the add-on selection UI
-+        // For all profiles we will never need to show the add-on selection UI
-         Services.prefs.setBoolPref(PREF_SHOWN_SELECTION_UI, true);
--      }
--      else if (aAppChanged && !this.allAppGlobal &&
-+      if (aAppChanged && !this.allAppGlobal &&
-                Preferences.get(PREF_EM_SHOW_MISMATCH_UI, true)) {
-         if (!Preferences.get(PREF_SHOWN_SELECTION_UI, false)) {
-           // Flip a flag to indicate that we interrupted startup with an interactive prompt
 --- iceape-2.22/suite/browser/browser-prefs.js~	2013-11-06 19:54:38.789734061 +0100
 +++ iceape-2.22/suite/browser/browser-prefs.js	2013-11-06 20:55:33.765611935 +0100
 @@ -616,7 +616,7 @@
