@@ -1,9 +1,0 @@
-[Desktop Entry]
-Name=Iceape Chat
-Name[pl]=Chat Iceape
-Exec=iceape -chat
-Icon=iceape
-Terminal=false
-Type=Application
-Categories=Network;IRCClient;
-# vi: encoding=utf-8

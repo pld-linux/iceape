@@ -1,0 +1,15 @@
+https://bugzilla.mozilla.org/show_bug.cgi?id=1290037
+
+--- seamonkey-2.46/mozilla/netwerk/protocol/http/Http2Session.cpp.orig	2016-10-31 21:15:27.000000000 +0100
++++ seamonkey-2.46/mozilla/netwerk/protocol/http/Http2Session.cpp	2017-01-09 17:45:38.639941993 +0100
+@@ -3542,8 +3542,8 @@
+     LOG3(("Http2Session::ConfirmTLSProfile %p FAILED due to DH %d < 2048\n",
+           this, keybits));
+     RETURN_SESSION_ERROR(this, INADEQUATE_SECURITY);
+-  } else if (kea == ssl_kea_ecdh && keybits < 256) { // 256 bits is "security level" of 128
+-    LOG3(("Http2Session::ConfirmTLSProfile %p FAILED due to ECDH %d < 256\n",
++  } else if (kea == ssl_kea_ecdh && keybits < 224) { // see rfc7540 9.2.1.
++    LOG3(("Http2Session::ConfirmTLSProfile %p FAILED due to ECDH %d < 224\n",
+           this, keybits));
+     RETURN_SESSION_ERROR(this, INADEQUATE_SECURITY);
+   }

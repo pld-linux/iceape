@@ -1,8 +1,7 @@
 #
 # Conditional build:
-%bcond_with	gtk3		# GTK+ 3.x instead of 2.x
+%bcond_without	gtk3		# GTK+ 3.x instead of 2.x
 %bcond_without	ldap		# disable e-mail address lookups in LDAP directories
-%bcond_without	lightning	# disable Sunbird/Lightning calendar
 %bcond_without	kerberos	# disable krb5 support
 %bcond_with	crashreporter	# report crashes to crash-stats.mozilla.com
 %bcond_with	tests		# enable tests (whatever they check)
@@ -18,18 +17,17 @@ Summary(es.UTF-8):	Navegador de Internet Iceape
 Summary(pl.UTF-8):	Iceape - przeglądarka WWW
 Summary(pt_BR.UTF-8):	Navegador Iceape
 Name:		iceape
-Version:	2.40
-Release:	2
+Version:	2.46
+Release:	1
 License:	MPL v2.0
 Group:		X11/Applications/Networking
 Source0:	http://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/source/seamonkey-%{version}.source.tar.xz
-# Source0-md5:	5789df8f96e14577c275f10fdf8462f3
+# Source0-md5:	436a158e16eee151b97f96c053b82d45
 Source1:	%{name}-branding.tar.xz
 # Source1-md5:	2eca62062b4d1022f94b5cf49bc024d3
 Source3:	%{name}-rm_nonfree.sh
 Source4:	%{name}.desktop
 Source5:	%{name}-composer.desktop
-Source6:	%{name}-chat.desktop
 Source7:	%{name}-mail.desktop
 Source8:	%{name}.sh
 Patch0:		%{name}-branding.patch
@@ -38,13 +36,14 @@ Patch2:		%{name}-agent.patch
 Patch3:		enable-addons.patch
 # Edit patch below and restore --system-site-packages when system virtualenv gets 1.7 upgrade
 Patch4:		system-virtualenv.patch
-Patch5:		no-logging.patch
-Patch6:		libsuite.patch
+Patch5:		icu-detect.patch
+Patch6:		nss-http2.patch
 URL:		http://www.pld-linux.org/Packages/Iceape
 BuildRequires:	GConf2-devel >= 1.2.1
 BuildRequires:	OpenGL-devel
 BuildRequires:	alsa-lib-devel
 BuildRequires:	automake
+BuildRequires:	autoconf2_13
 BuildRequires:	bzip2-devel
 BuildRequires:	cairo-devel >= 1.10.2-5
 BuildRequires:	dbus-glib-devel >= 0.60
@@ -115,6 +114,9 @@ Requires:	sqlite3 >= %{sqlite_build_version}
 Requires:	startup-notification >= 0.8
 Provides:	iceape-embedded = %{version}-%{release}
 Provides:	wwwbrowser
+Obsoletes:	iceape-addon-lightning < 2.46-1
+Obsoletes:	iceape-chat < 2.46-1
+Obsoletes:	iceape-dom-inspector < 2.46-1
 Obsoletes:	iceape-mailnews
 Obsoletes:	iceape-gnomevfs
 Obsoletes:	light
@@ -230,18 +232,6 @@ export MOZ_DEBUG_SYMBOLS=1
 
 # Options for 'configure' (same as command-line options).
 ac_add_options --prefix=%{_prefix}
-ac_add_options --exec-prefix=%{_exec_prefix}
-ac_add_options --bindir=%{_bindir}
-ac_add_options --sbindir=%{_sbindir}
-ac_add_options --sysconfdir=%{_sysconfdir}
-ac_add_options --datadir=%{_datadir}
-ac_add_options --includedir=%{_includedir}
-ac_add_options --libdir=%{_libdir}
-ac_add_options --libexecdir=%{_libexecdir}
-ac_add_options --localstatedir=%{_localstatedir}
-ac_add_options --sharedstatedir=%{_sharedstatedir}
-ac_add_options --mandir=%{_mandir}
-ac_add_options --infodir=%{_infodir}
 %if %{?debug:1}0
 ac_add_options --disable-optimize
 ac_add_options --enable-debug
@@ -250,48 +240,31 @@ ac_add_options --enable-debugger-info-modules
 ac_add_options --enable-crash-on-assert
 %else
 ac_add_options --disable-debug
-ac_add_options --disable-debug-modules
 ac_add_options --enable-optimize="%{rpmcflags} -Os"
 %endif
 ac_add_options --disable-strip
-ac_add_options --disable-strip-libs
 %if %{with tests}
 ac_add_options --enable-tests
 %else
 ac_add_options --disable-tests
-%endif
-%if %{with lightning}
-ac_add_options --enable-calendar
-%else
-ac_add_options --disable-calendar
 %endif
 %if %{with crashreporter}
 ac_add_options --enable-crashreporter
 %else
 ac_add_options --disable-crashreporter
 %endif
-ac_add_options --disable-elf-dynstr-gc
 ac_add_options --disable-elf-hack
 ac_add_options --disable-gnomeui
-ac_add_options --disable-gnomevfs
-ac_add_options --disable-installer
-ac_add_options --disable-javaxpcom
 ac_add_options --disable-updater
-ac_add_options --disable-xterm-updates
 ac_add_options --enable-application=suite
-ac_add_options --enable-crypto
 ac_add_options --enable-default-toolkit=%{?with_gtk3:cairo-gtk3}%{!?with_gtk3:cairo-gtk2}
 ac_add_options --enable-extensions=default,irc
 ac_add_options --enable-gio
 %if %{with ldap}
 ac_add_options --enable-ldap
-ac_add_options --with-system-ldap
 %else
 ac_add_options --disable-ldap
 %endif
-ac_add_options --enable-libxul
-ac_add_options --enable-pango
-ac_add_options --enable-postscript
 # breaks build
 #ac_add_options --enable-shared-js
 ac_add_options --enable-startup-notification
@@ -312,16 +285,13 @@ ac_add_options --with-system-nspr
 ac_add_options --with-system-nss
 ac_add_options --with-system-png
 ac_add_options --with-system-zlib
-ac_add_options --enable-xinerama
-ac_add_options --disable-xprint
-ac_add_options --enable-svg
-ac_add_options --enable-canvas
 ac_add_options --enable-safe-browsing
 ac_add_options --enable-chrome-format=omni
 ac_add_options --disable-necko-wifi
 EOF
 
 %{__make} -j1 -f client.mk build \
+	AUTOCONF=/usr/bin/autoconf2_13 \
 	STRIP="/bin/true" \
 	MOZ_MAKE_FLAGS="%{?_smp_mflags}" \
 	installdir=%{_libdir}/%{name} \
@@ -365,12 +335,6 @@ install -d $RPM_BUILD_ROOT%{_exec_prefix}/lib/debug%{_libdir}/%{name}
 cp -a dist/%{name}-%{version}.en-US.linux-*.crashreporter-symbols.zip $RPM_BUILD_ROOT%{_prefix}/lib/debug%{_libdir}/%{name}
 %endif
 
-%if %{with lightning}
-# copy manually lightning files, somewhy they are not installed by make
-cp -a dist/bin/distribution/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103}.xpi \
-	$RPM_BUILD_ROOT%{_libdir}/%{name}/extensions
-%endif
-
 # move arch independant ones to datadir
 mv $RPM_BUILD_ROOT%{_libdir}/%{name}/chrome $RPM_BUILD_ROOT%{_datadir}/%{name}/chrome
 mv $RPM_BUILD_ROOT%{_libdir}/%{name}/defaults $RPM_BUILD_ROOT%{_datadir}/%{name}/defaults
@@ -382,9 +346,6 @@ ln -s ../../share/%{name}/searchplugins $RPM_BUILD_ROOT%{_libdir}/%{name}/search
 
 mv $RPM_BUILD_ROOT%{_libdir}/%{name}/isp $RPM_BUILD_ROOT%{_datadir}/%{name}/isp
 ln -s ../../share/%{name}/isp $RPM_BUILD_ROOT%{_libdir}/%{name}/isp
-
-mv $RPM_BUILD_ROOT%{_libdir}/%{name}/distribution/extensions/* \
-	$RPM_BUILD_ROOT%{_libdir}/%{name}/extensions/
 
 # dir for arch independant extensions besides arch dependant extensions
 # see mozilla/xpcom/build/nsXULAppAPI.h
@@ -401,7 +362,7 @@ ln -s %{_datadir}/myspell $RPM_BUILD_ROOT%{_libdir}/%{name}/dictionaries
 sed 's,@LIBDIR@,%{_libdir},' %{SOURCE8} > $RPM_BUILD_ROOT%{_bindir}/iceape
 chmod a+rx $RPM_BUILD_ROOT%{_bindir}/iceape
 
-install %{SOURCE4} %{SOURCE5} %{SOURCE6} %{SOURCE7} \
+install %{SOURCE4} %{SOURCE5} %{SOURCE7} \
 	$RPM_BUILD_ROOT%{_desktopdir}
 
 # files created by iceape -register
@@ -457,6 +418,9 @@ fi
 %attr(755,root,root) %{_libdir}/%{name}/liblgpllibs.so
 #%attr(755,root,root) %{_libdir}/%{name}/libmozjs.so
 %attr(755,root,root) %{_libdir}/%{name}/libxul.so
+%dir %{_libdir}/%{name}/gtk2
+%attr(755,root,root) %{_libdir}/%{name}/gtk2/libmozgtk.so
+%attr(755,root,root) %{_libdir}/%{name}/libmozgtk.so
 
 %{_libdir}/%{name}/blocklist.xml
 %{_libdir}/%{name}/omni.ja
@@ -479,7 +443,6 @@ fi
 
 %{_libdir}/%{name}/dependentlibs.list
 %{_libdir}/%{name}/platform.ini
-%attr(755,root,root) %{_libdir}/%{name}/components/libmozgnome.so
 %attr(755,root,root) %{_libdir}/%{name}/run-mozilla.sh
 %attr(755,root,root) %{_libdir}/%{name}/iceape-bin
 %attr(755,root,root) %{_libdir}/%{name}/plugin-container
@@ -523,18 +486,3 @@ fi
 %{_desktopdir}/%{name}.desktop
 %{_desktopdir}/%{name}-composer.desktop
 %{_desktopdir}/%{name}-mail.desktop
-
-%if %{with lightning}
-%files addon-lightning
-%defattr(644,root,root,755)
-%{_libdir}/%{name}/extensions/{e2fda1a4-762b-4020-b5ad-a41df1933103}.xpi
-%endif
-
-%files chat
-%defattr(644,root,root,755)
-%{_libdir}/%{name}/extensions/{59c81df5-4b7a-477b-912d-4e0fdf64e5f2}.xpi
-%{_desktopdir}/%{name}-chat.desktop
-
-%files dom-inspector
-%defattr(644,root,root,755)
-%{_libdir}/%{name}/extensions/inspector@mozilla.org.xpi
