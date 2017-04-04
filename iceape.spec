@@ -18,7 +18,7 @@ Summary(pl.UTF-8):	Iceape - przeglądarka WWW
 Summary(pt_BR.UTF-8):	Navegador Iceape
 Name:		iceape
 Version:	2.46
-Release:	2
+Release:	3
 License:	MPL v2.0
 Group:		X11/Applications/Networking
 Source0:	http://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/source/seamonkey-%{version}.source.tar.xz
@@ -38,6 +38,7 @@ Patch3:		enable-addons.patch
 Patch4:		system-virtualenv.patch
 Patch5:		icu-detect.patch
 Patch6:		nss-http2.patch
+Patch7:		libevent21.patch
 URL:		http://www.pld-linux.org/Packages/Iceape
 BuildRequires:	GConf2-devel >= 1.2.1
 BuildRequires:	OpenGL-devel
@@ -221,6 +222,7 @@ tworzących strony WWW.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 
 %build
 cat << EOF > .mozconfig

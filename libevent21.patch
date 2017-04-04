@@ -1,0 +1,13 @@
+--- seamonkey-2.46/mozilla/ipc/chromium/src/base/message_pump_libevent.cc~	2016-12-14 03:07:49.000000000 +0100
++++ seamonkey-2.46/mozilla/ipc/chromium/src/base/message_pump_libevent.cc	2017-04-04 09:09:31.353732558 +0200
+@@ -23,8 +23,8 @@
+ // This macro checks that the _EVENT_SIZEOF_* constants defined in
+ // ipc/chromiume/src/third_party/<platform>/event2/event-config.h are correct.
+ #define CHECK_EVENT_SIZEOF(TYPE, type) \
+-    static_assert(_EVENT_SIZEOF_##TYPE == sizeof(type), \
+-    "bad _EVENT_SIZEOF_"#TYPE);
++    static_assert(EVENT__SIZEOF_##TYPE == sizeof(type), \
++    "bad EVENT__SIZEOF_"#TYPE);
+ 
+ CHECK_EVENT_SIZEOF(LONG,      long);
+ CHECK_EVENT_SIZEOF(LONG_LONG, long long);
