@@ -1,3 +1,4 @@
+# TODO: consider --enable-libproxy
 #
 # Conditional build:
 %bcond_without	gtk3		# GTK+ 3.x instead of 2.x
@@ -6,8 +7,8 @@
 %bcond_with	crashreporter	# report crashes to crash-stats.mozilla.com
 %bcond_with	tests		# enable tests (whatever they check)
 
-%define		nspr_ver	4.10.3
-%define		nss_ver		3.16
+%define		nspr_ver	4.12
+%define		nss_ver		3.25
 
 # The actual sqlite version (see RHBZ#480989):
 %define		sqlite_build_version %(pkg-config --silence-errors --modversion sqlite3 2>/dev/null || echo ERROR)
@@ -43,19 +44,19 @@ URL:		http://www.pld-linux.org/Packages/Iceape
 BuildRequires:	GConf2-devel >= 1.2.1
 BuildRequires:	OpenGL-devel
 BuildRequires:	alsa-lib-devel
-BuildRequires:	automake
-BuildRequires:	autoconf2_13
+BuildRequires:	autoconf2_13 >= 2.13
 BuildRequires:	bzip2-devel
 BuildRequires:	cairo-devel >= 1.10.2-5
 BuildRequires:	dbus-glib-devel >= 0.60
+BuildRequires:	fontconfig-devel >= 1:2.7.0
 BuildRequires:	freetype-devel >= 1:2.1.8
-BuildRequires:	glib2-devel >= 1:2.20
+BuildRequires:	glib2-devel >= 1:2.22
 %{!?with_gtk3:BuildRequires:	gtk+2-devel >= 2:2.18}
-%{?with_gtk3:BuildRequires:	gtk+3-devel >= 3.0.0}
+%{?with_gtk3:BuildRequires:	gtk+3-devel >= 3.4.0}
 %{?with_kerberos:BuildRequires:	heimdal-devel >= 0.7.1}
 BuildRequires:	hunspell-devel
-BuildRequires:	libIDL-devel >= 0.8.0
-BuildRequires:	libdnet-devel
+# DECnet (dnprogs.spec), not dummy net (libdnet.spec)
+#BuildRequires:	libdnet-devel
 BuildRequires:	libevent-devel >= 1.4.7
 # standalone libffi 3.0.9 or gcc's from 4.5(?)+
 BuildRequires:	libffi-devel >= 6:3.0.9
@@ -65,52 +66,55 @@ BuildRequires:	libjpeg-devel >= 6b
 BuildRequires:	libjpeg-turbo-devel
 BuildRequires:	libnotify-devel >= 0.4
 BuildRequires:	libpng(APNG)-devel >= 0.10
-BuildRequires:	libpng-devel >= 2:1.6.7
+BuildRequires:	libpng-devel >= 2:1.6.21
 # rsvg-convert for iceape/branding
 BuildRequires:	librsvg
-BuildRequires:	libstdc++-devel
-BuildRequires:	libvpx-devel >= 1.3.0
+BuildRequires:	libstdc++-devel >= 6:4.7
+BuildRequires:	libvpx-devel >= 1.5.0
 BuildRequires:	mozldap-devel
 BuildRequires:	nspr-devel >= 1:%{nspr_ver}
 BuildRequires:	nss-devel >= 1:%{nss_ver}
 BuildRequires:	pango-devel >= 1:1.14.0
 BuildRequires:	perl-base >= 1:5.6
 BuildRequires:	perl-modules >= 5.004
+BuildRequires:	pixman-devel >= 0.19.2
 BuildRequires:	pkgconfig
-BuildRequires:	python >= 1:2.5
-BuildRequires:	python-modules
-BuildRequires:	python-simplejson
+BuildRequires:	python >= 1:2.7
+BuildRequires:	python-modules >= 1:2.7
 BuildRequires:	python-virtualenv >= 15
 BuildRequires:	rpm >= 4.4.9-56
 BuildRequires:	rpmbuild(macros) >= 1.601
 BuildRequires:	sed >= 4.0
-BuildRequires:	sqlite3-devel >= 3.8.2
+BuildRequires:	sqlite3-devel >= 3.13.0
 BuildRequires:	startup-notification-devel >= 0.8
 BuildRequires:	xorg-lib-libX11-devel
-BuildRequires:	xorg-lib-libXScrnSaver-devel
+BuildRequires:	xorg-lib-libXcomposite-devel
+BuildRequires:	xorg-lib-libXdamage-devel
 BuildRequires:	xorg-lib-libXext-devel
-BuildRequires:	xorg-lib-libXinerama-devel
+BuildRequires:	xorg-lib-libXfixes-devel
 BuildRequires:	xorg-lib-libXt-devel
 BuildRequires:	yasm
 BuildRequires:	zip
 BuildRequires:	zlib-devel >= 1.2.3
 Requires(post):	mktemp >= 1.5-18
 Requires:	desktop-file-utils
+Requires:	fontconfig >= 1:2.7.0
 Requires:	hicolor-icon-theme
 Requires:	browser-plugins >= 2.0
 Requires:	cairo >= 1.10.2-5
 Requires:	dbus-glib >= 0.60
-Requires:	glib2 >= 1:2.20
+Requires:	glib2 >= 1:2.22
 %{!?with_gtk3:Requires:	gtk+2 >= 2:2.18}
-%{?with_gtk3:Requires:	gtk+3 >= 3.0.0}
+%{?with_gtk3:Requires:	gtk+3 >= 3.4.0}
 Requires:	libjpeg-turbo
-Requires:	libpng >= 2:1.6.7
+Requires:	libpng >= 2:1.6.21
 Requires:	libpng(APNG) >= 0.10
-Requires:	libvpx >= 1.3.0
+Requires:	libvpx >= 1.5.0
 Requires:	myspell-common
 Requires:	nspr >= 1:%{nspr_ver}
 Requires:	nss >= 1:%{nss_ver}
 Requires:	pango >= 1:1.14.0
+Requires:	pixman >= 0.19.2
 Requires:	sqlite3 >= %{sqlite_build_version}
 Requires:	startup-notification >= 0.8
 Provides:	iceape-embedded = %{version}-%{release}
@@ -139,8 +143,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 # don't satisfy other packages
 %define		_noautoprovfiles	%{_libdir}/%{name}
 # and as we don't provide them, don't require either
-%define		_noautoreq	libmozjs.so libxpcom.so libxul.so libjemalloc.so libmozalloc.so
-%define		_noautoreqdep	libgfxpsshar.so libgkgfx.so libgtkxtbin.so libjsj.so libxpcom_compat.so libxpistub.so
+%define		_noautoreq	liblgpllibs.so libmozgtk.so libmozjs.so libxul.so
 
 %description
 Iceape is an open-source web browser, designed for standards
@@ -257,8 +260,10 @@ ac_add_options --disable-crashreporter
 %endif
 ac_add_options --disable-elf-hack
 ac_add_options --disable-gnomeui
+ac_add_options --disable-necko-wifi
 ac_add_options --disable-updater
 ac_add_options --enable-application=suite
+ac_add_options --enable-chrome-format=omni
 ac_add_options --enable-default-toolkit=%{?with_gtk3:cairo-gtk3}%{!?with_gtk3:cairo-gtk2}
 ac_add_options --enable-extensions=default,irc
 ac_add_options --enable-gio
@@ -267,6 +272,7 @@ ac_add_options --enable-ldap
 %else
 ac_add_options --disable-ldap
 %endif
+ac_add_options --enable-safe-browsing
 # breaks build
 #ac_add_options --enable-shared-js
 ac_add_options --enable-startup-notification
@@ -287,9 +293,6 @@ ac_add_options --with-system-nspr
 ac_add_options --with-system-nss
 ac_add_options --with-system-png
 ac_add_options --with-system-zlib
-ac_add_options --enable-safe-browsing
-ac_add_options --enable-chrome-format=omni
-ac_add_options --disable-necko-wifi
 EOF
 
 %{__make} -j1 -f client.mk build \
@@ -299,7 +302,7 @@ EOF
 	installdir=%{_libdir}/%{name} \
 	XLIBS="-lX11 -lXt" \
 	CC="%{__cc}" \
-	CXX="%{__cxx}"
+	CXX="%{__cxx} -std=gnu++11"
 
 %if %{with crashreporter}
 # create debuginfo for crash-stats.mozilla.com
@@ -338,15 +341,15 @@ cp -a dist/%{name}-%{version}.en-US.linux-*.crashreporter-symbols.zip $RPM_BUILD
 %endif
 
 # move arch independant ones to datadir
-mv $RPM_BUILD_ROOT%{_libdir}/%{name}/chrome $RPM_BUILD_ROOT%{_datadir}/%{name}/chrome
-mv $RPM_BUILD_ROOT%{_libdir}/%{name}/defaults $RPM_BUILD_ROOT%{_datadir}/%{name}/defaults
-mv $RPM_BUILD_ROOT%{_libdir}/%{name}/searchplugins $RPM_BUILD_ROOT%{_datadir}/%{name}/searchplugins
+%{__mv} $RPM_BUILD_ROOT%{_libdir}/%{name}/chrome $RPM_BUILD_ROOT%{_datadir}/%{name}/chrome
+%{__mv} $RPM_BUILD_ROOT%{_libdir}/%{name}/defaults $RPM_BUILD_ROOT%{_datadir}/%{name}/defaults
+%{__mv} $RPM_BUILD_ROOT%{_libdir}/%{name}/searchplugins $RPM_BUILD_ROOT%{_datadir}/%{name}/searchplugins
 
 ln -s ../../share/%{name}/chrome $RPM_BUILD_ROOT%{_libdir}/%{name}/chrome
 ln -s ../../share/%{name}/defaults $RPM_BUILD_ROOT%{_libdir}/%{name}/defaults
 ln -s ../../share/%{name}/searchplugins $RPM_BUILD_ROOT%{_libdir}/%{name}/searchplugins
 
-mv $RPM_BUILD_ROOT%{_libdir}/%{name}/isp $RPM_BUILD_ROOT%{_datadir}/%{name}/isp
+%{__mv} $RPM_BUILD_ROOT%{_libdir}/%{name}/isp $RPM_BUILD_ROOT%{_datadir}/%{name}/isp
 ln -s ../../share/%{name}/isp $RPM_BUILD_ROOT%{_libdir}/%{name}/isp
 
 # dir for arch independant extensions besides arch dependant extensions
@@ -410,6 +413,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
+%doc AUTHORS
 %attr(755,root,root) %{_bindir}/iceape
 
 # browser plugins v2
@@ -418,11 +422,10 @@ fi
 
 %dir %{_libdir}/%{name}
 %attr(755,root,root) %{_libdir}/%{name}/liblgpllibs.so
-#%attr(755,root,root) %{_libdir}/%{name}/libmozjs.so
+%attr(755,root,root) %{_libdir}/%{name}/libmozgtk.so
 %attr(755,root,root) %{_libdir}/%{name}/libxul.so
 %dir %{_libdir}/%{name}/gtk2
 %attr(755,root,root) %{_libdir}/%{name}/gtk2/libmozgtk.so
-%attr(755,root,root) %{_libdir}/%{name}/libmozgtk.so
 
 %{_libdir}/%{name}/blocklist.xml
 %{_libdir}/%{name}/omni.ja
