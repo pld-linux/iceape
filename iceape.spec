@@ -22,7 +22,7 @@ Version:	2.46
 Release:	5
 License:	MPL v2.0
 Group:		X11/Applications/Networking
-Source0:	http://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/%{version}/source/seamonkey-%{version}.source.tar.xz
+Source0:	http://ftp.mozilla.org/pub/seamonkey/releases/%{version}/source/seamonkey-%{version}.source.tar.xz
 # Source0-md5:	436a158e16eee151b97f96c053b82d45
 Source1:	%{name}-branding.tar.xz
 # Source1-md5:	2eca62062b4d1022f94b5cf49bc024d3
@@ -71,10 +71,10 @@ BuildRequires:	libpng-devel >= 2:1.6.21
 BuildRequires:	librsvg
 BuildRequires:	libstdc++-devel >= 6:4.7
 BuildRequires:	libvpx-devel >= 1.5.0
-BuildRequires:	mozldap-devel
+BuildRequires:	mozldap-devel >= 6.0
 BuildRequires:	nspr-devel >= 1:%{nspr_ver}
 BuildRequires:	nss-devel >= 1:%{nss_ver}
-BuildRequires:	pango-devel >= 1:1.14.0
+BuildRequires:	pango-devel >= 1:1.22.0
 BuildRequires:	perl-base >= 1:5.6
 BuildRequires:	perl-modules >= 5.004
 BuildRequires:	pixman-devel >= 0.19.2
@@ -87,13 +87,17 @@ BuildRequires:	rpmbuild(macros) >= 1.601
 BuildRequires:	sed >= 4.0
 BuildRequires:	sqlite3-devel >= 3.13.0
 BuildRequires:	startup-notification-devel >= 0.8
+BuildRequires:	tar >= 1:1.22
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXcomposite-devel
 BuildRequires:	xorg-lib-libXdamage-devel
 BuildRequires:	xorg-lib-libXext-devel
 BuildRequires:	xorg-lib-libXfixes-devel
 BuildRequires:	xorg-lib-libXt-devel
-BuildRequires:	yasm
+BuildRequires:	xz
+%ifarch %{ix86} %{x8664}
+BuildRequires:	yasm >= 1.0.1
+%endif
 BuildRequires:	zip
 BuildRequires:	zlib-devel >= 1.2.3
 Requires(post):	mktemp >= 1.5-18
@@ -113,7 +117,7 @@ Requires:	libvpx >= 1.5.0
 Requires:	myspell-common
 Requires:	nspr >= 1:%{nspr_ver}
 Requires:	nss >= 1:%{nss_ver}
-Requires:	pango >= 1:1.14.0
+Requires:	pango >= 1:1.22.0
 Requires:	pixman >= 0.19.2
 Requires:	sqlite3 >= %{sqlite_build_version}
 Requires:	startup-notification >= 0.8
@@ -165,56 +169,6 @@ Communicator.
 Iceape - полнофункциональный web-browser с открытыми исходными
 текстами, разработанный для максимального соотвествия стандартам,
 максмимальной переносимости и скорости работы
-
-%package addon-lightning
-Summary:	An integrated calendar for Iceape
-Summary(pl.UTF-8):	Zintegrowany kalendarz dla Iceape
-License:	MPL 1.1 or GPL v2+ or LGPL v2.1+
-Group:		Applications/Networking
-Requires:	%{name} = %{version}-%{release}
-Obsoletes:	seamonkey-addon-lightning
-
-%description addon-lightning
-Lightning is an calendar extension to Icedove email client.
-
-%description addon-lightning -l pl.UTF-8
-Lightning to rozszerzenie do klienta poczty Icedove dodające
-funkcjonalność kalendarza.
-
-%package chat
-Summary:	Iceape Chat - integrated IRC client
-Summary(pl.UTF-8):	Iceape Chat - zintegrowany klient IRC-a
-Group:		X11/Applications/Networking
-Requires(post,postun):	%{name} = %{version}-%{release}
-Requires:	%{name} = %{version}-%{release}
-Obsoletes:	mozilla-chat
-Obsoletes:	seamonkey-chat
-
-%description chat
-Iceape Chat - IRC client that is integrated with the Iceape web
-browser.
-
-%description chat -l pl.UTF-8
-Iceape - klient IRC-a zintegrowany z przeglądarką Iceape.
-
-%package dom-inspector
-Summary:	A tool for inspecting the DOM of pages in Iceape
-Summary(pl.UTF-8):	Narzędzie do oglądania DOM stron w Iceape
-Group:		X11/Applications/Networking
-Requires(post,postun):	%{name} = %{version}-%{release}
-Requires:	%{name} = %{version}-%{release}
-Obsoletes:	mozilla-dom-inspector
-Obsoletes:	seamonkey-dom-inspector
-
-%description dom-inspector
-This is a tool that allows you to inspect the DOM for web pages in
-Iceape. This is of great use to people who are doing Iceape chrome
-development or web page development.
-
-%description dom-inspector -l pl.UTF-8
-To narzędzie pozwala na oglądanie DOM dla stron WWW w Iceape. Jest
-bardzo przydatne dla ludzi rozwijających chrome w Iceape lub
-tworzących strony WWW.
 
 %prep
 %setup -q -a1 -n seamonkey-%{version}
@@ -315,7 +269,8 @@ install -d \
 	$RPM_BUILD_ROOT{%{_bindir},%{_libdir}} \
 	$RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir}} \
 	$RPM_BUILD_ROOT%{_datadir}/%{name} \
-	$RPM_BUILD_ROOT%{_libdir}/%{name}/plugins
+	$RPM_BUILD_ROOT%{_libdir}/%{name}/plugins \
+	$RPM_BUILD_ROOT%{_mandir}/man1
 
 %browser_plugins_add_browser %{name} -p %{_libdir}/%{name}/plugins
 
@@ -330,6 +285,7 @@ cwd=`pwd`
 	DESTDIR=$RPM_BUILD_ROOT
 
 cp -a dist/iceape/* $RPM_BUILD_ROOT%{_libdir}/%{name}/
+cp -p dist/man/man1/iceape.1 $RPM_BUILD_ROOT%{_mandir}/man1
 
 # Enable crash reporter for Thunderbird application
 %if %{with crashreporter}
@@ -391,8 +347,7 @@ rm -rf $HOME
 EOF
 chmod 755 $RPM_BUILD_ROOT%{_libdir}/%{name}/register
 
-# never package these. always remove
-# mozldap
+# don't package, rely on system mozldap libraries
 %{__sed} -i '/lib\(ldap\|ldif\|prldap\)60.so/d' $RPM_BUILD_ROOT%{_libdir}/%{name}/dependentlibs.list
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}/lib{ldap,ldif,prldap}60.so
 
@@ -415,6 +370,7 @@ fi
 %defattr(644,root,root,755)
 %doc AUTHORS
 %attr(755,root,root) %{_bindir}/iceape
+%{_mandir}/man1/iceape.1*
 
 # browser plugins v2
 %{_browserpluginsconfdir}/browsers.d/%{name}.*
