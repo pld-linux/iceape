@@ -126,6 +126,7 @@ Provides:	wwwbrowser
 Obsoletes:	iceape-addon-lightning < 2.46-1
 Obsoletes:	iceape-chat < 2.46-1
 Obsoletes:	iceape-dom-inspector < 2.46-1
+Obsoletes:	iceape-js-debugger
 Obsoletes:	iceape-mailnews
 Obsoletes:	iceape-gnomevfs
 Obsoletes:	light
